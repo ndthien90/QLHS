@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình Quản Lý Học Sinh</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Sử dụng font Inter cho giao diện hiện đại -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Sử dụng font Inter làm font chữ mặc định */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Tùy chỉnh thanh cuộn cho đẹp hơn */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* gray-300 */
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; /* gray-400 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased">
+
+    <!-- Container chính của ứng dụng -->
+    <div id="app" class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <!-- Header -->
+        <header class="flex flex-wrap justify-between items-center mb-8 pb-4 border-b border-gray-300">
+            <h1 class="text-3xl font-bold text-blue-600">Trình Quản Lý Học Sinh</h1>
+            <!-- Nút Thêm Lớp Mới (chỉ hiển thị ở dashboard) -->
+            <button id="add-class-btn" class="bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-blue-600 transition-colors flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Thêm Lớp Mới
+            </button>
+            <!-- Nút Quay Lại (chỉ hiển thị ở chi tiết lớp) -->
+            <button id="back-to-dashboard-btn" class="hidden bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-gray-600 transition-colors flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
+                </svg>
+                Quay Lại
+            </button>
+        </header>
+
+        <!-- Nội dung chính (Thay đổi giữa 2 view) -->
+        <main id="app-content">
+
+            <!-- View 1: Bảng điều khiển (Danh sách lớp) -->
+            <div id="dashboard-view">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-700">Các Lớp Học Hiện Có</h2>
+                <div id="class-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- JS sẽ render các thẻ lớp học vào đây -->
+                    <!-- Ví dụ thẻ lớp học -->
+                    <!-- 
+                    <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-blue-500">
+                        <h3 class="text-xl font-bold text-blue-700">Lớp Lập Trình 101</h3>
+                        <p class="text-gray-600 mt-2">Học phí: 50,000 VNĐ / buổi</p>
+                        <p class="text-gray-600 mt-1">Sĩ số: 15 học sinh</p>
+                        <div class="mt-6 flex justify-between">
+                            <button class="view-class-btn text-sm font-medium text-blue-600 hover:text-blue-800">Xem Chi Tiết</button>
+                            <button class="delete-class-btn text-sm font-medium text-red-600 hover:text-red-800">Xóa Lớp</button>
+                        </div>
+                    </div> 
+                    -->
+                </div>
+                <p id="no-classes-msg" class="text-gray-500 text-center py-10 text-lg hidden">Chưa có lớp học nào. Hãy thêm lớp mới!</p>
+            </div>
+
+            <!-- View 2: Chi Tiết Lớp Học -->
+            <div id="class-detail-view" class="hidden">
+                <div class="mb-8 p-6 bg-white rounded-lg shadow-md">
+                    <h2 id="class-detail-name" class="text-3xl font-bold text-gray-800"></h2>
+                    <p id="class-detail-fee" class="text-lg text-gray-600 mt-2"></p>
+                    <p id="class-detail-count" class="text-lg text-gray-600 mt-1"></p>
+                </div>
+
+                <!-- Phân chia 2 cột: Điểm danh và Thống kê -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                    <!-- Cột 1: Điểm danh và Thêm học sinh -->
+                    <div class="flex flex-col gap-8">
+                        <!-- Mục Thêm Học Sinh -->
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-700">Thêm Học Sinh Mới</h3>
+                            <form id="add-student-form" class="flex flex-col sm:flex-row gap-4">
+                                <input type="text" id="new-student-name" placeholder="Nhập tên học sinh..." class="flex-grow w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-green-600 transition-colors flex-shrink-0">Thêm</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Mục Điểm Danh -->
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-700">Điểm Danh Hàng Ngày</h3>
+                            <div class="flex flex-wrap gap-4 items-center mb-6">
+                                <label for="attendance-date" class="font-medium">Chọn ngày:</label>
+                                <input type="date" id="attendance-date" class="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button id="save-attendance-btn" class="bg-indigo-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-indigo-600 transition-colors">Lưu Điểm Danh</button>
+                            </div>
+                            <div class="flex gap-4 mb-6">
+                                <button id="check-all-attendance" class="flex-1 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-green-600 transition-colors">Điểm Danh Tất Cả</button>
+                                <button id="uncheck-all-attendance" class="flex-1 bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-yellow-600 transition-colors">Xóa Điểm Danh Tất Cả</button>
+                            </div>
+                            <div id="attendance-student-list" class="max-h-80 overflow-y-auto space-y-3 pr-2">
+                                <!-- JS sẽ render danh sách học sinh để điểm danh -->
+                                <!-- 
+                                <label class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                    <input type="checkbox" class="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                                    <span class="ml-4 text-gray-700 font-medium">Nguyễn Văn A</span>
+                                </label> 
+                                -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cột 2: Thống Kê -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold mb-4 text-gray-700">Thống Kê Lớp Học</h3>
+                        <div class="flex flex-wrap gap-4 mb-6">
+                            <button id="confirm-all-paid-btn" class="flex-1 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-green-600 transition-colors">Xác Nhận Tất Cả Đã Đóng</button>
+                            <button id="reset-all-payments-btn" class="flex-1 bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-red-600 transition-colors">Reset Trạng Thái Đóng</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Học Sinh</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số Buổi</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tổng Học Phí</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng Thái</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành Động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stats-table-body" class="bg-white divide-y divide-gray-200">
+                                    <!-- JS sẽ render thống kê học sinh -->
+                                    <!-- 
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 cursor-pointer hover:text-blue-600" data-student-id="s1">Nguyễn Văn A</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">250,000 VNĐ</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Đã Đóng</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                            <button class="toggle-payment-btn text-red-600 hover:text-red-800" data-student-id="s1">Chưa Đóng</button>
+                                            <button class="delete-student-btn text-gray-500 hover:text-red-600" data-student-id="s1">Xóa</button>
+                                        </td>
+                                    </tr> 
+                                    -->
+                                </tbody>
+                                <tfoot class="bg-gray-100 font-semibold">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">TỔNG CỘNG</td>
+                                        <td id="total-sessions-footer" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center">0</td>
+                                        <td id="total-tuition-footer" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">0 VNĐ</td>
+                                        <td class="px-6 py-4" colspan="2"></td> <!-- Gộp 2 cột còn lại -->
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <p id="no-students-msg" class="text-gray-500 text-center py-6 text-md hidden">Chưa có học sinh nào trong lớp này.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal (Dùng chung cho nhiều mục đích) -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center p-4 z-50 transition-opacity duration-300">
+        <div id="modal-content" class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg transform transition-all duration-300 scale-95 opacity-0">
+            <!-- Nội dung modal sẽ được JS chèn vào đây -->
+        </div>
+    </div>
+
+    <!-- Script chính của ứng dụng -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Biến toàn cục
+            let db = {
+                classes: []
+            };
+            let currentClassId = null;
+            const today = new Date().toISOString().split('T')[0];
+
+            // ----- BỘ CHỌN DOM -----
+            const app = document.getElementById('app');
+            const dashboardView = document.getElementById('dashboard-view');
+            const classDetailView = document.getElementById('class-detail-view');
+            const addClassBtn = document.getElementById('add-class-btn');
+            const backToDashboardBtn = document.getElementById('back-to-dashboard-btn');
+            const classList = document.getElementById('class-list');
+            const noClassesMsg = document.getElementById('no-classes-msg');
+
+            // Chi tiết lớp
+            const classDetailName = document.getElementById('class-detail-name');
+            const classDetailFee = document.getElementById('class-detail-fee');
+            const classDetailCount = document.getElementById('class-detail-count');
+            const addStudentForm = document.getElementById('add-student-form');
+            const newStudentNameInput = document.getElementById('new-student-name');
+            const noStudentsMsg = document.getElementById('no-students-msg');
+            
+            // Điểm danh
+            const attendanceDateInput = document.getElementById('attendance-date');
+            const attendanceStudentList = document.getElementById('attendance-student-list');
+            const saveAttendanceBtn = document.getElementById('save-attendance-btn');
+            const checkAllBtn = document.getElementById('check-all-attendance');
+            const uncheckAllBtn = document.getElementById('uncheck-all-attendance');
+
+            // Thống kê
+            const statsTableBody = document.getElementById('stats-table-body');
+            const totalSessionsFooter = document.getElementById('total-sessions-footer');
+            const totalTuitionFooter = document.getElementById('total-tuition-footer');
+            const confirmAllPaidBtn = document.getElementById('confirm-all-paid-btn');
+            const resetAllPaymentsBtn = document.getElementById('reset-all-payments-btn');
+
+            // Modal
+            const modalBackdrop = document.getElementById('modal-backdrop');
+            const modalContent = document.getElementById('modal-content');
+
+            // ----- HÀM HỖ TRỢ -----
+
+            /**
+             * Lưu dữ liệu vào localStorage
+             */
+            function saveData() {
+                localStorage.setItem('studentManagerDB', JSON.stringify(db));
+            }
+
+            /**
+             * Tải dữ liệu từ localStorage
+             */
+            function loadData() {
+                const data = localStorage.getItem('studentManagerDB');
+                if (data) {
+                    db = JSON.parse(data);
+                } else {
+                    db = { classes: [] };
+                }
+            }
+
+            /**
+             * Tạo ID duy nhất
+             */
+            function generateId() {
+                return '_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            /**
+             * Định dạng tiền tệ VNĐ
+             */
+            function formatCurrency(amount) {
+                return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+            }
+
+            /**
+             * Chuyển đổi view
+             */
+            function switchView(viewName) {
+                if (viewName === 'dashboard') {
+                    dashboardView.classList.remove('hidden');
+                    classDetailView.classList.add('hidden');
+                    addClassBtn.classList.remove('hidden');
+                    backToDashboardBtn.classList.add('hidden');
+                    currentClassId = null;
+                } else if (viewName === 'class_detail') {
+                    dashboardView.classList.add('hidden');
+                    classDetailView.classList.remove('hidden');
+                    addClassBtn.classList.add('hidden');
+                    backToDashboardBtn.classList.remove('hidden');
+                }
+            }
+            
+            /**
+             * Mở Modal
+             */
+            function openModal(contentHtml) {
+                modalContent.innerHTML = contentHtml;
+                modalBackdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                }, 50);
+            }
+
+            /**
+             * Đóng Modal
+             */
+            function closeModal() {
+                modalContent.classList.add('scale-95', 'opacity-0');
+                modalContent.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => {
+                    modalBackdrop.classList.add('hidden');
+                    modalContent.innerHTML = '';
+                }, 300);
+            }
+
+            // ----- HÀM RENDER CHÍNH -----
+
+            /**
+             * Render Bảng điều khiển (Danh sách lớp)
+             * Req 1
+             */
+            function renderDashboard() {
+                classList.innerHTML = '';
+                if (db.classes.length === 0) {
+                    noClassesMsg.classList.remove('hidden');
+                    return;
+                }
+                
+                noClassesMsg.classList.add('hidden');
+                db.classes.forEach(cls => {
+                    const studentCount = cls.students ? cls.students.length : 0;
+                    const classCard = document.createElement('div');
+                    classCard.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-blue-500 transform hover:-translate-y-1';
+                    classCard.innerHTML = `
+                        <h3 class="text-xl font-bold text-blue-700 truncate">${cls.name}</h3>
+                        <p class="text-gray-600 mt-2">Học phí: <strong>${formatCurrency(cls.tuitionFee)} / buổi</strong></p>
+                        <p class="text-gray-600 mt-1">Sĩ số: <strong>${studentCount} học sinh</strong></p>
+                        <div class="mt-6 flex justify-between items-center">
+                            <button class="view-class-btn text-sm font-medium text-blue-600 hover:text-blue-800" data-id="${cls.id}">
+                                Xem Chi Tiết
+                            </button>
+                            <button class="delete-class-btn text-sm font-medium text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50" data-id="${cls.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+                    classList.appendChild(classCard);
+                });
+            }
+
+            /**
+             * Render Chi tiết lớp (gồm cả 3 phần: Thông tin, Điểm danh, Thống kê)
+             */
+            function renderClassDetail(classId) {
+                const cls = db.classes.find(c => c.id === classId);
+                if (!cls) {
+                    console.error('Không tìm thấy lớp!');
+                    switchView('dashboard');
+                    return;
+                }
+
+                currentClassId = classId;
+
+                // Cập nhật thông tin chung
+                classDetailName.textContent = cls.name;
+                classDetailFee.innerHTML = `Học phí: <strong>${formatCurrency(cls.tuitionFee)} / buổi</strong>`;
+                
+                // Cập nhật 3 phần con
+                renderAttendanceList(cls);
+                renderStatistics(cls);
+                updateAttendanceCheckboxes(cls, attendanceDateInput.value);
+
+                switchView('class_detail');
+            }
+
+            /**
+             * Render phần Danh sách điểm danh
+             * Req 3
+             */
+            function renderAttendanceList(cls) {
+                attendanceStudentList.innerHTML = '';
+                if (!cls.students || cls.students.length === 0) {
+                    attendanceStudentList.innerHTML = '<p class="text-gray-500 text-center">Chưa có học sinh nào.</p>';
+                    return;
+                }
+
+                cls.students.forEach(student => {
+                    const label = document.createElement('label');
+                    label.className = 'flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer';
+                    label.innerHTML = `
+                        <input type="checkbox" class="attendance-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500" data-student-id="${student.id}">
+                        <span class="ml-4 text-gray-700 font-medium">${student.name}</span>
+                    `;
+                    attendanceStudentList.appendChild(label);
+                });
+            }
+
+            /**
+             * Cập nhật trạng thái checkbox điểm danh dựa trên ngày
+             * Req 3
+             */
+            function updateAttendanceCheckboxes(cls, date) {
+                if (!cls.students) return;
+                
+                const checkboxes = attendanceStudentList.querySelectorAll('.attendance-checkbox');
+                checkboxes.forEach(checkbox => {
+                    const studentId = checkbox.dataset.studentId;
+                    const student = cls.students.find(s => s.id === studentId);
+                    if (student && student.attendance.includes(date)) {
+                        checkbox.checked = true;
+                    } else {
+                        checkbox.checked = false;
+                    }
+                });
+            }
+
+            /**
+             * Render Bảng Thống Kê
+             * Req 4, 6, 7
+             */
+            function renderStatistics(cls) {
+                statsTableBody.innerHTML = '';
+
+                let totalSessions = 0;
+                let grandTotalTuition = 0;
+
+                // Cập nhật sĩ số
+                const studentCount = cls.students ? cls.students.length : 0;
+                classDetailCount.innerHTML = `Sĩ số: <strong>${studentCount} học sinh</strong>`;
+                
+                if (studentCount === 0) {
+                    noStudentsMsg.classList.remove('hidden');
+                    return;
+                }
+
+                noStudentsMsg.classList.add('hidden');
+                
+                cls.students.forEach(student => {
+                    const sessionCount = student.attendance.length; // Req 4
+                    const studentTotalTuition = sessionCount * cls.tuitionFee; // Req 6
+                    
+                    totalSessions += sessionCount;
+                    grandTotalTuition += studentTotalTuition;
+                    
+                    const paymentStatus = student.paymentStatus === 'paid'; // Req 7
+                    const statusBadge = paymentStatus 
+                        ? `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Đã Đóng</span>`
+                        : `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Chưa Đóng</span>`;
+
+                    // Req 8: Nút bấm sẽ thay đổi tùy theo trạng thái
+                    const paymentButtonText = paymentStatus ? 'Đánh dấu Chưa Đóng' : 'Đánh dấu Đã Đóng';
+                    const paymentButtonClass = paymentStatus ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800';
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 cursor-pointer hover:text-blue-600 view-student-detail" data-student-id="${student.id}">
+                            ${student.name}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">${sessionCount}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(studentTotalTuition)}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">${statusBadge}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                            <button class="toggle-payment-btn ${paymentButtonClass}" data-student-id="${student.id}">${paymentButtonText}</button>
+                            <button class="export-bill-btn text-blue-600 hover:text-blue-800" data-student-id="${student.id}">Xuất Bill</button>
+                            <button class="delete-student-btn text-gray-500 hover:text-red-600" data-student-id="${student.id}">Xóa</button>
+                        </td>
+                    `;
+                    statsTableBody.appendChild(row);
+                });
+
+                // Cập nhật tfoot
+                totalSessionsFooter.textContent = totalSessions;
+                totalTuitionFooter.textContent = formatCurrency(grandTotalTuition);
+            }
+
+            // ----- HÀM XỬ LÝ SỰ KIỆN -----
+
+            /**
+             * Mở Modal Thêm Lớp Mới
+             * Req 1
+             */
+            function handleAddClass() {
+                const content = `
+                    <h2 class="text-2xl font-semibold mb-6">Tạo Lớp Học Mới</h2>
+                    <form id="modal-form-add-class">
+                        <div class="mb-4">
+                            <label for="class-name" class="block text-sm font-medium text-gray-700 mb-2">Tên Lớp</label>
+                            <input type="text" id="class-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div class="mb-6">
+                            <label for="class-fee" class="block text-sm font-medium text-gray-700 mb-2">Học Phí (VNĐ / buổi)</label>
+                            <input type="number" id="class-fee" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" min="0" step="1000" required>
+                        </div>
+                        <div class="flex justify-end gap-4">
+                            <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">Hủy</button>
+                            <button type="submit" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600">Tạo Lớp</button>
+                        </div>
+                    </form>
+                `;
+                openModal(content);
+            }
+
+            /**
+             * Mở Modal Xuất Bill
+             */
+            function handleExportBill(studentId) {
+                const cls = db.classes.find(c => c.id === currentClassId);
+                const student = cls.students.find(s => s.id === studentId);
+                if (!cls || !student) return;
+
+                const sessionCount = student.attendance.length;
+                const totalTuition = sessionCount * cls.tuitionFee;
+
+                const content = `
+                    <div id="bill-to-print">
+                        <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">HÓA ĐƠN HỌC PHÍ</h2>
+                        <div class="space-y-4 text-lg">
+                            <p><strong>Học sinh:</strong> ${student.name}</p>
+                            <p><strong>Lớp học:</strong> ${cls.name}</p>
+                            <p><strong>Số buổi học:</strong> ${sessionCount}</p>
+                            <hr class="my-4"/>
+                            <p class="text-2xl font-semibold"><strong>Tổng số tiền:</strong> ${formatCurrency(totalTuition)}</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-4 mt-8">
+                        <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">Đóng</button>
+                        <button type="button" id="modal-print-bill" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600">In Hóa Đơn</button>
+                    </div>
+                `;
+                openModal(content);
+            }
+
+            /**
+             * Xử lý In Bill
+             */
+            function handlePrintBill() {
+                const billContent = document.getElementById('bill-to-print');
+                if (!billContent) return;
+
+                const printWindow = window.open('', '', 'height=600,width=800');
+                printWindow.document.write('<html><head><title>Hóa Đơn Học Phí</title>');
+                // Thêm một chút style cho bản in
+                printWindow.document.write(`
+                    <style>
+                        body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
+                        h2 { text-align: center; color: #333; }
+                        p { font-size: 1.1rem; margin-bottom: 10px; }
+                        strong { color: #000; }
+                        hr { border: 0; border-top: 1px solid #ccc; margin: 20px 0; }
+                        .text-2xl { font-size: 1.5rem; }
+                        .font-semibold { font-weight: 600; }
+                    </style>
+                `);
+                printWindow.document.write('</head><body>');
+                printWindow.document.write(billContent.innerHTML);
+                printWindow.document.write('</body></html>');
+                printWindow.document.close();
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
+            }
+
+            /**
+             * Xử lý Submit Modal
+             */
+            function handleModalSubmit(event) {
+                event.preventDefault();
+                const form = event.target;
+
+                if (form.id === 'modal-form-add-class') {
+                    // Xử lý thêm lớp
+                    const className = form.querySelector('#class-name').value;
+                    const classFee = parseFloat(form.querySelector('#class-fee').value);
+                    
+                    if (className && classFee >= 0) {
+                        const newClass = {
+                            id: generateId(),
+                            name: className,
+                            tuitionFee: classFee,
+                            students: []
+                        };
+                        db.classes.push(newClass);
+                        saveData();
+                        renderDashboard();
+                        closeModal();
+                    }
+                }
+            }
+
+            /**
+             * Xử lý Thêm Học Sinh
+             * Req 2
+             */
+            function handleAddStudent(event) {
+                event.preventDefault();
+                const studentName = newStudentNameInput.value.trim();
+                if (!studentName || !currentClassId) return;
+
+                const cls = db.classes.find(c => c.id === currentClassId);
+                if (cls) {
+                    const newStudent = {
+                        id: generateId(),
+                        name: studentName,
+                        attendance: [],
+                        paymentStatus: 'unpaid' // Mặc định là chưa đóng
+                    };
+                    cls.students.push(newStudent);
+                    saveData();
+                    renderClassDetail(currentClassId); // Render lại toàn bộ chi tiết lớp
+                    newStudentNameInput.value = '';
+                }
+            }
+            
+            /**
+             * Xử lý Lưu Điểm Danh
+             * Req 3
+             */
+            function handleSaveAttendance() {
+                const date = attendanceDateInput.value;
+                if (!date || !currentClassId) return;
+
+                const cls = db.classes.find(c => c.id === currentClassId);
+                if (!cls) return;
+
+                const checkboxes = attendanceStudentList.querySelectorAll('.attendance-checkbox');
+                checkboxes.forEach(checkbox => {
+                    const studentId = checkbox.dataset.studentId;
+                    const student = cls.students.find(s => s.id === studentId);
+                    if (!student) return;
+
+                    const attendanceIndex = student.attendance.indexOf(date);
+
+                    if (checkbox.checked) {
+                        // Thêm ngày nếu chưa có
+                        if (attendanceIndex === -1) {
+                            student.attendance.push(date);
+                        }
+                    } else {
+                        // Xóa ngày nếu đã có
+                        if (attendanceIndex > -1) {
+                            student.attendance.splice(attendanceIndex, 1);
+                        }
+                    }
+                });
+
+                saveData();
+                renderStatistics(cls); // Cập nhật lại bảng thống kê
+                
+                // Hiển thị thông báo lưu thành công
+                const originalText = saveAttendanceBtn.textContent;
+                saveAttendanceBtn.textContent = 'Đã Lưu!';
+                saveAttendanceBtn.classList.add('bg-green-500', 'hover:bg-green-500');
+                saveAttendanceBtn.classList.remove('bg-indigo-500', 'hover:bg-indigo-600');
+                setTimeout(() => {
+                    saveAttendanceBtn.textContent = originalText;
+                    saveAttendanceBtn.classList.remove('bg-green-500', 'hover:bg-green-500');
+                    saveAttendanceBtn.classList.add('bg-indigo-500', 'hover:bg-indigo-600');
+                }, 2000);
+            }
+
+            /**
+             * Mở Modal Chi Tiết Học Sinh
+             * Req 5
+             */
+            function handleViewStudentDetail(studentId) {
+                const cls = db.classes.find(c => c.id === currentClassId);
+                const student = cls.students.find(s => s.id === studentId);
+                if (!student) return;
+
+                let attendanceListHtml = '';
+                if (student.attendance.length === 0) {
+                    attendanceListHtml = '<p class="text-gray-500">Học sinh này chưa tham gia buổi học nào.</p>';
+                } else {
+                    // Sắp xếp ngày tháng cho dễ nhìn
+                    const sortedDates = [...student.attendance].sort((a, b) => new Date(b) - new Date(a));
+                    attendanceListHtml = sortedDates.map(date => {
+                        const d = new Date(date);
+                        const formattedDate = d.toLocaleDateString('vi-VN', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        return `<li class="py-2 px-4 bg-gray-100 rounded-md">${formattedDate}</li>`;
+                    }).join('');
+                }
+
+                const content = `
+                    <h2 class="text-2xl font-semibold mb-6">Chi Tiết Chuyên Cần: ${student.name}</h2>
+                    <p class="mb-4">Tổng số buổi đã học: <strong>${student.attendance.length}</strong></p>
+                    <ul class="space-y-2 max-h-64 overflow-y-auto">
+                        ${attendanceListHtml}
+                    </ul>
+                    <div class="flex justify-end mt-8">
+                        <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600">Đóng</button>
+                    </div>
+                `;
+                openModal(content);
+            }
+
+            /**
+             * Xử lý Điểm danh/Xóa điểm danh tất cả
+             */
+            function toggleAllAttendance(checkedState) {
+                const checkboxes = attendanceStudentList.querySelectorAll('.attendance-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = checkedState;
+                });
+            }
+            
+            /**
+             * Xử lý xác nhận/reset thanh toán hàng loạt
+             */
+            function massUpdatePaymentStatus(newStatus) {
+                if (!currentClassId) return;
+                const cls = db.classes.find(c => c.id === currentClassId);
+                if (!cls) return;
+
+                if (confirm(`Bạn có chắc chắn muốn ${newStatus === 'paid' ? 'xác nhận ĐÃ ĐÓNG' : 'RESET'} cho tất cả học sinh?`)) {
+                    cls.students.forEach(student => {
+                        student.paymentStatus = newStatus;
+                    });
+                    saveData();
+                    renderStatistics(cls);
+                }
+            }
+
+            /**
+             * Xử lý click trên Bảng điều khiển (Xem / Xóa Lớp)
+             */
+            function handleDashboardClick(event) {
+                const target = event.target.closest('button');
+                if (!target) return;
+
+                const classId = target.dataset.id;
+                
+                if (target.classList.contains('view-class-btn')) {
+                    // Xem chi tiết lớp
+                    renderClassDetail(classId);
+                }
+                
+                if (target.classList.contains('delete-class-btn')) {
+                    // Xóa lớp
+                    if (confirm('Bạn có chắc chắn muốn xóa lớp này? Mọi dữ liệu học sinh sẽ bị mất.')) {
+                        db.classes = db.classes.filter(cls => cls.id !== classId);
+                        saveData();
+                        renderDashboard();
+                    }
+                }
+            }
+
+            /**
+             * Xử lý click trên Bảng Thống Kê (Chi tiết, Thanh toán, Xóa)
+             */
+            function handleStatsTableClick(event) {
+                const target = event.target;
+                const studentId = target.dataset.studentId || target.closest('td')?.dataset.studentId;
+                
+                if (!studentId || !currentClassId) return;
+                
+                const cls = db.classes.find(c => c.id === currentClassId);
+                if (!cls) return;
+
+                if (target.classList.contains('view-student-detail')) {
+                    // Req 5: Xem chi tiết ngày học
+                    handleViewStudentDetail(studentId);
+                }
+
+                if (target.classList.contains('export-bill-btn')) {
+                    // Mới: Xuất bill
+                    handleExportBill(studentId);
+                }
+                
+                if (target.classList.contains('toggle-payment-btn')) {
+                    // Req 7 & 8: Thay đổi trạng thái đóng tiền
+                    const student = cls.students.find(s => s.id === studentId);
+                    if (student) {
+                        // 'paid' -> 'unpaid', và ngược lại
+                        student.paymentStatus = student.paymentStatus === 'paid' ? 'unpaid' : 'paid';
+                        
+                        // Req 8: Nếu chuyển sang 'unpaid', coi như tính lại từ đầu
+                        // (Thực ra chỉ cần đổi trạng thái là đủ)
+                        // Nếu muốn reset số buổi học khi "đóng đủ", logic sẽ phức tạp hơn.
+                        // Hiện tại, logic là "tính toán lại" = "reset trạng thái"
+                        
+                        saveData();
+                        renderStatistics(cls); // Render lại bảng
+                    }
+                }
+                
+                if (target.classList.contains('delete-student-btn')) {
+                    // Xóa học sinh
+                    if (confirm('Bạn có chắc chắn muốn xóa học sinh này?')) {
+                        cls.students = cls.students.filter(s => s.id !== studentId);
+                        saveData();
+                        renderClassDetail(currentClassId); // Render lại toàn bộ
+                    }
+                }
+            }
+
+            // ----- LẮNG NGHE SỰ KIỆN -----
+
+            // Nút điều hướng
+            addClassBtn.addEventListener('click', handleAddClass);
+            backToDashboardBtn.addEventListener('click', () => switchView('dashboard'));
+            
+            // Bảng điều khiển (dùng event delegation)
+            classList.addEventListener('click', handleDashboardClick);
+
+            // Modal
+            modalBackdrop.addEventListener('click', (e) => {
+                if (e.target === modalBackdrop || e.target.id === 'modal-cancel') {
+                    closeModal();
+                }
+                if (e.target.id === 'modal-print-bill') {
+                    handlePrintBill();
+                }
+            });
+            modalBackdrop.addEventListener('submit', handleModalSubmit);
+
+            // Chi tiết lớp
+            addStudentForm.addEventListener('submit', handleAddStudent);
+            saveAttendanceBtn.addEventListener('click', handleSaveAttendance);
+            
+            // Nút điểm danh hàng loạt
+            checkAllBtn.addEventListener('click', () => toggleAllAttendance(true));
+            uncheckAllBtn.addEventListener('click', () => toggleAllAttendance(false));
+
+            // Nút thanh toán hàng loạt
+            confirmAllPaidBtn.addEventListener('click', () => massUpdatePaymentStatus('paid'));
+            resetAllPaymentsBtn.addEventListener('click', () => massUpdatePaymentStatus('unpaid'));
+            
+            // Thay đổi ngày điểm danh -> cập nhật checkbox
+            attendanceDateInput.addEventListener('change', () => {
+                const cls = db.classes.find(c => c.id === currentClassId);
+                if (cls) {
+                    updateAttendanceCheckboxes(cls, attendanceDateInput.value);
+                }
+            });
+
+            // Bảng thống kê (dùng event delegation)
+            statsTableBody.addEventListener('click', handleStatsTableClick);
+
+            // ----- KHỞI CHẠY -----
+            function init() {
+                loadData();
+                renderDashboard();
+                attendanceDateInput.value = today; // Đặt ngày mặc định là hôm nay
+                switchView('dashboard');
+            }
+
+            init();
+        });
+    </script>
+</body>
+</html>
+
+
