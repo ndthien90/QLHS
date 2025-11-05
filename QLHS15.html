@@ -63,14 +63,14 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
-                    Thống Kê
+                    Thống Kê Tổng
                 </button>
                 <!-- Nút Thêm Lớp Mới -->
                 <button id="add-class-btn" class="bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-blue-600 transition-colors flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
-                    Thêm Lớp
+                    Thêm Lớp Mới
                 </button>
             </div>
             
@@ -108,6 +108,7 @@
                              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
+                           Sửa Thông Tin Lớp
                         </button>
                     </div>
                     <p id="class-detail-count" class="text-lg text-gray-600 mt-4"></p>
@@ -161,6 +162,12 @@
                             </button>
                         </div>
 
+                        <!-- === THAY ĐỔI: Thêm ô "Ngày Bắt Đầu" === -->
+                        <div class="mb-4">
+                            <label for="start-date-input" class="block text-sm font-medium text-gray-700 mb-2">Tính học phí từ ngày (Ngày Bắt Đầu):</label>
+                            <input type="date" id="start-date-input" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
                         <div class="mb-4">
                             <label for="closing-date-input" class="block text-sm font-medium text-gray-700 mb-2">Tính học phí đến ngày (Ngày Chốt Sổ):</label>
                             <input type="date" id="closing-date-input" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -172,7 +179,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                                 </svg>
-                                Hóa đơn
+                                Xuất Hóa Đơn
                             </button>
                         </div>
                         
@@ -279,6 +286,8 @@
 
             // Thống kê
             const viewClosingHistoryBtn = document.getElementById('view-closing-history-btn');
+            // === THÊM MỚI: Chọn ô "Ngày Bắt Đầu" ===
+            const startDateInput = document.getElementById('start-date-input');
             const closingDateInput = document.getElementById('closing-date-input');
             const statsTableBody = document.getElementById('stats-table-body');
             const totalSessionsFooter = document.getElementById('total-sessions-footer');
@@ -379,13 +388,20 @@
              * Lấy danh sách điểm danh đã lọc theo ngày chốt sổ
              */
             function getFilteredAttendance(studentAttendance) {
+                // === THAY ĐỔI: Lọc theo cả ngày bắt đầu và ngày chốt sổ ===
                 const closingDate = closingDateInput.value;
+                const startDate = startDateInput.value;
+                
                 if (!closingDate) {
-                    // Nếu không có ngày chốt sổ, tính tất cả
-                    return studentAttendance;
+                    // Nếu không có ngày chốt sổ, không thể tính
+                    return []; // Trả về mảng rỗng nếu không có ngày chốt sổ
                 }
-                // So sánh chuỗi YYYY-MM-DD là an toàn
-                return studentAttendance.filter(date => date <= closingDate);
+
+                return studentAttendance.filter(date => {
+                    const isAfterStart = startDate ? date >= startDate : true; // Nếu có startDate, phải >=
+                    const isBeforeEnd = date <= closingDate; // Luôn phải <= closingDate
+                    return isAfterStart && isBeforeEnd;
+                });
             }
 
 
@@ -438,8 +454,26 @@
 
                 currentClassId = classId;
 
-                // Đặt lại ngày chốt sổ khi xem lớp
+                // === THAY ĐỔI: Đặt ngày bắt đầu và ngày chốt sổ ===
+                // 1. Đặt ngày chốt sổ là hôm nay
                 closingDateInput.value = today;
+
+                // 2. Đặt ngày bắt đầu dựa trên lịch sử
+                const history = cls.closingHistory || [];
+                const sortedHistory = [...history].sort((a, b) => new Date(b.closedAt) - new Date(a.closedAt));
+                const lastClosingRecord = sortedHistory.length > 0 ? sortedHistory[0] : null;
+                const lastClosingDate = lastClosingRecord ? lastClosingRecord.closingDate : null;
+
+                if (lastClosingDate) {
+                    // Lấy ngày tiếp theo sau ngày chốt sổ cuối cùng
+                    const nextDay = new Date(lastClosingDate);
+                    nextDay.setDate(nextDay.getDate() + 1);
+                    startDateInput.value = nextDay.toISOString().split('T')[0];
+                } else {
+                    // Nếu không có lịch sử, để trống (tính tất cả)
+                    startDateInput.value = '';
+                }
+                // === KẾT THÚC THAY ĐỔI ===
 
                 // Cập nhật thông tin chung
                 classDetailName.textContent = cls.name;
@@ -559,7 +593,7 @@
                     const paymentStatus = student.paymentStatus === 'paid';
                     
                     // === THAY ĐỔI: Thêm lớp highlight màu nền ===
-                    const rowHighlightClass = paymentStatus ? 'bg-green-100' : 'bg-white';
+                    const rowHighlightClass = paymentStatus ? 'bg-green-50' : 'bg-white';
                     
                     // --- Định nghĩa chung cho Cả Bảng và Thẻ ---
                     const statusText = paymentStatus ? 'Đã Đóng' : 'Chưa Đóng';
@@ -818,14 +852,39 @@
                     `;
                 }
 
+                // === THAY ĐỔI: Thêm logic tìm ngày chốt sổ cuối cùng ===
                 const closingDate = closingDateInput.value;
-                const closingDateText = closingDate ? 
-                    `<p class="text-center text-gray-600 text-lg mb-4"><i>(Tính đến ngày: ${new Date(closingDate).toLocaleDateString('vi-VN')})</i></p>` : '';
+                const history = cls.closingHistory || [];
+                const sortedHistory = [...history].sort((a, b) => new Date(b.closedAt) - new Date(a.closedAt));
+                const lastClosingRecord = sortedHistory.length > 0 ? sortedHistory[0] : null;
+                const lastClosingDate = lastClosingRecord ? lastClosingRecord.closingDate : null;
+
+                let dateRangeText = '';
+                const formattedCurrentDate = new Date(closingDate).toLocaleDateString('vi-VN');
+
+                // === THAY ĐỔI: Lấy startDate từ input, nếu không có thì mới tìm trong lịch sử ===
+                const startDate = startDateInput.value;
+                let formattedStartDate;
+
+                if (startDate) {
+                    formattedStartDate = new Date(startDate).toLocaleDateString('vi-VN');
+                    dateRangeText = `<p class="text-center text-gray-600 text-lg mb-4"><i>(Kỳ học phí từ ${formattedStartDate} đến ${formattedCurrentDate})</i></p>`;
+                } else if (lastClosingDate) {
+                    // Trường hợp startDate trống, nhưng có lịch sử (tính từ lần trước)
+                    const nextDayAfterLast = new Date(lastClosingDate);
+                    nextDayAfterLast.setDate(nextDayAfterLast.getDate() + 1);
+                    formattedStartDate = nextDayAfterLast.toLocaleDateString('vi-VN');
+                    dateRangeText = `<p class="text-center text-gray-600 text-lg mb-4"><i>(Kỳ học phí từ ${formattedStartDate} đến ${formattedCurrentDate})</i></p>`;
+                } else {
+                    // Trường hợp startDate trống và không có lịch sử (lần đầu)
+                    dateRangeText = `<p class="text-center text-gray-600 text-lg mb-4"><i>(Kỳ học phí đầu tiên, tính đến ngày ${formattedCurrentDate})</i></p>`;
+                }
+                // === KẾT THÚC THAY ĐỔI ===
 
                 const content = `
                     <div id="bill-to-print">
                         <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">HÓA ĐƠN HỌC PHÍ</h2>
-                        ${closingDateText}
+                        ${dateRangeText} <!-- THAY ĐỔI: Sử dụng dateRangeText -->
                         <div class="space-y-2 text-lg">
                             <p><strong>Học sinh:</strong> ${student.name}</p>
                             <p><strong>Lớp học:</strong> ${cls.name}</p>
@@ -890,6 +949,30 @@
 
                 const closingDate = closingDateInput.value;
 
+                // === THAY ĐỔI: Lấy startDate từ input, nếu không có thì mới tìm trong lịch sử ===
+                const startDate = startDateInput.value;
+                const history = cls.closingHistory || [];
+                const sortedHistory = [...history].sort((a, b) => new Date(b.closedAt) - new Date(a.closedAt));
+                const lastClosingRecord = sortedHistory.length > 0 ? sortedHistory[0] : null;
+                const lastClosingDate = lastClosingRecord ? lastClosingRecord.closingDate : null;
+
+                let dateRangeText = '';
+                const formattedCurrentDate = new Date(closingDate).toLocaleDateString('vi-VN');
+                let formattedStartDate;
+
+                if (startDate) {
+                    formattedStartDate = new Date(startDate).toLocaleDateString('vi-VN');
+                    dateRangeText = `<h3>(Kỳ học phí từ ${formattedStartDate} đến ${formattedCurrentDate})</h3>`;
+                } else if (lastClosingDate) {
+                    const nextDayAfterLast = new Date(lastClosingDate);
+                    nextDayAfterLast.setDate(nextDayAfterLast.getDate() + 1);
+                    formattedStartDate = nextDayAfterLast.toLocaleDateString('vi-VN');
+                    dateRangeText = `<h3>(Kỳ học phí từ ${formattedStartDate} đến ${formattedCurrentDate})</h3>`;
+                } else {
+                    dateRangeText = `<h3>(Kỳ học phí đầu tiên, tính đến ngày ${formattedCurrentDate})</h3>`;
+                }
+                // === KẾT THÚC THAY ĐỔI ===
+
                 const printWindow = window.open('', '', 'height=800,width=1000');
                 printWindow.document.write('<html><head><title>Toàn Bộ Hóa Đơn - ' + cls.name + '</title>');
                 printWindow.document.write(`
@@ -919,9 +1002,7 @@
                 printWindow.document.write('<button class="print-button no-print" onclick="window.print()">In Toàn Bộ Hóa Đơn</button>');
                 printWindow.document.write('<h1>Báo Cáo Học Phí Toàn Lớp: ' + cls.name + '</h1>');
 
-                if (closingDate) {
-                    printWindow.document.write('<h3>(Tính đến ngày: ' + new Date(closingDate).toLocaleDateString('vi-VN') + ')</h3>');
-                }
+                printWindow.document.write(dateRangeText); // <!-- THAY ĐỔI: Sử dụng dateRangeText -->
 
                 cls.students.forEach(student => {
                     const filteredAttendance = getFilteredAttendance(student.attendance);
@@ -955,7 +1036,6 @@
                             <hr>
                             <p><strong>Lớp học:</strong> ${cls.name}</p>
                             <p><strong>Học phí:</strong> ${formatCurrency(cls.tuitionFee)} / buổi</p>
-                            <p><strong>Tính đến:</strong> ${new Date(closingDate).toLocaleDateString('vi-VN')} </p>
                             <p><strong>Số buổi học (trong kỳ):</strong> ${sessionCount}</p>
                             
                             ${attendanceListHtml}
@@ -1164,6 +1244,17 @@
                     const formattedDate = new Date(closingDate).toLocaleDateString('vi-VN');
                     confirmMessage += `<br><br><strong class="text-red-600">CẢNH BÁO:</strong> Hành động này sẽ <strong>CHỐT SỔ</strong> và <strong>XÓA</strong> tất cả các buổi học <strong>từ ngày ${formattedDate} trở về trước</strong>. Các buổi học sau ngày này sẽ được giữ lại cho kỳ sau.`;
                 }
+                // === THAY ĐỔI: Cập nhật thông báo với ngày bắt đầu ===
+                const startDate = startDateInput.value;
+                if (newStatus === 'paid' && startDate) {
+                    const formattedStartDate = new Date(startDate).toLocaleDateString('vi-VN');
+                    confirmMessage = `Bạn có chắc chắn muốn <strong>CHỐT SỔ</strong> cho kỳ học phí từ <strong>${formattedStartDate}</strong> đến <strong>${formattedDate}</strong>?`
+                    confirmMessage += `<br><br><strong class="text-red-600">CẢNH BÁO:</strong> Chỉ những học sinh "Đã Đóng" mới được xử lý. Các buổi học của họ trong khoảng thời gian này sẽ bị XÓA và lưu vào lịch sử. Các buổi học ngoài khoảng thời gian này sẽ được giữ lại.`;
+                } else if (newStatus === 'paid' && !startDate) {
+                     confirmMessage = `Bạn có chắc chắn muốn <strong>CHỐT SỔ</strong> cho kỳ học phí đầu tiên (tính đến <strong>${formattedDate}</strong>)?`
+                     confirmMessage += `<br><br><strong class="text-red-600">CẢNH BÁO:</strong> Chỉ những học sinh "Đã Đóng" mới được xử lý. Các buổi học của họ đến ngày này sẽ bị XÓA và lưu vào lịch sử.`;
+                }
+                // === KẾT THÚC THAY ĐỔI ===
 
                 // MỞ MODAL XÁC NHẬN
                 const confirmModalContent = `
@@ -1185,10 +1276,16 @@
                             let totalSessionsClosed = 0;
                             let totalTuitionClosed = 0;
                             
-                            // === THAY ĐỔI: Chỉ tính tổng những học sinh "Đã Đóng" ===
+                            // === THAY ĐỔI: Chỉ tính tổng những học sinh "Đã Đóng" và trong khoảng thời gian ===
+                            const startDateValue = startDateInput.value; // Lấy giá trị từ input
+
                             cls.students.forEach(student => {
-                                if (student.paymentStatus === 'paid') { // <--- Bọc trong điều kiện
-                                    const filteredAttendance = student.attendance.filter(date => date <= closingDate);
+                                if (student.paymentStatus === 'paid') { 
+                                    const filteredAttendance = student.attendance.filter(date => {
+                                        const isAfterStart = startDateValue ? date >= startDateValue : true;
+                                        const isBeforeEnd = date <= closingDate;
+                                        return isAfterStart && isBeforeEnd;
+                                    });
                                     totalSessionsClosed += filteredAttendance.length;
                                     totalTuitionClosed += filteredAttendance.length * cls.tuitionFee;
                                 }
@@ -1212,13 +1309,21 @@
                         }
                         // --- KẾT THÚC LƯU LỊCH SỬ ---
 
-                        // === THAY ĐỔI: Chỉ reset điểm danh cho học sinh "Đã Đóng" ===
+
+                        // === THAY ĐỔI: Chỉ reset điểm danh cho học sinh "Đã Đóng" và trong khoảng thời gian ===
                         cls.students.forEach(student => {
                             if (newStatus === 'paid') {
                                 // Chỉ xóa điểm danh và reset nếu học sinh này đã đóng tiền
-                                if (student.paymentStatus === 'paid') { // <--- Bọc trong điều kiện
-                                    // Chỉ xóa các buổi học trước hoặc bằng ngày chốt sổ
-                                    const remainingAttendance = student.attendance.filter(date => date > closingDate);
+                                if (student.paymentStatus === 'paid') { 
+                                    const startDateValue = startDateInput.value;
+
+                                    // Giữ lại các buổi học NẰM NGOÀI khoảng thời gian chốt sổ
+                                    const remainingAttendance = student.attendance.filter(date => {
+                                        const isBeforeStart = startDateValue ? date < startDateValue : false;
+                                        const isAfterEnd = date > closingDate;
+                                        return isBeforeStart || isAfterEnd;
+                                    });
+                                    
                                     student.attendance = remainingAttendance; 
                                     student.paymentStatus = 'unpaid'; // Chuyển về "Chưa Đóng" cho kỳ mới
                                 }
@@ -1438,11 +1543,11 @@
             // Nút xuất bill toàn bộ
             exportAllBillsBtn.addEventListener('click', handleExportAllBills);
             
-            // Thay đổi ngày điểm danh -> cập nhật checkbox
-            attendanceDateInput.addEventListener('change', () => {
+            // === THÊM MỚI: Lắng nghe sự kiện thay đổi "Ngày Bắt Đầu" ===
+            startDateInput.addEventListener('change', () => {
                 const cls = db.classes.find(c => c.id === currentClassId);
                 if (cls) {
-                    updateAttendanceCheckboxes(cls, attendanceDateInput.value);
+                    renderStatistics(cls);
                 }
             });
             
@@ -1469,7 +1574,7 @@
                 loadData();
                 renderDashboard();
                 attendanceDateInput.value = today;
-                closingDateInput.value = today;
+                // closingDateInput.value = today; // Sẽ được đặt khi vào chi tiết lớp
                 switchView('dashboard');
             }
 
