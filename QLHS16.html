@@ -530,7 +530,7 @@
             function updateAttendanceCheckboxes(cls, date) {
                 if (!cls.students) return;
 
-                // === THAY ĐỔI: Mặc định tích tất cả cho ngày mới ===
+                // === THAY ĐỔI: Mặc định BỎ TÍCH (để trống) cho ngày mới ===
                 
                 // 1. Kiểm tra xem ngày này đã có dữ liệu chưa
                 let isNewDate = true;
@@ -545,9 +545,9 @@
                 const checkboxes = attendanceStudentList.querySelectorAll('.attendance-checkbox');
 
                 if (isNewDate) {
-                    // 2. Nếu là ngày mới, mặc định tích tất cả
+                    // 2. Nếu là ngày mới, mặc định BỎ TÍCH TẤT CẢ
                     checkboxes.forEach(checkbox => {
-                        checkbox.checked = true;
+                        checkbox.checked = false; // <-- THAY ĐỔI: Quay lại tự động bỏ tích (không chọn)
                     });
                 } else {
                     // 3. Nếu là ngày cũ, tải dữ liệu đã lưu
@@ -1273,10 +1273,10 @@
                 const startDate = startDateInput.value;
                 if (newStatus === 'paid' && startDate) {
                     const formattedStartDate = new Date(startDate).toLocaleDateString('vi-VN');
-                    confirmMessage = `Bạn có chắc chắn muốn <strong class="text-red-600">CHỐT SỔ</strong> cho kỳ học phí từ <strong>${formattedStartDate}</strong> đến <strong>${formattedDate}</strong>?`
+                    confirmMessage = `Bạn có chắc chắn muốn <strong>CHỐT SỔ</strong> cho kỳ học phí từ <strong>${formattedStartDate}</strong> đến <strong>${formattedDate}</strong>?`
                     confirmMessage += `<br><br><strong class="text-red-600">CẢNH BÁO:</strong> Chỉ những học sinh "Đã Đóng" mới được xử lý. Các buổi học của họ trong khoảng thời gian này sẽ bị XÓA và lưu vào lịch sử. Các buổi học ngoài khoảng thời gian này sẽ được giữ lại.`;
                 } else if (newStatus === 'paid' && !startDate) {
-                     confirmMessage = `Bạn có chắc chắn muốn <strong class="text-red-600">CHỐT SỔ</strong> cho kỳ học phí đầu tiên (tính đến <strong>${formattedDate}</strong>)?`
+                     confirmMessage = `Bạn có chắc chắn muốn <strong>CHỐT SỔ</strong> cho kỳ học phí đầu tiên (tính đến <strong>${formattedDate}</strong>)?`
                      confirmMessage += `<br><br><strong class="text-red-600">CẢNH BÁO:</strong> Chỉ những học sinh "Đã Đóng" mới được xử lý. Các buổi học của họ đến ngày này sẽ bị XÓA và lưu vào lịch sử.`;
                 }
                 // === KẾT THÚC THAY ĐỔI ===
