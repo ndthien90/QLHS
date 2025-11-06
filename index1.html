@@ -48,7 +48,7 @@
 </head>
 <body class="bg-gray-100 text-gray-800 antialiased">
     
-    <!-- === Loading Overlay === -->
+    <!-- === Loading Overlay (MỚI) === -->
     <div id="loading-overlay" class="fixed inset-0 bg-gray-100 flex flex-col justify-center items-center z-50 transition-opacity duration-300">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
         <p class="text-blue-600 font-semibold">Đang tải dữ liệu...</p>
@@ -80,16 +80,20 @@
 
         <!-- Header -->
         <header class="flex flex-wrap justify-between items-center mb-8 pb-4 border-b border-gray-300 gap-4">
+            <!-- Tối ưu font chữ cho di động -->
             <h1 class="text-2xl sm:text-3xl font-bold text-blue-600">Trình Quản Lý Học Sinh</h1>
             
             <div class="flex flex-wrap gap-4 items-center">
+                <!-- === THAY ĐỔI: Nhóm các nút điều khiển Dashboard === -->
                 <div id="dashboard-actions" class="flex flex-wrap gap-4 items-center">
+                    <!-- Nút Thống Kê Tổng (MỚI) -->
                     <button id="total-stats-btn" class="bg-purple-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-purple-600 transition-colors flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
                         Thống Kê
                     </button>
+                    <!-- Nút Thêm Lớp Mới -->
                     <button id="add-class-btn" class="bg-blue-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-blue-600 transition-colors flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -98,6 +102,7 @@
                     </button>
                 </div>
                 
+                <!-- Nút Quay Lại (chỉ hiển thị ở chi tiết lớp) -->
                 <button id="back-to-dashboard-btn" class="hidden bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-gray-600 transition-colors flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
@@ -106,6 +111,7 @@
                 </button>
             </div>
             
+            <!-- Nút Đăng Xuất (MỚI) -->
             <button id="logout-btn" class="bg-red-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -114,6 +120,7 @@
             </button>
         </header>
         
+        <!-- Hiển thị Email người dùng hiện tại (MỚI) -->
         <p id="user-info" class="text-sm text-gray-600 mb-4"></p>
 
         <!-- Nội dung chính (Thay đổi giữa 2 view) -->
@@ -130,6 +137,7 @@
 
             <!-- View 2: Chi Tiết Lớp Học -->
             <div id="class-detail-view" class="hidden">
+                <!-- Tối ưu padding cho di động -->
                 <div class="mb-8 p-4 sm:p-6 bg-white rounded-lg shadow-md">
                     <div class="flex flex-wrap justify-between items-center gap-4">
                         <div>
@@ -159,6 +167,7 @@
                                 <button type="submit" class="bg-green-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-green-600 transition-colors flex-shrink-0">Thêm</button>
                             </form>
                             
+                            <!-- Nút Nhập/Xuất .txt -->
                             <div class="mt-6 border-t pt-4 hidden sm:flex flex-col sm:flex-row gap-3">
                                 <button type="button" id="import-student-list-btn" class="flex-1 bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-teal-600 transition-colors flex items-center justify-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -197,18 +206,17 @@
                     <!-- Cột 2: Thống Kê -->
                     <div class="bg-white p-4 sm:p-3 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold mb-4 text-gray-700">Thống Kê Lớp Học</h3>
-
-                        <!-- === TABS (MỚI) === -->
-                        <div class="mb-4 flex border-b border-gray-200">
-                            <button id="stats-tab-billing" class="flex-1 py-2 px-4 text-center font-medium text-sm text-blue-600 border-b-2 border-blue-600">
-                                Thanh Toán
-                            </button>
-                            <button id="stats-tab-attendance" class="flex-1 py-2 px-4 text-center font-medium text-sm text-gray-500 hover:text-gray-700">
-                                Tổng Quan Điểm Danh
+                        
+                        <div class="mb-4">
+                            <button id="view-closing-history-btn" class="w-full text-sm bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Lịch Sử Chốt Sổ
                             </button>
                         </div>
-                        
-                        <!-- Thêm 2 ô chọn ngày (Chung cho cả 2 tab) -->
+
+                        <!-- Thêm 2 ô chọn ngày -->
                         <div class="mb-4 grid grid-cols-2 gap-1">
                             <div>
                                 <label for="closing-date-start" class="block text-sm font-medium text-gray-700 mb-2">Ngày Bắt Đầu:</label>
@@ -219,92 +227,62 @@
                                 <input type="date" id="closing-date-end" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                         </div>
-
-                        <!-- === View 1: Thống kê Thanh Toán (Nội dung cũ) === -->
-                        <div id="stats-billing-view">
-                            <div class="mb-4">
-                                <button id="view-closing-history-btn" class="w-full text-sm bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors flex items-center justify-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Lịch Sử Chốt Sổ
-                                </button>
-                            </div>
-                            
-                            <div class="flex flex-wrap gap-4 mb-6">
-                                <button id="confirm-all-paid-btn" class="flex-1 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-green-600 transition-colors">Chốt Sổ</button>
-                                <button id="export-all-bills-btn" class="flex-1 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-blue-600 transition-colors flex items-center justify-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                                    </svg>
-                                    Hóa đơn
-                                </button>
-                            </div>
-                            
-                            <!-- 1. Danh sách thẻ cho mobile (Mặc định hiển thị, ẩn trên md) -->
-                            <div id="stats-card-list" class="space-y-4 md:hidden">
-                                <!-- JS sẽ render các thẻ học sinh vào đây -->
-                            </div>
-
-                            <!-- 2. Bảng cho desktop (Ẩn mặc định, hiển thị trên md) -->
-                            <div class="overflow-x-auto hidden md:block">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Học Sinh</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số Buổi</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tổng Học Phí</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng Thái</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành Động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="stats-table-body" class="bg-white divide-y divide-gray-200">
-                                        <!-- JS sẽ render thống kê học sinh (cho bảng) -->
-                                    </tbody>
-                                    <tfoot class="bg-gray-100 font-semibold">
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">TỔNG CỘNG</td>
-                                            <td id="total-sessions-footer" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center">0</td>
-                                            <td id="total-tuition-footer" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">0 VNĐ</td>
-                                            <td class="px-6 py-4" colspan="2"></td> <!-- Gộp 2 cột còn lại -->
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-
-                            <!-- 3. Footer tổng kết cho mobile (Mặc định hiển thị, ẩn trên md) -->
-                            <div id="stats-card-footer" class="md:hidden mt-6 pt-4 border-t border-gray-200 font-semibold space-y-2">
-                                <div class="flex justify-between items-center text-sm">
-                                    <span class="text-gray-600">Tổng số buổi:</span>
-                                    <span id="total-sessions-card-footer" class="text-gray-900">0</span>
-                                </div>
-                                <div class="flex justify-between items-center text-base">
-                                    <span class="text-gray-600">Tổng học phí:</span>
-                                    <span id="total-tuition-card-footer" class="text-gray-900">0 VNĐ</span>
-                                </div>
-                            </div>
-
-                            <!-- 4. Tin nhắn không có học sinh (chung) -->
-                            <p id="no-students-msg" class="text-gray-500 text-center py-6 text-md hidden">Chưa có học sinh nào trong lớp này.</p>
+                        
+                        <div class="flex flex-wrap gap-4 mb-6">
+                            <button id="confirm-all-paid-btn" class="flex-1 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-green-600 transition-colors">Chốt Sổ</button>
+                            <button id="export-all-bills-btn" class="flex-1 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-blue-600 transition-colors flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                </svg>
+                                Hóa đơn
+                            </button>
                         </div>
                         
-                        <!-- === View 2: Tổng Quan Điểm Danh (MỚI) === -->
-                        <div id="stats-attendance-grid-view" class="hidden">
-                            <p class="text-sm text-gray-600 mb-4">Hiển thị tình hình đi học/vắng học của học sinh trong khoảng ngày đã chọn. (Xanh = Đi học, Đỏ = Vắng mặt)</p>
-                            <!-- Bảng tổng quan điểm danh -->
-                            <div id="attendance-grid-container" class="overflow-x-auto border border-gray-200 rounded-lg max-h-[600px] hidden">
-                                <table class="min-w-full divide-y divide-gray-200 text-xs">
-                                    <thead id="attendance-grid-table-head" class="bg-gray-50 sticky top-0 z-10">
-                                        <!-- JS render header (Tên, Ngày 1, Ngày 2...) -->
-                                    </thead>
-                                    <tbody id="attendance-grid-table-body" class="bg-white divide-y divide-gray-200">
-                                        <!-- JS render rows (Tên HS, Xanh, Đỏ...) -->
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- Tin nhắn khi không có dữ liệu cho bảng grid -->
-                            <p id="no-attendance-grid-msg" class="text-gray-500 text-center py-6 text-md hidden">Không có dữ liệu điểm danh nào trong khoảng ngày đã chọn.</p>
+                        <!-- 1. Danh sách thẻ cho mobile (Mặc định hiển thị, ẩn trên md) -->
+                        <div id="stats-card-list" class="space-y-4 md:hidden">
+                            <!-- JS sẽ render các thẻ học sinh vào đây -->
                         </div>
+
+                        <!-- 2. Bảng cho desktop (Ẩn mặc định, hiển thị trên md) -->
+                        <div class="overflow-x-auto hidden md:block">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Học Sinh</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số Buổi</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tổng Học Phí</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng Thái</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành Động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stats-table-body" class="bg-white divide-y divide-gray-200">
+                                    <!-- JS sẽ render thống kê học sinh (cho bảng) -->
+                                </tbody>
+                                <tfoot class="bg-gray-100 font-semibold">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">TỔNG CỘNG</td>
+                                        <td id="total-sessions-footer" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 text-center">0</td>
+                                        <td id="total-tuition-footer" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">0 VNĐ</td>
+                                        <td class="px-6 py-4" colspan="2"></td> <!-- Gộp 2 cột còn lại -->
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- 3. Footer tổng kết cho mobile (Mặc định hiển thị, ẩn trên md) -->
+                        <div id="stats-card-footer" class="md:hidden mt-6 pt-4 border-t border-gray-200 font-semibold space-y-2">
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-gray-600">Tổng số buổi:</span>
+                                <span id="total-sessions-card-footer" class="text-gray-900">0</span>
+                            </div>
+                            <div class="flex justify-between items-center text-base">
+                                <span class="text-gray-600">Tổng học phí:</span>
+                                <span id="total-tuition-card-footer" class="text-gray-900">0 VNĐ</span>
+                            </div>
+                        </div>
+
+                        <!-- 4. Tin nhắn không có học sinh (chung) -->
+                        <p id="no-students-msg" class="text-gray-500 text-center py-6 text-md hidden">Chưa có học sinh nào trong lớp này.</p>
                         
                     </div>
 
@@ -351,7 +329,6 @@
             if (typeof __firebase_config !== 'undefined') {
                 firebaseConfig = JSON.parse(__firebase_config);
             } else {
-                // Cấu hình dự phòng nếu không có __firebase_config
                 firebaseConfig = {
     		apiKey: "AIzaSyCjk2GSw5sVSsnhSnu0zeCdM7Fy06na92o",
     		authDomain: "qlhsapp.firebaseapp.com",
@@ -406,6 +383,7 @@
         const editClassInfoBtn = document.getElementById('edit-class-info-btn');
         const addStudentForm = document.getElementById('add-student-form');
         const newStudentNameInput = document.getElementById('new-student-name');
+        const noStudentsMsg = document.getElementById('no-students-msg');
         
         // Nhập/Xuất txt
         const exportStudentListBtn = document.getElementById('export-student-list-btn');
@@ -419,34 +397,21 @@
         const checkAllBtn = document.getElementById('check-all-attendance');
         const uncheckAllBtn = document.getElementById('uncheck-all-attendance');
 
-        // Thống kê (Chung)
+        // Thống kê
+        const viewClosingHistoryBtn = document.getElementById('view-closing-history-btn');
         const closingDateStartInput = document.getElementById('closing-date-start');
         const closingDateEndInput = document.getElementById('closing-date-end');
-        const noStudentsMsg = document.getElementById('no-students-msg'); // Chung cho cả 2 tab
-        
-        // Thống kê (Tabs - MỚI)
-        const statsTabBilling = document.getElementById('stats-tab-billing');
-        const statsTabAttendance = document.getElementById('stats-tab-attendance');
-        const statsBillingView = document.getElementById('stats-billing-view');
-        const statsAttendanceGridView = document.getElementById('stats-attendance-grid-view');
-
-        // Thống kê (Tab 1: Thanh Toán)
-        const viewClosingHistoryBtn = document.getElementById('view-closing-history-btn');
         const statsTableBody = document.getElementById('stats-table-body');
         const totalSessionsFooter = document.getElementById('total-sessions-footer');
         const totalTuitionFooter = document.getElementById('total-tuition-footer');
         const confirmAllPaidBtn = document.getElementById('confirm-all-paid-btn');
         const exportAllBillsBtn = document.getElementById('export-all-bills-btn');
+
+        // Thống kê (Mobile)
         const statsCardList = document.getElementById('stats-card-list');
         const statsCardFooter = document.getElementById('stats-card-footer');
         const totalSessionsCardFooter = document.getElementById('total-sessions-card-footer');
         const totalTuitionCardFooter = document.getElementById('total-tuition-card-footer');
-        
-        // Thống kê (Tab 2: Grid Điểm Danh - MỚI)
-        const attendanceGridContainer = document.getElementById('attendance-grid-container');
-        const attendanceGridTableHead = document.getElementById('attendance-grid-table-head');
-        const attendanceGridTableBody = document.getElementById('attendance-grid-table-body');
-        const noAttendanceGridMsg = document.getElementById('no-attendance-grid-msg');
 
         // Modal
         const modalBackdrop = document.getElementById('modal-backdrop');
@@ -545,7 +510,10 @@
         async function saveClass(classObject) {
             if (!userId) return;
             try {
+                // Đối với lớp mới, Firestore tự động tạo ID nếu dùng addDoc, 
+                // nhưng ở đây ta dùng setDoc với ID đã có sẵn (hoặc mới tạo) để dễ quản lý.
                 const classRef = getClassDocRef(classObject.id);
+                // Sử dụng setDoc để ghi đè hoặc tạo mới toàn bộ đối tượng lớp
                 await setDoc(classRef, classObject);
             } catch (error) {
                 console.error("Lỗi khi lưu lớp học:", error);
@@ -576,6 +544,7 @@
             
             if (!CLASSES_COLLECTION_REF) return;
 
+            // Truy vấn đơn giản: lấy tất cả tài liệu trong collection
             const q = query(CLASSES_COLLECTION_REF);
 
             unsubscribeClasses = onSnapshot(q, (snapshot) => {
@@ -584,16 +553,17 @@
                     newClasses.push(doc.data());
                 });
                 
+                // Cập nhật cache và render lại
                 dbCache.classes = newClasses;
                 renderDashboard();
                 
+                // Nếu đang ở chi tiết lớp, kiểm tra và render lại
                 if (currentClassId) {
                     const cls = dbCache.classes.find(c => c.id === currentClassId);
                     if (cls) {
-                        // Render lại cả 2 tab thống kê
-                        renderStatistics(cls);
-                        renderAttendanceGrid(cls);
+                        renderClassDetail(currentClassId);
                     } else {
+                        // Nếu lớp đang xem bị xóa, quay về dashboard
                         switchView('dashboard');
                     }
                 }
@@ -661,12 +631,8 @@
             
             // Cập nhật 3 phần con
             renderAttendanceList(cls);
-            renderStatistics(cls); // Render tab thanh toán
-            renderAttendanceGrid(cls); // Render tab điểm danh (MỚI)
+            renderStatistics(cls);
             updateAttendanceCheckboxes(cls, attendanceDateInput.value);
-
-            // Reset về tab Thanh Toán khi mở lớp (MỚI)
-            if (statsTabBilling) statsTabBilling.click();
 
             switchView('class_detail');
         }
@@ -725,7 +691,7 @@
         }
 
         /**
-         * Render Bảng Thống Kê (Tab 1: Thanh Toán)
+         * Render Bảng Thống Kê
          */
         function renderStatistics(cls) {
             statsTableBody.innerHTML = '';
@@ -738,14 +704,14 @@
             classDetailCount.innerHTML = `Sĩ số: <strong>${studentCount} học sinh</strong>`;
             
             if (studentCount === 0) {
-                noStudentsMsg.classList.remove('hidden'); // Hiển thị tin nhắn
+                noStudentsMsg.classList.remove('hidden');
                 statsCardFooter.classList.add('hidden');
                 const tableFooter = statsTableBody.closest('table').querySelector('tfoot');
                 if (tableFooter) tableFooter.classList.add('hidden');
                 return;
             }
 
-            noStudentsMsg.classList.add('hidden'); // Ẩn tin nhắn
+            noStudentsMsg.classList.add('hidden');
             statsCardFooter.classList.remove('hidden');
             const tableFooter = statsTableBody.closest('table').querySelector('tfoot');
             if (tableFooter) tableFooter.classList.remove('hidden');
@@ -769,6 +735,7 @@
                 
                 const rowHighlightClass = paymentStatus ? 'bg-green-100' : 'bg-white';
                 
+                // --- Định nghĩa chung cho Cả Bảng và Thẻ ---
                 const statusText = paymentStatus ? 'Đã Đóng' : 'Chưa Đóng';
                 const paymentButtonText = paymentStatus ? 'Đánh dấu Chưa Đóng' : 'Đánh dấu Đã Đóng';
                 const paymentButtonClass = paymentStatus ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800';
@@ -799,10 +766,13 @@
                 const card = document.createElement('div');
                 card.className = `border rounded-lg p-4 shadow-sm ${rowHighlightClass}`;
                 card.innerHTML = `
+                    <!-- Hàng 1: Tên và Tổng phí -->
                     <div class="flex justify-between items-start gap-3">
                         <h4 class="font-bold text-lg text-gray-900 cursor-pointer view-student-detail" data-student-id="${student.id}">${student.name}</h4>
                         <strong class="text-gray-800 text-lg text-right flex-shrink-0">${formatCurrency(studentTotalTuition)}</strong>
                     </div>
+                    
+                    <!-- Hàng 2: Số buổi và Trạng thái -->
                     <div class="flex justify-between items-center mt-3 text-sm">
                         <div>
                             <span class="text-gray-500">Số buổi:</span>
@@ -813,6 +783,8 @@
                             ${statusBadgeCard}
                         </div>
                     </div>
+                    
+                    <!-- Các nút hành động (flex-wrap) -->
                     <div class="flex flex-wrap gap-2 mt-4 border-t pt-3">
                         <button class="toggle-payment-btn text-sm py-1 px-3 rounded-md ${paymentStatus ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} font-medium" data-student-id="${student.id}">
                             ${paymentStatus ? 'Chưa Đóng' : 'Đã Đóng'}
@@ -834,100 +806,6 @@
             totalSessionsCardFooter.textContent = totalSessions;
             totalTuitionCardFooter.textContent = formatCurrency(grandTotalTuition);
         }
-        
-        /**
-         * Render Bảng Tổng Quan Điểm Danh (Grid) (MỚI - Tab 2)
-         */
-        function renderAttendanceGrid(cls) {
-            attendanceGridTableHead.innerHTML = '';
-            attendanceGridTableBody.innerHTML = '';
-
-            const students = cls.students || [];
-            
-            // 1. Lấy tất cả các ngày duy nhất (đã lọc) từ TẤT CẢ học sinh
-            const startDate = closingDateStartInput.value;
-            const endDate = closingDateEndInput.value;
-            
-            let allUniqueDates = new Set();
-            students.forEach(student => {
-                student.attendance.forEach(date => {
-                    const isAfterStart = !startDate || date >= startDate;
-                    const isBeforeEnd = !endDate || date <= endDate;
-                    if (isAfterStart && isBeforeEnd) {
-                        allUniqueDates.add(date);
-                    }
-                });
-            });
-
-            const sortedDates = Array.from(allUniqueDates).sort((a, b) => new Date(a) - new Date(b));
-
-            // Kiểm tra nếu không có học sinh HOẶC không có ngày nào trong khoảng
-            if (students.length === 0 || sortedDates.length === 0) {
-                noAttendanceGridMsg.classList.remove('hidden');
-                attendanceGridContainer.classList.add('hidden');
-                // Nếu không có học sinh, cũng ẩn tin nhắn "no students" của tab thanh toán
-                if (students.length === 0) {
-                    noStudentsMsg.classList.remove('hidden');
-                } else {
-                    noStudentsMsg.classList.add('hidden'); // Phải ẩn tin nhắn này nếu tab grid ẩn
-                }
-                return;
-            }
-
-            // Có dữ liệu, hiển thị bảng, ẩn tin nhắn
-            noAttendanceGridMsg.classList.add('hidden');
-            noStudentsMsg.classList.add('hidden');
-            attendanceGridContainer.classList.remove('hidden');
-
-            // 2. Render Header (Dates)
-            const headerRow = document.createElement('tr');
-            // Ô đầu tiên (sticky)
-            const thStudent = document.createElement('th');
-            thStudent.className = "px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50 z-20";
-            thStudent.textContent = 'Học Sinh';
-            headerRow.appendChild(thStudent);
-            
-            // Các ô ngày
-            sortedDates.forEach(date => {
-                const thDate = document.createElement('th');
-                thDate.className = "px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[60px]";
-                // Format date to dd/mm
-                const d = new Date(date);
-                thDate.textContent = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
-                thDate.title = d.toLocaleDateString('vi-VN');
-                headerRow.appendChild(thDate);
-            });
-            attendanceGridTableHead.appendChild(headerRow);
-
-            // 3. Render Body (Students)
-            students.forEach(student => {
-                const row = document.createElement('tr');
-                
-                // Ô tên (sticky)
-                const tdStudent = document.createElement('td');
-                tdStudent.className = "px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900 sticky left-0 bg-white z-10";
-                tdStudent.textContent = student.name;
-                row.appendChild(tdStudent);
-
-                // Các ô điểm danh
-                sortedDates.forEach(date => {
-                    const tdCell = document.createElement('td');
-                    tdCell.className = "text-center";
-                    
-                    const hasAttended = student.attendance.includes(date);
-                    
-                    // Thêm 1 div con để tạo ô vuông màu
-                    const colorBox = document.createElement('div');
-                    colorBox.className = `w-5 h-5 mx-auto rounded ${hasAttended ? 'bg-green-400' : 'bg-red-300'}`;
-                    colorBox.title = `${student.name} - ${hasAttended ? 'Có mặt' : 'Vắng mặt'} ngày ${new Date(date).toLocaleDateString('vi-VN')}`;
-                    tdCell.appendChild(colorBox);
-                    
-                    row.appendChild(tdCell);
-                });
-                attendanceGridTableBody.appendChild(row);
-            });
-        }
-
 
         // ----- HÀM XỬ LÝ SỰ KIỆN (Cập nhật logic lưu) -----
         
@@ -995,13 +873,14 @@
                 
                 if (className && classFee >= 0) {
                     const newClass = {
+                        // Vẫn dùng ID tự tạo để tránh trùng lặp
                         id: doc(CLASSES_COLLECTION_REF).id, 
                         name: className,
                         tuitionFee: classFee,
                         students: [],
                         closingHistory: [] 
                     };
-                    saveClass(newClass); 
+                    saveClass(newClass); // Gửi lên Firestore
                     closeModal();
                 }
             }
@@ -1014,9 +893,10 @@
                 
                 const cls = dbCache.classes.find(c => c.id === currentClassId);
                 if (cls) {
+                    // Cập nhật đối tượng lớp trong cache
                     cls.name = newName;
                     cls.tuitionFee = newFee;
-                    saveClass(cls); 
+                    saveClass(cls); // Gửi toàn bộ đối tượng lớp lên Firestore
                     closeModal();
                 }
             }
@@ -1033,13 +913,14 @@
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             if (cls) {
                 const newStudent = {
+                    // Dùng ID ngẫu nhiên vì Firestore không tự tạo ID cho các mục trong array
                     id: crypto.randomUUID(), 
                     name: studentName,
                     attendance: [],
                     paymentStatus: 'unpaid' 
                 };
                 cls.students.push(newStudent);
-                saveClass(cls); 
+                saveClass(cls); // Gửi toàn bộ đối tượng lớp đã cập nhật lên Firestore
                 newStudentNameInput.value = '';
             }
         }
@@ -1054,6 +935,7 @@
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             if (!cls) return;
             
+            // Tạo bản sao để tránh lỗi đồng bộ
             const updatedStudents = cls.students.map(student => ({ ...student }));
 
             const checkboxes = attendanceStudentList.querySelectorAll('.attendance-checkbox');
@@ -1076,7 +958,7 @@
             });
 
             cls.students = updatedStudents;
-            saveClass(cls); 
+            saveClass(cls); // Gửi toàn bộ đối tượng lớp đã cập nhật lên Firestore
             
             const originalText = saveAttendanceBtn.textContent;
             saveAttendanceBtn.textContent = 'Đã Lưu!';
@@ -1107,7 +989,7 @@
 
             if (newName && newName !== student.name) {
                 student.name = newName;
-                saveClass(cls); 
+                saveClass(cls); // Gửi toàn bộ đối tượng lớp đã cập nhật lên Firestore
             } else {
                 input.value = student.name;
             }
@@ -1156,6 +1038,7 @@
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             if (!cls) return;
 
+            // Xử lý logic khác (Chi tiết, In Bill)
             if (target.classList.contains('view-student-detail')) {
                 handleViewStudentDetail(studentId);
             }
@@ -1163,14 +1046,16 @@
                 handleExportBill(studentId);
             }
 
+            // Cập nhật trạng thái thanh toán
             if (target.classList.contains('toggle-payment-btn')) {
                 const student = cls.students.find(s => s.id === studentId);
                 if (student) {
                     student.paymentStatus = student.paymentStatus === 'paid' ? 'unpaid' : 'paid';
-                    saveClass(cls); 
+                    saveClass(cls); // Gửi toàn bộ đối tượng lớp đã cập nhật lên Firestore
                 }
             }
             
+            // Xóa học sinh
             if (target.classList.contains('delete-student-btn')) {
                 const student = cls.students.find(s => s.id === studentId);
                 const confirmModalContent = `
@@ -1270,7 +1155,7 @@
                     student.paymentStatus = newStatus;
                 }
             });
-            saveClass(cls); 
+            saveClass(cls); // Gửi toàn bộ đối tượng lớp đã cập nhật lên Firestore
             closeModal();
         }
 
@@ -1285,12 +1170,15 @@
             appContainer.classList.remove('hidden');
             userInfoEl.textContent = `Đang đăng nhập với: ${email}`;
 
+            // Khởi tạo các giá trị mặc định cho view
             attendanceDateInput.value = today;
             const todayDate = new Date();
             const firstDayOfMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1).toISOString().split('T')[0];
             closingDateStartInput.value = firstDayOfMonth;
             closingDateEndInput.value = today;
 
+            // Khởi tạo lắng nghe Firestore
+            // Collection path: /artifacts/{appId}/users/{userId}/classes
             CLASSES_COLLECTION_REF = collection(db, 'artifacts', appId, 'users', userId, 'classes');
             setupFirestoreListener();
             switchView('dashboard');
@@ -1304,7 +1192,7 @@
             appContainer.classList.add('hidden');
             loginView.classList.remove('hidden');
             
-            loginPasswordInput.value = ''; 
+            loginPasswordInput.value = ''; // Luôn xóa mật khẩu
             loginErrorMsg.classList.add('hidden');
         }
 
@@ -1320,9 +1208,10 @@
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
+                // Auth listener sẽ xử lý việc hiển thị showApp
             } catch (error) {
                 let errorMessage = "Đăng nhập thất bại. Vui lòng kiểm tra lại Email và Mật khẩu.";
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
                     errorMessage = "Email hoặc mật khẩu không đúng. Vui lòng thử lại.";
                 } else if (error.code === 'auth/invalid-email') {
                      errorMessage = "Email không hợp lệ.";
@@ -1353,15 +1242,7 @@
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
                 // Auth listener sẽ xử lý việc hiển thị showApp
-                // Sử dụng openModal thay vì alert
-                openModal(`
-                    <h3 class="text-xl font-semibold mb-4">Đăng Ký Thành Công</h3>
-                    <p>Chào mừng bạn! Bạn đã được tự động đăng nhập.</p>
-                    <div class="flex justify-end mt-6">
-                        <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600">OK</button>
-                    </div>
-                `);
-
+                alert('Đăng ký thành công! Bạn đã được đăng nhập.'); // Dùng alert tạm cho thông báo
             } catch (error) {
                  let errorMessage = "Đăng ký thất bại. Vui lòng thử lại.";
                  if (error.code === 'auth/email-already-in-use') {
@@ -1382,10 +1263,11 @@
          */
         function handleLogout() {
             if (unsubscribeClasses) {
-                unsubscribeClasses(); 
+                unsubscribeClasses(); // Hủy lắng nghe Firestore
                 unsubscribeClasses = null;
             }
             signOut(auth).then(() => {
+                // Auth listener sẽ xử lý việc hiển thị showLogin
                 userId = null;
                 dbCache.classes = [];
             }).catch((error) => {
@@ -1398,9 +1280,11 @@
          */
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                // Người dùng đã đăng nhập
                 userId = user.uid;
                 showApp(user.email);
             } else {
+                // Người dùng đã đăng xuất hoặc chưa đăng nhập
                 userId = null;
                 showLogin();
             }
@@ -1424,88 +1308,72 @@
             classList.addEventListener('click', handleDashboardClick);
             addStudentForm.addEventListener('submit', handleAddStudent);
             
+            // Nhập/Xuất
+            // Lưu ý: Cần đảm bảo logic xuất/nhập không gọi saveClass() mà chỉ chỉnh sửa local cache,
+            // sau đó gọi saveClass() 1 lần cuối.
             exportStudentListBtn.addEventListener('click', handleExportStudentList);
             importStudentListBtn.addEventListener('click', () => importStudentListInput.click()); 
             importStudentListInput.addEventListener('change', handleImportStudentList); 
             
+            // Điểm danh
             saveAttendanceBtn.addEventListener('click', handleSaveAttendance);
             checkAllBtn.addEventListener('click', () => toggleAllAttendance(true));
             uncheckAllBtn.addEventListener('click', () => toggleAllAttendance(false));
             
-            // Thống kê - Tabs (MỚI)
-            statsTabBilling.addEventListener('click', () => {
-                statsTabBilling.classList.add('text-blue-600', 'border-blue-600');
-                statsTabBilling.classList.remove('text-gray-500', 'hover:text-gray-700', 'border-transparent');
-                statsTabAttendance.classList.add('text-gray-500', 'hover:text-gray-700', 'border-transparent');
-                statsTabAttendance.classList.remove('text-blue-600', 'border-blue-600');
-                statsBillingView.classList.remove('hidden');
-                statsAttendanceGridView.classList.add('hidden');
-            });
-            
-            statsTabAttendance.addEventListener('click', () => {
-                statsTabAttendance.classList.add('text-blue-600', 'border-blue-600');
-                statsTabAttendance.classList.remove('text-gray-500', 'hover:text-gray-700', 'border-transparent');
-                statsTabBilling.classList.add('text-gray-500', 'hover:text-gray-700', 'border-transparent');
-                statsTabBilling.classList.remove('text-blue-600', 'border-blue-600');
-                statsBillingView.classList.add('hidden');
-                statsAttendanceGridView.classList.remove('hidden');
-                // Cần render lại grid khi click tab, phòng trường hợp dữ liệu chưa có
-                const cls = dbCache.classes.find(c => c.id === currentClassId);
-                if (cls) renderAttendanceGrid(cls);
-            });
-
-            // Thống kê (Tab 1)
+            // Thống kê
             viewClosingHistoryBtn.addEventListener('click', handleViewClosingHistory);
             confirmAllPaidBtn.addEventListener('click', () => massUpdatePaymentStatus('paid'));
             exportAllBillsBtn.addEventListener('click', handleExportAllBills);
 
-            // Cập nhật thống kê khi đổi ngày lọc (Cập nhật cho cả 2 tab)
+            // Cập nhật thống kê khi đổi ngày lọc
             closingDateStartInput.addEventListener('change', () => {
                 const cls = dbCache.classes.find(c => c.id === currentClassId);
-                if (cls) {
-                    renderStatistics(cls);
-                    renderAttendanceGrid(cls); // THÊM
-                }
+                if (cls) renderStatistics(cls);
             });
             closingDateEndInput.addEventListener('change', () => {
                 const cls = dbCache.classes.find(c => c.id === currentClassId);
-                if (cls) {
-                    renderStatistics(cls);
-                    renderAttendanceGrid(cls); // THÊM
-                }
+                if (cls) renderStatistics(cls);
             });
             
+            // Cập nhật checkbox điểm danh khi đổi ngày
             attendanceDateInput.addEventListener('change', () => {
                 const cls = dbCache.classes.find(c => c.id === currentClassId);
                 if (cls) updateAttendanceCheckboxes(cls, attendanceDateInput.value);
             });
 
-            // Click trên bảng thống kê / thẻ (Tab 1)
+            // Click trên bảng thống kê / thẻ
             statsTableBody.addEventListener('click', handleStatsTableClick);
             statsCardList.addEventListener('click', handleStatsTableClick); 
 
+            // Click/Keydown sửa tên học sinh
             attendanceStudentList.addEventListener('click', handleAttendanceListClick);
             attendanceStudentList.addEventListener('keydown', handleStudentNameKeydown);
             attendanceStudentList.addEventListener('focusout', handleStudentNameBlur, true); 
 
             // --- MODAL EVENTS ---
             modalBackdrop.addEventListener('click', (e) => {
+                // Đóng modal khi click background hoặc nút Hủy
                 if (e.target === modalBackdrop || e.target.id === 'modal-cancel') {
                     closeModal();
                 }
+                // Xử lý In Bill
                 if (e.target.id === 'modal-print-bill') {
                     handlePrintBill();
                 }
+                // Xử lý Lọc Thống Kê Tổng
                 if (e.target.id === 'calculate-total-stats-btn') {
                     calculateAndDisplayTotalStats();
                 }
+                // Xử lý xác nhận/hủy chốt sổ
                 if (e.target.id === 'modal-confirm-action') {
                     confirmMassUpdate(e.target.dataset.status);
                 }
+                 // Xử lý xác nhận xóa lớp
                 if (e.target.id === 'modal-confirm-delete-class') {
                     deleteClassFromFirestore(e.target.dataset.id);
                     closeModal();
                 }
+                 // Xử lý xác nhận xóa học sinh
                 if (e.target.id === 'modal-confirm-delete-student') {
                     const studentIdToDelete = e.target.dataset.studentId;
                     const cls = dbCache.classes.find(c => c.id === currentClassId);
@@ -1515,6 +1383,7 @@
                         closeModal();
                     }
                 }
+                // Xử lý xóa lịch sử (Các hàm xóa lịch sử sẽ cần được cập nhật để gọi saveClass)
                  const deleteBtn = e.target.closest('.delete-history-record-btn');
                 if (deleteBtn) {
                     const recordId = deleteBtn.dataset.recordId;
@@ -1532,16 +1401,18 @@
                     }
                 }
 
+                // Xử lý xác nhận xóa 1 mục
                 if (e.target.id === 'modal-confirm-delete-single') {
                     const recordId = e.target.dataset.recordId;
                     const cls = dbCache.classes.find(c => c.id === currentClassId);
                     if (cls) {
                         cls.closingHistory = cls.closingHistory.filter(record => record.id !== recordId);
-                        saveClass(cls); 
+                        saveClass(cls); // Cập nhật Firestore
                         handleViewClosingHistory(); 
                     }
                 }
 
+                // Xử lý "Xóa Tất Cả"
                 if (e.target.id === 'modal-delete-all-history') {
                     const confirmContent = `
                         <h3 class="text-xl font-semibold mb-4">Xác Nhận Xóa Tất Cả</h3>
@@ -1554,24 +1425,34 @@
                     openModal(confirmContent);
                 }
                 
+                // Xử lý "Quay lại lịch sử"
                 if (e.target.id === 'modal-go-back-to-history') {
                     handleViewClosingHistory();
                 }
 
+                // Xử lý xác nhận "Xóa Tất Cả"
                 if (e.target.id === 'modal-confirm-delete-all-final') {
                     const cls = dbCache.classes.find(c => c.id === currentClassId);
                     if (cls) {
                         cls.closingHistory = [];
-                        saveClass(cls); 
+                        saveClass(cls); // Cập nhật Firestore
                         handleViewClosingHistory(); 
                     }
                 }
             });
             modalBackdrop.addEventListener('submit', handleModalSubmit);
             
+            // Hiển thị overlay trước khi kiểm tra trạng thái Auth
             loadingOverlay.classList.remove('hidden');
 
         });
+
+        // Tái sử dụng các hàm chưa bị thay đổi: calculateAndDisplayTotalStats, handleShowTotalStats, 
+        // handleViewClosingHistory, handleExportBill, handlePrintBill, handleExportAllBills, 
+        // handleExportStudentList, handleImportStudentList, toggleAllAttendance, 
+        // handleViewStudentDetail, handleAttendanceListClick, handleStudentNameKeydown, 
+        // handleStudentNameBlur. (Đã được giữ nguyên trong file HTML gốc và dùng dbCache.classes thay vì db.classes)
+        
         
         /**
          * Tính toán và hiển thị Thống Kê Tổng Doanh Thu
@@ -1644,6 +1525,10 @@
          */
         function handleShowTotalStats() {
             
+            const todayDate = new Date();
+            const firstDayOfMonth = new Date(todayDate.getFullYear(), todayDate.getMonth(), 1).toISOString().split('T')[0];
+            const todayStr = todayDate.toISOString().split('T')[0];
+
             const content = `
                 <h2 class="text-2xl font-semibold mb-2 text-center">Tổng Doanh Thu</h2>
                 
@@ -1683,6 +1568,7 @@
             `;
             openModal(content);
             
+            // Tính toán lần đầu với giá trị mặc định của input
             calculateAndDisplayTotalStats();
         }
 
@@ -1959,14 +1845,23 @@
                 return;
             }
 
+            // Lấy tên học sinh, mỗi tên một dòng
             const studentNames = cls.students.map(s => s.name).join('\n');
+            
+            // Tạo file .txt
             const blob = new Blob([studentNames], { type: 'text/plain;charset=utf-8' });
+            
+            // Tạo link tải
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             const fileName = `danh_sach_lop_${cls.name.replace(/\s+/g, '_')}.txt`;
             link.download = fileName;
+            
+            // Click link để tải
             document.body.appendChild(link);
             link.click();
+            
+            // Xóa link
             document.body.removeChild(link);
             URL.revokeObjectURL(link.href);
         }
@@ -2011,6 +1906,7 @@
                     return;
                 }
 
+                // Thêm học sinh vào bản sao của lớp
                 const initialStudentCount = cls.students.length;
                 names.forEach(name => {
                     const newStudent = {
@@ -2022,8 +1918,9 @@
                     cls.students.push(newStudent);
                 });
 
-                saveClass(cls); 
+                saveClass(cls); // Gửi toàn bộ đối tượng lớp đã cập nhật lên Firestore
                 
+                // Thông báo thành công
                 openModal(`
                     <h3 class="text-xl font-semibold mb-4">Hoàn Tất</h3>
                     <p>Đã nhập thành công ${names.length} học sinh mới.</p>
