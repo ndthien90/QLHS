@@ -922,17 +922,25 @@
                 row.appendChild(tdStudent);
 
                 // Các ô điểm danh
-                sortedDates.forEach(date => {
+sortedDates.forEach(date => {
                     const tdCell = document.createElement('td');
-                    tdCell.className = "text-center";
+                    tdCell.className = "text-center text-lg"; // Thêm 'text-xl' để Emoji to hơn (tùy chọn)
                     
-                    const hasAttended = student.attendance.includes(date);
+                    const hasAttended = student.attendance.includes(date); //
                     
-                    // Thêm 1 div con để tạo ô vuông màu
-                    const colorBox = document.createElement('div');
-                    colorBox.className = `w-5 h-5 mx-auto rounded ${hasAttended ? 'bg-green-400' : 'bg-red-300'}`;
-                    colorBox.title = `${student.name} - ${hasAttended ? 'Có mặt' : 'Vắng mặt'} ngày ${new Date(date).toLocaleDateString('vi-VN')}`;
-                    tdCell.appendChild(colorBox);
+                    let emoji;
+                    let titleText;
+                    
+                    if (hasAttended) {
+                        emoji = '💚'; // Emoji cho Có Mặt
+                        titleText = 'Có mặt'; //
+                    } else {
+                        emoji = '❤️'; // Emoji cho Vắng Mặt
+                        titleText = 'Vắng mặt'; //
+                    }
+                    
+                    tdCell.innerHTML = emoji;
+                    tdCell.title = `${student.name} - ${titleText} ngày ${new Date(date).toLocaleDateString('vi-VN')}`; 
                     
                     row.appendChild(tdCell);
                 });
