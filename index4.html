@@ -6,8 +6,6 @@
     <title>Trình Quản Lý Học Sinh</title>
     <!-- Tải Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tải Chart.js (MỚI) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
     <!-- Sử dụng font Inter cho giao diện hiện đại -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -397,7 +395,6 @@
         let currentClassId = null;
         const today = new Date().toISOString().split('T')[0];
         let unsubscribeClasses = null; // Dùng để hủy lắng nghe Firestore
-        let totalRevenueChart = null; // Biến lưu trữ đối tượng Chart.js (MỚI)
 
 
         // ----- BỘ CHỌN DOM (Phần Ứng Dụng) -----
@@ -509,13 +506,6 @@
         function openModal(contentHtml) {
             modalContent.innerHTML = contentHtml;
             modalBackdrop.classList.remove('hidden');
-            // Cần set lại max-width cho modal content vì modal total stats sẽ rộng hơn
-            modalContent.classList.remove('max-w-xl'); 
-            modalContent.classList.add('max-w-lg');
-            if (modalContent.querySelector('#total-stats-modal')) {
-                 modalContent.classList.remove('max-w-lg');
-                 modalContent.classList.add('max-w-xl'); // Cho modal tổng thống kê rộng hơn
-            }
             setTimeout(() => {
                 modalContent.classList.remove('scale-95', 'opacity-0');
                 modalContent.classList.add('scale-100', 'opacity-100');
@@ -528,18 +518,9 @@
         function closeModal() {
             modalContent.classList.add('scale-95', 'opacity-0');
             modalContent.classList.remove('scale-100', 'opacity-100');
-            
-            // Hủy biểu đồ nếu có
-            if (totalRevenueChart) {
-                totalRevenueChart.destroy();
-                totalRevenueChart = null;
-            }
-
             setTimeout(() => {
                 modalBackdrop.classList.add('hidden');
                 modalContent.innerHTML = '';
-                 modalContent.classList.remove('max-w-xl');
-                 modalContent.classList.add('max-w-lg');
             }, 300);
         }
 
@@ -1530,18 +1511,9 @@
                 if (e.target.id === 'modal-print-bill') {
                     handlePrintBill();
                 }
-                // Thêm sự kiện cho nút "Áp Dụng Lọc" trong modal Tổng Thống Kê
                 if (e.target.id === 'calculate-total-stats-btn') {
                     calculateAndDisplayTotalStats();
                 }
-                // Thêm sự kiện cho nút chuyển tab trong modal Tổng Thống Kê (MỚI)
-                if (e.target.id === 'stats-tab-list-view') {
-                    toggleTotalStatsView('list');
-                }
-                 if (e.target.id === 'stats-tab-chart-view') {
-                    toggleTotalStatsView('chart');
-                }
-
                 if (e.target.id === 'modal-confirm-action') {
                     confirmMassUpdate(e.target.dataset.status);
                 }
@@ -1616,112 +1588,8 @@
 
         });
         
-        // Mảng màu sắc cố định cho biểu đồ (để đảm bảo tính nhất quán)
-        const PIE_CHART_COLORS = [
-            'rgb(6, 182, 212)',  // Cyan-500
-            'rgb(249, 115, 22)', // Orange-500
-            'rgb(16, 185, 129)', // Emerald-500
-            'rgb(124, 58, 237)', // Violet-600
-            'rgb(236, 72, 153)', // Pink-500
-            'rgb(250, 204, 21)', // Amber-400
-            'rgb(100, 116, 139)',// Slate-500
-            'rgb(239, 68, 68)',  // Red-500
-        ];
-        
         /**
-         * Hàm vẽ biểu đồ hình tròn (MỚI)
-         */
-        function drawTotalRevenueChart(classData) {
-            // Hủy biểu đồ cũ nếu có
-            if (totalRevenueChart) {
-                totalRevenueChart.destroy();
-            }
-            
-            const ctx = document.getElementById('total-stats-chart-canvas').getContext('2d');
-            
-            const labels = classData.map(d => d.name);
-            const data = classData.map(d => d.total);
-            const backgroundColors = labels.map((_, index) => PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]);
-
-            totalRevenueChart = new Chart(ctx, {
-                type: 'doughnut', // Dùng doughnut cho đẹp hơn
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Doanh thu',
-                        data: data,
-                        backgroundColor: backgroundColors,
-                        hoverOffset: 4,
-                        borderColor: '#ffffff',
-                        borderWidth: 2,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                font: {
-                                    family: 'Inter',
-                                    size: 14,
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.parsed || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
-                                    return `${label}: ${formatCurrency(value)} (${percentage}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        /**
-         * Chuyển đổi giữa View Danh Sách và View Biểu Đồ (MỚI)
-         */
-        function toggleTotalStatsView(view) {
-            const listTab = document.getElementById('stats-tab-list-view');
-            const chartTab = document.getElementById('stats-tab-chart-view');
-            const listView = document.getElementById('total-stats-breakdown-list-container');
-            const chartView = document.getElementById('total-stats-chart-container');
-            const chartCanvas = document.getElementById('total-stats-chart-canvas');
-
-            if (view === 'list') {
-                listTab.classList.add('text-blue-600', 'border-blue-600');
-                listTab.classList.remove('text-gray-500', 'hover:text-gray-700', 'border-transparent');
-                chartTab.classList.add('text-gray-500', 'hover:text-gray-700', 'border-transparent');
-                chartTab.classList.remove('text-blue-600', 'border-blue-600');
-                
-                listView.classList.remove('hidden');
-                chartView.classList.add('hidden');
-            } else if (view === 'chart') {
-                chartTab.classList.add('text-blue-600', 'border-blue-600');
-                chartTab.classList.remove('text-gray-500', 'hover:text-gray-700', 'border-transparent');
-                listTab.classList.add('text-gray-500', 'hover:text-gray-700', 'border-transparent');
-                listTab.classList.remove('text-blue-600', 'border-blue-600');
-                
-                listView.classList.add('hidden');
-                chartView.classList.remove('hidden');
-                
-                // Vẽ biểu đồ ngay khi chuyển sang tab biểu đồ
-                const classData = chartCanvas.dataset.chartData ? JSON.parse(chartCanvas.dataset.chartData) : [];
-                if (classData.length > 0) {
-                    drawTotalRevenueChart(classData);
-                }
-            }
-        }
-
-        /**
-         * Tính toán và hiển thị Thống Kê Tổng Doanh Thu (Cập nhật để chuẩn bị dữ liệu biểu đồ)
+         * Tính toán và hiển thị Thống Kê Tổng Doanh Thu
          */
         function calculateAndDisplayTotalStats() {
             const startDate = document.getElementById('total-stats-start')?.value;
@@ -1729,7 +1597,6 @@
 
             let grandTotalTuition = 0;
             let classBreakdownHtml = '';
-            let classDataForChart = []; // MỚI: Dữ liệu cho biểu đồ
             let hasData = false;
 
             dbCache.classes.forEach(cls => {
@@ -1755,6 +1622,7 @@
                 });
 
                 if (filteredHistory.length > 0) {
+                    hasData = true;
                     filteredHistory.forEach(record => {
                         classTotal += record.totalTuition;
                     });
@@ -1763,124 +1631,73 @@
                 grandTotalTuition += classTotal;
                 
                 if(classTotal > 0) {
-                    hasData = true;
-                    // Chuẩn bị dữ liệu cho danh sách
                     classBreakdownHtml += `
                         <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                             <span class="font-medium text-gray-700">${cls.name}</span>
                             <strong class="text-gray-900">${formatCurrency(classTotal)}</strong>
                         </li>
                     `;
-                    // Chuẩn bị dữ liệu cho biểu đồ (MỚI)
-                    classDataForChart.push({ name: cls.name, total: classTotal });
                 }
             });
 
+            if (!hasData || grandTotalTuition === 0) {
+                classBreakdownHtml = '<p class="text-gray-500 text-center italic py-4">Không có dữ liệu chốt sổ nào trong khoảng thời gian đã chọn.</p>';
+            }
+
             const totalAmountEl = document.getElementById('total-stats-amount');
             const breakdownListEl = document.getElementById('total-stats-breakdown-list');
-            const chartCanvas = document.getElementById('total-stats-chart-canvas');
-            const chartNoDataMsg = document.getElementById('chart-no-data-msg');
-            const chartView = document.getElementById('total-stats-chart-container');
-            const listView = document.getElementById('total-stats-breakdown-list-container');
 
-
-            if (totalAmountEl && breakdownListEl && chartCanvas) {
+            if (totalAmountEl && breakdownListEl) {
                 totalAmountEl.textContent = formatCurrency(grandTotalTuition);
-
-                if (!hasData || grandTotalTuition === 0) {
-                    classBreakdownHtml = '<p class="text-gray-500 text-center italic py-4">Không có dữ liệu chốt sổ nào trong khoảng thời gian đã chọn.</p>';
-                    chartNoDataMsg.classList.remove('hidden');
-                    chartView.classList.add('hidden'); // Ẩn view biểu đồ nếu không có data
-                    listView.classList.remove('hidden'); // Mặc định hiển thị view list
-                } else {
-                    chartNoDataMsg.classList.add('hidden');
-                    
-                    // Lưu dữ liệu vào dataset của canvas để sử dụng sau
-                    chartCanvas.dataset.chartData = JSON.stringify(classDataForChart);
-                }
-
                 breakdownListEl.innerHTML = classBreakdownHtml;
-                
-                // Nếu đang ở view biểu đồ, vẽ lại
-                if (!chartView.classList.contains('hidden')) {
-                     if (hasData) {
-                         chartView.classList.remove('hidden');
-                         drawTotalRevenueChart(classDataForChart);
-                     } else {
-                         chartView.classList.add('hidden');
-                     }
-                }
             }
         }
 
 
         /**
-         * Mở Modal Thống Kê Tổng (CẬP NHẬT GIAO DIỆN)
+         * Mở Modal Thống Kê Tổng
          */
         function handleShowTotalStats() {
             
             const content = `
-                <div id="total-stats-modal" class="max-w-xl">
-                    <h2 class="text-2xl font-semibold mb-2 text-center">Tổng Doanh Thu</h2>
-                    
-                    <div class="grid grid-cols-2 gap-2 mb-2 p-2 bg-gray-50 rounded-lg border">
-                        <div>
-                            <label for="total-stats-start" class="block text-sm font-medium text-gray-700 mb-2">Từ Ngày:</label>
-                            <input type="date" id="total-stats-start" class="w-full px-1 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="${closingDateStartInput.value}">
-                        </div>
-                        <div>
-                            <label for="total-stats-end" class="block text-sm font-medium text-gray-700 mb-2">Đến Ngày:</label>
-                            <input type="date" id="total-stats-end" class="w-full px-1 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="${closingDateEndInput.value}">
-                        </div>
+                <h2 class="text-2xl font-semibold mb-2 text-center">Tổng Doanh Thu</h2>
+                
+                <div class="grid grid-cols-2 gap-2 mb-2 p-2 bg-gray-50 rounded-lg border">
+                    <div>
+                        <label for="total-stats-start" class="block text-sm font-medium text-gray-700 mb-2">Từ Ngày:</label>
+                        <input type="date" id="total-stats-start" class="w-full px-1 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="${closingDateStartInput.value}">
                     </div>
-                    <button id="calculate-total-stats-btn" class="w-full bg-purple-500 text-white font-semibold py-3 px-5 rounded-lg shadow-md hover:bg-purple-600 transition-colors flex items-center justify-center gap-2 mb-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                        </svg>
-                        Áp Dụng Lọc
-                    </button>
-    
-                    <div id="total-stats-result-container">
-                        <div class="text-center mb-4 p-4 bg-purple-100 rounded-lg">
-                            <p class="text-lg font-medium text-purple-700">TỔNG DOANH THU</p>
-                            <h3 id="total-stats-amount" class="text-3xl font-bold text-purple-900 mt-2">...</h3>
-                        </div>
-                        
-                        <!-- Tabs cho chi tiết (MỚI) -->
-                        <h4 class="text-xl font-semibold mb-2">Chi tiết theo lớp</h4>
-                        <div class="mb-4 flex border-b border-gray-200">
-                            <button id="stats-tab-list-view" class="flex-1 py-2 px-4 text-center font-medium text-sm text-blue-600 border-b-2 border-blue-600">
-                                Dạng Danh Sách
-                            </button>
-                            <button id="stats-tab-chart-view" class="flex-1 py-2 px-4 text-center font-medium text-sm text-gray-500 hover:text-gray-700">
-                                Biểu Đồ Hình Tròn
-                            </button>
-                        </div>
-    
-                        <!-- View Danh Sách -->
-                        <div id="total-stats-breakdown-list-container">
-                            <ul id="total-stats-breakdown-list" class="space-y-2 max-h-64 overflow-y-auto pr-2">
-                                <p class="text-gray-500 text-center italic py-4">Nhấn "Áp Dụng Lọc" để xem kết quả.</p>
-                            </ul>
-                        </div>
-                        
-                        <!-- View Biểu Đồ (MỚI) -->
-                        <div id="total-stats-chart-container" class="hidden">
-                            <div class="h-80 w-full">
-                                <canvas id="total-stats-chart-canvas" data-chart-data="[]"></canvas>
-                            </div>
-                            <p id="chart-no-data-msg" class="text-gray-500 text-center italic py-4 hidden">Không có dữ liệu để vẽ biểu đồ.</p>
-                        </div>
+                    <div>
+                        <label for="total-stats-end" class="block text-sm font-medium text-gray-700 mb-2">Đến Ngày:</label>
+                        <input type="date" id="total-stats-end" class="w-full px-1 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="${closingDateEndInput.value}">
                     </div>
-    
-                    <div class="flex justify-end mt-8">
-                        <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">Đóng</button>
+                </div>
+                <button id="calculate-total-stats-btn" class="w-full bg-purple-500 text-white font-semibold py-3 px-5 rounded-lg shadow-md hover:bg-purple-600 transition-colors flex items-center justify-center gap-2 mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
+                    Áp Dụng Lọc
+                </button>
+
+                <div id="total-stats-result-container">
+                    <div class="text-center mb-4 p-4 bg-purple-100 rounded-lg">
+                        <p class="text-lg font-medium text-purple-700"></p>
+                        <h3 id="total-stats-amount" class="text-3xl font-bold text-purple-900 mt-2">...</h3>
+                        <p class="text-sm text-gray-500 mt-2"></p>
                     </div>
+
+                    <h4 class="text-xl font-semibold mb-4">Chi tiết theo lớp</h4>
+                    <ul id="total-stats-breakdown-list" class="space-y-2 max-h-64 overflow-y-auto pr-2">
+                        <p class="text-gray-500 text-center italic py-4">Nhấn "Áp Dụng Lọc" để xem kết quả.</p>
+                    </ul>
+                </div>
+
+                <div class="flex justify-end mt-8">
+                    <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">Đóng</button>
                 </div>
             `;
             openModal(content);
             
-            // Tính toán và hiển thị dữ liệu ban đầu
             calculateAndDisplayTotalStats();
         }
 
