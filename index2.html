@@ -204,7 +204,7 @@
                                 Thanh Toán
                             </button>
                             <button id="stats-tab-attendance" class="flex-1 py-2 px-4 text-center font-medium text-sm text-gray-500 hover:text-gray-700">
-                                Điểm Danh
+                                Tổng Quan Điểm Danh
                             </button>
                         </div>
                         
@@ -290,18 +290,7 @@
                         
                         <!-- === View 2: Tổng Quan Điểm Danh (MỚI) === -->
                         <div id="stats-attendance-grid-view" class="hidden">
-                            <p class="text-sm text-gray-600 mb-4"></p>
-                            
-                            <!-- NÚT IN MỚI (ĐÃ THÊM) -->
-                            <div class="mb-4">
-                                <button id="print-attendance-grid-btn" class="w-full bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-teal-600 transition-colors flex items-center justify-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                                    </svg>
-                                    In danh sách
-                                </button>
-                            </div>
-
+                            <p class="text-sm text-gray-600 mb-4">Hiển thị tình hình đi học/vắng học của học sinh trong khoảng ngày đã chọn. (Xanh = Đi học, Đỏ = Vắng mặt)</p>
                             <!-- Bảng tổng quan điểm danh -->
                             <div id="attendance-grid-container" class="overflow-x-auto border border-gray-200 rounded-lg max-h-[600px] hidden">
                                 <table class="min-w-full divide-y divide-gray-200 text-xs">
@@ -458,7 +447,6 @@
         const attendanceGridTableHead = document.getElementById('attendance-grid-table-head');
         const attendanceGridTableBody = document.getElementById('attendance-grid-table-body');
         const noAttendanceGridMsg = document.getElementById('no-attendance-grid-msg');
-        const printAttendanceGridBtn = document.getElementById('print-attendance-grid-btn'); // THÊM MỚI
 
         // Modal
         const modalBackdrop = document.getElementById('modal-backdrop');
@@ -902,7 +890,7 @@
             // Các ô ngày
             sortedDates.forEach(date => {
                 const thDate = document.createElement('th');
-                thDate.className = "px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[30px]";
+                thDate.className = "px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[60px]";
                 // Format date to dd/mm
                 const d = new Date(date);
                 thDate.textContent = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
@@ -1471,9 +1459,6 @@
             confirmAllPaidBtn.addEventListener('click', () => massUpdatePaymentStatus('paid'));
             exportAllBillsBtn.addEventListener('click', handleExportAllBills);
 
-            // Thống kê (Tab 2)
-            printAttendanceGridBtn.addEventListener('click', handlePrintAttendanceGrid); // THÊM MỚI
-
             // Cập nhật thống kê khi đổi ngày lọc (Cập nhật cho cả 2 tab)
             closingDateStartInput.addEventListener('change', () => {
                 const cls = dbCache.classes.find(c => c.id === currentClassId);
@@ -1953,104 +1938,6 @@
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             printWindow.focus();
-        }
-        
-        /**
-         * Xử lý In Bảng Điểm Danh (0/1) (MỚI)
-         */
-        function handlePrintAttendanceGrid() {
-            const cls = dbCache.classes.find(c => c.id === currentClassId);
-            if (!cls) {
-                openModal('<h3 class="text-xl font-semibold mb-4">Lỗi</h3><p>Không tìm thấy dữ liệu lớp học.</p><div class="flex justify-end mt-6"><button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600">Đóng</button></div>');
-                return;
-            }
-
-            const students = cls.students || [];
-            
-            // 1. Lấy tất cả các ngày duy nhất (đã lọc)
-            const startDate = closingDateStartInput.value;
-            const endDate = closingDateEndInput.value;
-            
-            let allUniqueDates = new Set();
-            students.forEach(student => {
-                student.attendance.forEach(date => {
-                    const isAfterStart = !startDate || date >= startDate;
-                    const isBeforeEnd = !endDate || date <= endDate;
-                    if (isAfterStart && isBeforeEnd) {
-                        allUniqueDates.add(date);
-                    }
-                });
-            });
-
-            const sortedDates = Array.from(allUniqueDates).sort((a, b) => new Date(a) - new Date(b));
-
-            if (students.length === 0 || sortedDates.length === 0) {
-                openModal('<h3 class="text-xl font-semibold mb-4">Không Có Dữ Liệu</h3><p>Không có dữ liệu điểm danh nào trong khoảng ngày đã chọn để in.</p><div class="flex justify-end mt-6"><button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600">Đóng</button></div>');
-                return;
-            }
-            
-            // 2. Mở cửa sổ in và tạo HTML
-            const printWindow = window.open('', '', 'height=800,width=1000');
-            printWindow.document.write('<html><head><title>Bảng Điểm Danh - ' + cls.name + '</title>');
-            printWindow.document.write(`
-                <style>
-                    body { font-family: 'Inter', Arial, sans-serif; padding: 20px; }
-                    h1 { text-align: center; color: #333; }
-                    h2 { text-align: center; font-weight: normal; color: #555; font-style: italic; margin-top: -10px; }
-                    table { border-collapse: collapse; width: 100%; margin-top: 20px; font-size: 12px; }
-                    th, td { border: 1px solid #ccc; padding: 2px 3px; text-align: center; }
-                    th { background-color: #f4f4f4; }
-                    td:first-child, th:first-child { text-align: left; min-width: 150px; }
-                    @media print {
-                        body { padding: 10px; }
-                        h1, h2 { margin-bottom: 10px; }
-                        table { font-size: 20px; }
-                        th, td { padding: 4px 6px; }
-                    }
-                </style>
-            `);
-            printWindow.document.write('</head><body>');
-            
-            printWindow.document.write(`<h2>${cls.name}</h2>`);
-            printWindow.document.write(`<h2>(Từ ${startDate ? new Date(startDate).toLocaleDateString('vi-VN') : '...'} đến ${endDate ? new Date(endDate).toLocaleDateString('vi-VN') : '...'})</h2>`);
-            printWindow.document.write('<table>');
-
-            // 3. Render Header
-            let headerHtml = '<thead><tr><th>Học Sinh</th>';
-            sortedDates.forEach(date => {
-                const d = new Date(date);
-                const formattedDate = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
-                headerHtml += `<th>${formattedDate}</th>`;
-            });
-            headerHtml += '</tr></thead>';
-            printWindow.document.write(headerHtml);
-
-            // 4. Render Body
-            let bodyHtml = '<tbody>';
-            students.forEach(student => {
-                bodyHtml += '<tr>';
-                bodyHtml += `<td>${student.name}</td>`; // Tên học sinh
-                
-                sortedDates.forEach(date => {
-                    const hasAttended = student.attendance.includes(date);
-                    bodyHtml += `<td>${hasAttended ? '1' : '0'}</td>`; // 1 hoặc 0
-                });
-                
-                bodyHtml += '</tr>';
-            });
-            bodyHtml += '</tbody>';
-            printWindow.document.write(bodyHtml);
-
-            // 5. Đóng và in
-            printWindow.document.write('</table></body></html>');
-            printWindow.document.close();
-            printWindow.focus();
-            
-            // Cần một chút delay để CSS load xong trước khi in
-            setTimeout(() => {
-                printWindow.print();
-                printWindow.close();
-            }, 250);
         }
 
         /**
