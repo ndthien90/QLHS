@@ -1714,9 +1714,7 @@
             if (!billContent) return;
 
             const printWindow = window.open('', '', 'height=600,width=800');
-            //printWindow.document.write('<html><head><title>Hóa Đơn Học Phí</title>');
-    printWindow.document.write('<meta charset="UTF-8">'); // THÊM DÒNG NÀY
-    printWindow.document.write('<title>Hóa Đơn Học Phí</title>');
+            printWindow.document.write('<html><head><title>Hóa Đơn Học Phí</title>');
             printWindow.document.write(`
                 <style>
                     body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
@@ -1753,9 +1751,7 @@
             const endDate = closingDateEndInput.value;
 
             const printWindow = window.open('', '', 'height=800,width=1000');
-            //printWindow.document.write('<html><head><title>Toàn Bộ Hóa Đơn - ' + cls.name + '</title>');
-            printWindow.document.write('<meta charset="UTF-8">'); // THÊM DÒNG NÀY
-            printWindow.document.write('<title>Toàn Bộ Hóa Đơn - ' + cls.name + '</title>');
+            printWindow.document.write('<html><head><title>Toàn Bộ Hóa Đơn - ' + cls.name + '</title>');
             printWindow.document.write(`
                 <style>
                     body { font-family: sans-serif; line-height: 1.5; padding: 20px; margin: 0; background: #f4f4f4; }
