@@ -68,7 +68,7 @@
                     <input type="password" id="login-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors">Đăng Nhập</button>
-                <button type="button" id="register-btn" class="w-full mt-3 bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-600 transition-colors">Đăng Ký Tài Khoản Mới</button>
+                <button type="button" id="register-btn" class="display: none;" "w-full mt-3 bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-600 transition-colors">Đăng Ký Tài Khoản Mới</button>
                 <p id="login-error-msg" class="text-red-500 text-sm text-center mt-4 hidden"></p>
                 <p class="text-xs text-gray-500 text-center mt-4">Sử dụng Email và Mật khẩu để lưu trữ dữ liệu cá nhân của bạn trên Firebase.</p>
             </form>
@@ -1714,9 +1714,7 @@
             if (!billContent) return;
 
             const printWindow = window.open('', '', 'height=600,width=800');
-            //printWindow.document.write('<html><head><title>Hóa Đơn Học Phí</title>');
-    printWindow.document.write('<meta charset="UTF-8">'); // THÊM DÒNG NÀY
-    printWindow.document.write('<title>Hóa Đơn Học Phí</title>');
+            printWindow.document.write('<html><head><title>Hóa Đơn Học Phí</title>');
             printWindow.document.write(`
                 <style>
                     body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
@@ -1753,9 +1751,7 @@
             const endDate = closingDateEndInput.value;
 
             const printWindow = window.open('', '', 'height=800,width=1000');
-            //printWindow.document.write('<html><head><title>Toàn Bộ Hóa Đơn - ' + cls.name + '</title>');
-            printWindow.document.write('<meta charset="UTF-8">'); // THÊM DÒNG NÀY
-            printWindow.document.write('<title>Toàn Bộ Hóa Đơn - ' + cls.name + '</title>');
+            printWindow.document.write('<html><head><title>Toàn Bộ Hóa Đơn - ' + cls.name + '</title>');
             printWindow.document.write(`
                 <style>
                     body { font-family: sans-serif; line-height: 1.5; padding: 20px; margin: 0; background: #f4f4f4; }
