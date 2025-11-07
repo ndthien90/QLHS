@@ -46,22 +46,6 @@
             padding-left: 0.5rem;
             padding-right: 0.5rem;
         }
-        /* Style cho Drag and Drop */
-        .class-card.draggable {
-            cursor: grab;
-        }
-        .class-card.dragging {
-            opacity: 0.5;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .class-card.drag-over-up {
-            border-top: 4px solid #3b82f6; /* blue-500 */
-            margin-top: 4px;
-        }
-        .class-card.drag-over-down {
-            border-bottom: 4px solid #3b82f6; /* blue-500 */
-            margin-bottom: 4px;
-        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 antialiased">
@@ -698,11 +682,7 @@
                 const isLast = index === classes.length - 1;
 
                 const classCard = document.createElement('div');
-                // THÊM class 'draggable', data-class-id, và draggable="true"
-                classCard.className = 'class-card draggable bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-blue-500 transform hover:-translate-y-1';
-                classCard.setAttribute('draggable', 'true');
-                classCard.dataset.classId = cls.id;
-
+                classCard.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-blue-500 transform hover:-translate-y-1';
                 classCard.innerHTML = `
                     <h3 class="text-xl font-bold text-blue-700 truncate">${cls.name}</h3>
                     
@@ -1256,114 +1236,6 @@
             saveBtn.classList.add('hidden');
         }
 
-        // BIẾN TOÀN CỤC CHO DRAG & DROP
-        let draggedClassId = null;
-
-        /**
-         * Xử lý dragstart (Kéo)
-         */
-        function handleDragStart(e) {
-            const targetCard = e.target.closest('.class-card');
-            if (!targetCard) return;
-
-            draggedClassId = targetCard.dataset.classId;
-            e.dataTransfer.setData('text/plain', draggedClassId);
-            targetCard.classList.add('dragging');
-        }
-
-        /**
-         * Xử lý dragend (Kết thúc Kéo)
-         */
-        function handleDragEnd(e) {
-            e.target.closest('.class-card')?.classList.remove('dragging');
-            classList.querySelectorAll('.class-card').forEach(card => {
-                card.classList.remove('drag-over-up', 'drag-over-down');
-            });
-            draggedClassId = null;
-        }
-
-        /**
-         * Xử lý dragover (Di chuyển qua)
-         */
-        function handleDragOver(e) {
-            e.preventDefault(); 
-            const targetCard = e.target.closest('.class-card');
-            if (!targetCard || targetCard.dataset.classId === draggedClassId) {
-                classList.querySelectorAll('.class-card').forEach(card => {
-                    card.classList.remove('drag-over-up', 'drag-over-down');
-                });
-                return;
-            }
-
-            const boundingBox = targetCard.getBoundingClientRect();
-            const mouseY = e.clientY;
-
-            // Xác định xem chuột ở nửa trên hay nửa dưới của thẻ
-            const isNearTop = mouseY < boundingBox.top + boundingBox.height / 2;
-            
-            classList.querySelectorAll('.class-card').forEach(card => {
-                card.classList.remove('drag-over-up', 'drag-over-down');
-            });
-            
-            if (isNearTop) {
-                targetCard.classList.add('drag-over-up');
-            } else {
-                targetCard.classList.add('drag-over-down');
-            }
-        }
-
-        /**
-         * Xử lý drop (Thả)
-         */
-        function handleDrop(e) {
-            e.preventDefault();
-            const targetCard = e.target.closest('.class-card');
-            
-            classList.querySelectorAll('.class-card').forEach(card => {
-                card.classList.remove('drag-over-up', 'drag-over-down');
-            });
-
-            if (!targetCard || !draggedClassId || targetCard.dataset.classId === draggedClassId) return;
-
-            const draggedClass = dbCache.classes.find(c => c.id === draggedClassId);
-            const targetClass = dbCache.classes.find(c => c.id === targetCard.dataset.classId);
-
-            if (!draggedClass || !targetClass) return;
-
-            const draggingIndex = [...classList.children].findIndex(c => c.dataset.classId === draggedClassId);
-            const targetIndex = [...classList.children].findIndex(c => c.dataset.classId === targetClass.id);
-            
-            const mouseY = e.clientY;
-            const boundingBox = targetCard.getBoundingClientRect();
-            const isNearTop = mouseY < boundingBox.top + boundingBox.height / 2;
-
-            let newIndex = targetIndex;
-            if (!isNearTop && draggingIndex < targetIndex) {
-                 // Nếu thả ở nửa dưới và đang kéo từ trên xuống, thì không cần đổi index
-            } else if (isNearTop && draggingIndex > targetIndex) {
-                 // Nếu thả ở nửa trên và đang kéo từ dưới lên, thì không cần đổi index
-            } else {
-                 newIndex = isNearTop ? targetIndex : targetIndex + 1;
-            }
-            
-            // Xây dựng lại mảng thứ tự dựa trên vị trí mới
-            const sortedClasses = [...dbCache.classes].sort((a, b) => (a.order || 999999) - (b.order || 999999));
-            const draggedItem = sortedClasses.splice(draggingIndex, 1)[0];
-            sortedClasses.splice(newIndex > draggingIndex ? newIndex : newIndex, 0, draggedItem);
-            
-            // Cập nhật và lưu
-            const updates = [];
-            sortedClasses.forEach((cls, idx) => {
-                if (cls.order !== idx + 1) {
-                    cls.order = idx + 1;
-                    updates.push(saveClass(cls));
-                }
-            });
-            
-            Promise.all(updates); // Không cần await, onSnapshot sẽ tự động render lại
-        }
-
-
         /**
          * Xử lý click trên Bảng điều khiển (Xem / Xóa Lớp / Di chuyển)
          */
@@ -1547,12 +1419,6 @@
             CLASSES_COLLECTION_REF = collection(db, 'artifacts', appId, 'users', userId, 'classes');
             setupFirestoreListener();
             switchView('dashboard');
-            
-            // THÊM LISTENER DRAG & DROP CHO CLASS LIST SAU KHI ĐẢM BẢO DOM CÓ
-            classList.addEventListener('dragstart', handleDragStart);
-            classList.addEventListener('dragend', handleDragEnd);
-            classList.addEventListener('dragover', handleDragOver);
-            classList.addEventListener('drop', handleDrop);
         }
 
         /**
@@ -1677,6 +1543,7 @@
 
             // --- APP EVENTS ---
             addClassBtn.addEventListener('click', handleAddClass);
+            // sortClassesBtn.addEventListener('click', handleSortClasses); // ĐÃ XÓA
             totalStatsBtn.addEventListener('click', handleShowTotalStats); 
             backToDashboardBtn.addEventListener('click', () => switchView('dashboard'));
             editClassInfoBtn.addEventListener('click', handleEditClassInfo);
