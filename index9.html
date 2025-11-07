@@ -8,8 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Tải Chart.js (MỚI) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-    <!-- Tải Chart.js Datalabels Plugin (MỚI) -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <!-- Sử dụng font Inter cho giao diện hiện đại -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -503,14 +501,6 @@
         function formatCurrency(amount) {
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
         }
-        
-        /**
-         * Định dạng tiền tệ VNĐ (Không có ký hiệu)
-         */
-        function formatCurrencyNoSymbol(amount) {
-            return new Intl.NumberFormat('vi-VN').format(amount).replace(/₫/g, '').trim();
-        }
-
 
         /**
          * Chuyển đổi view
@@ -1868,7 +1858,7 @@
         ];
         
         /**
-         * Hàm vẽ biểu đồ hình tròn (Đã Cập Nhật Data Labels)
+         * Hàm vẽ biểu đồ hình tròn (MỚI)
          */
         function drawTotalRevenueChart(classData) {
             // Hủy biểu đồ cũ nếu có
@@ -1895,8 +1885,6 @@
                         borderWidth: 2,
                     }]
                 },
-                // Đăng ký và cấu hình plugin datalabels
-                plugins: [ChartDataLabels],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -1917,33 +1905,8 @@
                                     const value = context.parsed || 0;
                                     const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                     const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
-                                    // Hiển thị cả tên lớp (label), tiền (formatCurrency) và phần trăm (percentage)
                                     return `${label}: ${formatCurrency(value)} (${percentage}%)`;
                                 }
-                            }
-                        },
-                        // Cấu hình Data Labels
-                        datalabels: {
-                            color: '#fff', // Màu chữ trắng
-                            textAlign: 'center',
-                            font: {
-                                weight: 'bold',
-                                size: 12,
-                            },
-                            formatter: (value, context) => {
-                                // Nếu tổng bằng 0, không hiển thị label
-                                const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                                if (total === 0) return '';
-                                
-                                // Hiển thị giá trị tiền tệ
-                                return formatCurrencyNoSymbol(value) + ' VNĐ';
-                                
-                                // Nếu muốn hiển thị phần trăm thay vì tiền:
-                                /*
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = total > 0 ? (value / total * 100).toFixed(1) : 0;
-                                return percentage + '%';
-                                */
                             }
                         }
                     }
