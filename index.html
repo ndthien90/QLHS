@@ -665,6 +665,7 @@
                     if (cls) {
                         // Render lại cả 2 tab thống kê
                         renderStatistics(cls);
+                        renderAttendanceList(cls);
                         renderAttendanceGrid(cls);
                     } else {
                         switchView('dashboard');
@@ -1166,6 +1167,7 @@
                     cls.name = newName;
                     cls.tuitionFee = newFee;
                     saveClass(cls); 
+                    renderClassDetail(cls.id);
                     closeModal();
                 }
             }
@@ -1190,6 +1192,8 @@
                 cls.students.push(newStudent);
                 saveClass(cls); 
                 newStudentNameInput.value = '';
+                renderAttendanceList(cls);
+                updateAttendanceCheckboxes(cls, attendanceDateInput.value);
             }
         }
 
@@ -2585,7 +2589,9 @@
                 });
 
                 saveClass(cls); 
-                
+                renderAttendanceList(cls); //
+        // Cần cập nhật lại trạng thái checkbox cho ngày hiện tại (nếu có)
+        updateAttendanceCheckboxes(cls, attendanceDateInput.value); //
                 openModal(`
                     <h3 class="text-xl font-semibold mb-4">Hoàn Tất</h3>
                     <p>Đã nhập thành công ${names.length} học sinh mới.</p>
