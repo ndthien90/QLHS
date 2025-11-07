@@ -1990,11 +1990,15 @@
                             
                             // Sử dụng field 'labels' để định nghĩa text và line
                             labels: {
-                                value: {
-                                    // Hiển thị giá trị tiền tệ
-                                    formatter: (value, context) => {
-                                        return formatCurrencyNoSymbol(value);
-                                    },
+                                   value: {
+                                        // Hiển thị giá trị tiền tệ (dạng K)
+                                        formatter: (value, context) => {
+                                            if (value >= 1000) {
+                                                // Chia giá trị cho 1000 và làm tròn không có dấu phẩy
+                                                return new Intl.NumberFormat('vi-VN').format(Math.round(value / 1000)) + 'K';
+                                            }
+                                            return value + ' VNĐ'; // Giữ nguyên nếu nhỏ hơn 1K (tùy chọn)
+                                        },
                                     color: function(context) {
                                         return context.dataset.backgroundColor[context.dataIndex];
                                     },
