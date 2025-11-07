@@ -86,7 +86,14 @@
             
             <div class="flex flex-wrap gap-4 items-center">
                 <div id="dashboard-actions" class="flex flex-wrap gap-4 items-center">
-                    <!-- Nút Sắp Xếp Lớp đã được loại bỏ theo yêu cầu của người dùng -->
+                    <!-- THÊM NÚT SẮP XẾP LỚP HỌC -->
+                    <button id="sort-classes-btn" class="bg-indigo-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-indigo-600 transition-colors flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        Sắp Xếp Lớp
+                    </button>
+                    <!-- KẾT THÚC THÊM NÚT SẮP XẾP -->
                     <button id="total-stats-btn" class="bg-purple-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-purple-600 transition-colors flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -409,6 +416,7 @@
         const dashboardActions = document.getElementById('dashboard-actions');
         const addClassBtn = document.getElementById('add-class-btn');
         const totalStatsBtn = document.getElementById('total-stats-btn'); 
+        const sortClassesBtn = document.getElementById('sort-classes-btn'); // THÊM MỚI
         const backToDashboardBtn = document.getElementById('back-to-dashboard-btn');
         const classList = document.getElementById('class-list');
         const noClassesMsg = document.getElementById('no-classes-msg');
@@ -673,14 +681,8 @@
             }
             
             noClassesMsg.classList.add('hidden');
-            classes.forEach((cls, index) => {
+            classes.forEach(cls => {
                 const studentCount = cls.students ? cls.students.length : 0;
-                
-                // Vô hiệu hóa nút Lên nếu là lớp đầu tiên
-                const isFirst = index === 0;
-                // Vô hiệu hóa nút Xuống nếu là lớp cuối cùng
-                const isLast = index === classes.length - 1;
-
                 const classCard = document.createElement('div');
                 classCard.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-blue-500 transform hover:-translate-y-1';
                 classCard.innerHTML = `
@@ -691,70 +693,16 @@
                         <button class="view-class-btn text-sm font-medium text-blue-600 hover:text-blue-800" data-id="${cls.id}">
                             Xem Chi Tiết
                         </button>
-                        <div class="flex items-center space-x-2">
-                            <!-- Nút Lên (Move Up) -->
-                            <button class="move-up-btn text-gray-500 hover:text-indigo-600 p-2 rounded-full hover:bg-indigo-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" 
-                                data-id="${cls.id}" data-direction="up" ${isFirst ? 'disabled' : ''}>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-                                </svg>
-                            </button>
-                            <!-- Nút Xuống (Move Down) -->
-                            <button class="move-down-btn text-gray-500 hover:text-indigo-600 p-2 rounded-full hover:bg-indigo-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" 
-                                data-id="${cls.id}" data-direction="down" ${isLast ? 'disabled' : ''}>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            <!-- Nút Thùng Rác (Delete) -->
-                            <button class="delete-class-btn text-sm font-medium text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50" data-id="${cls.id}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </div>
+                        <button class="delete-class-btn text-sm font-medium text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50" data-id="${cls.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
                     </div>
                 `;
                 classList.appendChild(classCard);
             });
         }
-        
-        /**
-         * Xử lý di chuyển thứ tự lớp học (THAY THẾ HÀM SẮP XẾP CŨ)
-         */
-        function handleMoveClass(classId, direction) {
-            // Lấy danh sách lớp đã sắp xếp theo thứ tự hiện tại
-            const sortedClasses = [...dbCache.classes].sort((a, b) => (a.order || 999999) - (b.order || 999999));
-            const targetIndex = sortedClasses.findIndex(cls => cls.id === classId);
-
-            if (targetIndex === -1) return;
-
-            const targetClass = sortedClasses[targetIndex];
-            let swapClass = null;
-            let swapIndex = -1;
-
-            if (direction === 'up' && targetIndex > 0) {
-                swapIndex = targetIndex - 1;
-                swapClass = sortedClasses[swapIndex];
-            } else if (direction === 'down' && targetIndex < sortedClasses.length - 1) {
-                swapIndex = targetIndex + 1;
-                swapClass = sortedClasses[swapIndex];
-            }
-
-            if (swapClass) {
-                // Trao đổi order
-                const targetOrder = targetClass.order;
-                const swapOrder = swapClass.order;
-                
-                targetClass.order = swapOrder;
-                swapClass.order = targetOrder;
-
-                // Lưu cả hai lớp
-                saveClass(targetClass);
-                saveClass(swapClass);
-            }
-        }
-
 
         /**
          * Render Chi tiết lớp (gồm cả 3 phần: Thông tin, Điểm danh, Thống kê)
@@ -1070,9 +1018,161 @@
         }
 
         /**
-         * Xử lý Modal Sắp xếp Lớp Học (Hàm cũ đã bị xóa)
+         * Mở Modal Sắp xếp Lớp Học (THÊM MỚI)
          */
+        function handleSortClasses() {
+            // Lấy danh sách lớp đã được sắp xếp theo thứ tự hiện tại (order)
+            const classes = [...dbCache.classes].sort((a, b) => (a.order || 999999) - (b.order || 999999));
+            
+            let listHtml = '';
+            if (classes.length === 0) {
+                listHtml = '<p class="text-gray-500 text-center py-4">Chưa có lớp học nào để sắp xếp.</p>';
+            } else {
+                listHtml = classes.map((cls, index) => `
+                    <li class="sortable-class-item flex items-center justify-between p-3 bg-white rounded-lg shadow border border-gray-200 cursor-grab transition-all duration-150 hover:shadow-md" data-id="${cls.id}" data-order="${cls.order || (index + 1)}">
+                        <div class="flex items-center space-x-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 handle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <span class="text-gray-700 font-medium">${cls.name}</span>
+                        </div>
+                        <span class="order-display text-sm text-blue-500 font-semibold">Thứ tự: ${index + 1}</span>
+                    </li>
+                `).join('');
+                listHtml = `<ul id="class-sortable-list" class="space-y-3 max-h-96 overflow-y-auto pr-2">${listHtml}</ul>`;
+            }
+
+            const content = `
+                <div id="sort-classes-modal">
+                    <h2 class="text-2xl font-semibold mb-2 text-center text-indigo-600">Sắp Xếp Thứ Tự Các Lớp</h2>
+                    <p class="text-center text-gray-600 mb-6">Kéo và thả các lớp học để thay đổi thứ tự hiển thị trên Dashboard.</p>
+                    
+                    ${listHtml}
+
+                    <div class="flex justify-end gap-4 mt-8">
+                        <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">Hủy</button>
+                        <button type="button" id="modal-save-class-order" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50" ${classes.length === 0 ? 'disabled' : ''}>Lưu Thứ Tự</button>
+                    </div>
+                </div>
+            `;
+            openModal(content);
+            
+            if (classes.length > 0) {
+                setupDragAndDrop();
+            }
+        }
         
+        /**
+         * Thiết lập Drag and Drop cho việc sắp xếp lớp (THÊM MỚI)
+         */
+        function setupDragAndDrop() {
+            const list = document.getElementById('class-sortable-list');
+            if (!list) return;
+
+            let draggedItem = null;
+
+            list.addEventListener('dragstart', (e) => {
+                const target = e.target.closest('.sortable-class-item');
+                if (!target) return;
+                
+                draggedItem = target;
+                setTimeout(() => target.classList.add('opacity-40'), 0);
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            list.addEventListener('dragend', (e) => {
+                if(draggedItem) {
+                    draggedItem.classList.remove('opacity-40');
+                    draggedItem.classList.remove('drag-over');
+                    draggedItem = null;
+                }
+                updateOrderDisplay();
+            });
+
+            list.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const target = e.target.closest('.sortable-class-item');
+                if (!target || target === draggedItem) return;
+
+                const boundingBox = target.getBoundingClientRect();
+                const offset = e.clientY - boundingBox.top;
+                
+                if (draggedItem && draggedItem !== target) {
+                    // Xác định vị trí chèn (trước hay sau)
+                    if (offset > boundingBox.height / 2) {
+                        // Kéo xuống dưới: chèn sau target
+                        list.insertBefore(draggedItem, target.nextSibling);
+                    } else {
+                        // Kéo lên trên: chèn trước target
+                        list.insertBefore(draggedItem, target);
+                    }
+                }
+            });
+            
+            // Thêm thuộc tính draggable cho các item
+            list.querySelectorAll('.sortable-class-item').forEach(item => {
+                item.setAttribute('draggable', true);
+            });
+        }
+        
+        /**
+         * Cập nhật số thứ tự hiển thị sau khi kéo thả (THÊM MỚI)
+         */
+        function updateOrderDisplay() {
+            const list = document.getElementById('class-sortable-list');
+            if (!list) return;
+
+            const items = list.querySelectorAll('.sortable-class-item');
+            items.forEach((item, index) => {
+                const orderDisplay = item.querySelector('.order-display');
+                if (orderDisplay) {
+                    orderDisplay.textContent = `Thứ tự: ${index + 1}`;
+                }
+            });
+        }
+
+        /**
+         * Lưu thứ tự lớp học sau khi sắp xếp (THÊM MỚI)
+         */
+        async function handleSaveClassOrder() {
+            const list = document.getElementById('class-sortable-list');
+            if (!list) return;
+
+            const items = list.querySelectorAll('.sortable-class-item');
+            const classesToUpdate = [];
+
+            items.forEach((item, index) => {
+                const classId = item.dataset.id;
+                const newOrder = index + 1;
+
+                const cls = dbCache.classes.find(c => c.id === classId);
+                if (cls && cls.order !== newOrder) {
+                    cls.order = newOrder; // Cập nhật trong cache
+                    classesToUpdate.push(saveClass(cls)); // Tạo promise để lưu
+                }
+            });
+
+            if (classesToUpdate.length > 0) {
+                 const saveBtn = document.getElementById('modal-save-class-order');
+                 saveBtn.textContent = 'Đang Lưu...';
+                 saveBtn.disabled = true;
+
+                try {
+                    await Promise.all(classesToUpdate);
+                    closeModal();
+                } catch (error) {
+                    // Lỗi đã được xử lý trong saveClass, chỉ đóng modal
+                    console.error("Lỗi khi lưu thứ tự lớp:", error);
+                } finally {
+                    saveBtn.textContent = 'Lưu Thứ Tự';
+                    saveBtn.disabled = false;
+                }
+            } else {
+                closeModal(); // Đóng nếu không có gì thay đổi
+            }
+        }
+
+
         /**
          * Mở Modal Sửa Thông Tin Lớp
          */
@@ -1237,7 +1337,7 @@
         }
 
         /**
-         * Xử lý click trên Bảng điều khiển (Xem / Xóa Lớp / Di chuyển)
+         * Xử lý click trên Bảng điều khiển (Xem / Xóa Lớp)
          */
         function handleDashboardClick(event) {
             const target = event.target.closest('button');
@@ -1247,12 +1347,6 @@
             
             if (target.classList.contains('view-class-btn')) {
                 renderClassDetail(classId);
-            }
-            
-            // Xử lý nút di chuyển
-            if (target.classList.contains('move-up-btn') || target.classList.contains('move-down-btn')) {
-                const direction = target.dataset.direction;
-                handleMoveClass(classId, direction);
             }
             
             if (target.classList.contains('delete-class-btn')) {
@@ -1543,11 +1637,11 @@
 
             // --- APP EVENTS ---
             addClassBtn.addEventListener('click', handleAddClass);
-            // sortClassesBtn.addEventListener('click', handleSortClasses); // ĐÃ XÓA
+            sortClassesBtn.addEventListener('click', handleSortClasses); // THÊM MỚI
             totalStatsBtn.addEventListener('click', handleShowTotalStats); 
             backToDashboardBtn.addEventListener('click', () => switchView('dashboard'));
             editClassInfoBtn.addEventListener('click', handleEditClassInfo);
-            classList.addEventListener('click', handleDashboardClick); // CẬP NHẬT để xử lý nút di chuyển
+            classList.addEventListener('click', handleDashboardClick);
             addStudentForm.addEventListener('submit', handleAddStudent);
             
             exportStudentListBtn.addEventListener('click', handleExportStudentList);
@@ -1636,7 +1730,10 @@
                  if (e.target.id === 'stats-tab-chart-view') {
                     toggleTotalStatsView('chart');
                 }
-                // Nút LƯU THỨ TỰ LỚP đã bị xóa
+                // Thêm sự kiện cho nút LƯU THỨ TỰ LỚP (MỚI)
+                if (e.target.id === 'modal-save-class-order') {
+                    handleSaveClassOrder();
+                }
 
                 if (e.target.id === 'modal-confirm-action') {
                     confirmMassUpdate(e.target.dataset.status);
