@@ -1399,18 +1399,10 @@
             
             if (target.classList.contains('delete-class-btn')) {
                 const cls = dbCache.classes.find(c => c.id === classId);
-                // --- CẬP NHẬT MODAL XÓA LỚP VỚI MẬT KHẨU ---
                 const confirmModalContent = `
                     <h3 class="text-xl font-semibold mb-4">Xác Nhận Xóa Lớp</h3>
-                    <p class="text-gray-700 mb-4">Bạn có chắc chắn muốn xóa lớp <strong>${cls.name}</strong>? Mọi dữ liệu học sinh và điểm danh sẽ bị mất vĩnh viễn.</p>
-                    
-                    <div class="mb-4">
-                        <label for="delete-class-password" class="block text-sm font-medium text-gray-700 mb-2">Nhập mật khẩu xác nhận:</label>
-                        <input type="password" id="delete-class-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Mật khẩu...">
-                        <p id="delete-password-error" class="text-red-500 text-sm mt-1 hidden">Mật khẩu không đúng!</p>
-                    </div>
-
-                    <div class="flex justify-end gap-4 mt-6">
+                    <p class="text-gray-700">Bạn có chắc chắn muốn xóa lớp <strong>${cls.name}</strong>? Mọi dữ liệu học sinh và điểm danh sẽ bị mất vĩnh viễn.</p>
+                    <div class="flex justify-end gap-4 mt-8">
                         <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">Hủy</button>
                         <button type="button" id="modal-confirm-delete-class" data-id="${classId}" class="py-2 px-5 rounded-lg bg-red-500 text-white hover:bg-red-600">Xóa Vĩnh Viễn</button>
                     </div>
@@ -1796,24 +1788,10 @@
                 if (e.target.id === 'modal-confirm-action') {
                     confirmMassUpdate(e.target.dataset.status);
                 }
-                
-                // --- CẬP NHẬT LOGIC XÓA LỚP VỚI MẬT KHẨU ---
                 if (e.target.id === 'modal-confirm-delete-class') {
-                    const passwordInput = document.getElementById('delete-class-password');
-                    const errorMsg = document.getElementById('delete-password-error');
-                    
-                    if (passwordInput && passwordInput.value === '2091990') {
-                         deleteClassFromFirestore(e.target.dataset.id);
-                         closeModal();
-                    } else {
-                        if (errorMsg) errorMsg.classList.remove('hidden');
-                        if (passwordInput) {
-                            passwordInput.classList.add('border-red-500');
-                            passwordInput.focus();
-                        }
-                    }
+                    deleteClassFromFirestore(e.target.dataset.id);
+                    closeModal();
                 }
-                
                 if (e.target.id === 'modal-confirm-delete-student') {
                     const studentIdToDelete = e.target.dataset.studentId;
                     const cls = dbCache.classes.find(c => c.id === currentClassId);

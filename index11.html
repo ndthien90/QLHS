@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Biểu đồ tròn 3D với ECharts GL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <!-- BẮT BUỘC: Thư viện ECharts GL để kích hoạt tính năng 3D -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2.0.9/dist/echarts-gl.min.js"></script>
+    <style>
+        /* Thiết lập font Inter */
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        /* Đảm bảo container 3D có kích thước đầy đủ */
+        #chart-container {
+            width: 100%;
+            max-width: 900px;
+            height: 600px;
+            margin: 40px auto;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Phân tích thị phần (Biểu đồ 3D)</h1>
+        <p class="text-gray-500">Sử dụng ECharts GL để tạo hình ảnh trực quan 3 chiều.</p>
+    </div>
+    <!-- Container để vẽ biểu đồ -->
+    <div id="chart-container"></div>
+
+    <script type="text/javascript">
+        // Thiết lập cấu hình Firebase và Auth cơ bản (Mặc dù không dùng Firestore, nhưng cần thiết cho môi trường Canvas)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        // Dữ liệu mẫu cho biểu đồ
+        var data = [
+            {name: 'Laptop', value: 450, color: '#4c72d5'},
+            {name: 'Điện thoại', value: 300, color: '#5de372'},
+            {name: 'Máy tính bảng', value: 150, color: '#f55d5d'},
+            {name: 'Phụ kiện', value: 100, color: '#ffb94c'}
+        ];
+
+        // Khởi tạo instance ECharts
+        var myChart = echarts.init(document.getElementById('chart-container'));
+        
+        // --- CẤU HÌNH BIỂU ĐỒ TRÒN 3D ---
+        
+        /**
+         * Hàm tạo cấu hình series 3D Pie Chart.
+         * Nó mô phỏng các lát cắt 3D bằng cách dùng nhiều series 'surface' (bề mặt).
+         * @param {Array} pieData - Dữ liệu biểu đồ.
+         * @param {number} R - Bán kính của biểu đồ.
+         * @param {number} H - Chiều cao của biểu đồ (độ sâu 3D).
+         */
+        function getPie3D(pieData, R, H) {
+            let series = [];
+            let total = pieData.reduce((sum, item) => sum + item.value, 0);
+            let startAngle = 0;
+            const gap = 0.02; // Khoảng cách giữa các lát cắt (radian)
+
+            // Lặp qua từng lát cắt để tạo các series 'surface'
+            for (let i = 0; i < pieData.length; i++) {
+                const item = pieData[i];
+                const angle = (item.value / total) * 2 * Math.PI;
+                const endAngle = startAngle + angle;
+                const color = item.color;
+                
+                // 1. TOP Surface (Mặt trên của lát cắt)
+                series.push({
+                    name: item.name,
+                    type: 'surface',
+                    parametric: true,
+                    // Phương trình tham số: tạo một lát cắt trên mặt phẳng Z=H
+                    parametricEquation: {
+                        u: { min: 0, max: R, step: R / 10 },
+                        v: { min: startAngle, max: endAngle - gap, step: Math.PI / 30 },
+                        x: (u, v) => u * Math.cos(v),
+                        y: (u, v) => u * Math.sin(v),
+                        z: (u, v) => H 
+                    },
+                    itemStyle: { color: color, opacity: 0.9 },
+                    silent: false // Cho phép tương tác (tooltip)
+                });
+                
+                // 2. SIDE Walls (Mặt bên của lát cắt - cần nhiều lát để bao phủ)
+                // Hai mặt phẳng hình chữ nhật kết nối tâm và cạnh ngoài, có độ dày H
+                
+                // Mặt bên 1 (bắt đầu)
+                series.push({
+                    name: item.name,
+                    type: 'surface',
+                    parametric: true,
+                    parametricEquation: {
+                        u: { min: 0, max: R, step: R / 5 },
+                        v: { min: 0, max: H, step: H / 5 },
+                        x: (u, v) => u * Math.cos(startAngle),
+                        y: (u, v) => u * Math.sin(startAngle),
+                        z: (u, v) => v
+                    },
+                    itemStyle: { color: color, opacity: 0.7 },
+                    silent: true
+                });
+
+                // Mặt bên 2 (kết thúc)
+                series.push({
+                    name: item.name,
+                    type: 'surface',
+                    parametric: true,
+                    parametricEquation: {
+                        u: { min: 0, max: R, step: R / 5 },
+                        v: { min: 0, max: H, step: H / 5 },
+                        x: (u, v) => u * Math.cos(endAngle - gap),
+                        y: (u, v) => u * Math.sin(endAngle - gap),
+                        z: (u, v) => v
+                    },
+                    itemStyle: { color: color, opacity: 0.7 },
+                    silent: true
+                });
+
+                // 3. OUTER Wall (Vỏ bên ngoài cong)
+                series.push({
+                    name: item.name,
+                    type: 'surface',
+                    parametric: true,
+                    parametricEquation: {
+                        u: { min: 0, max: H, step: H / 10 },
+                        v: { min: startAngle, max: endAngle - gap, step: Math.PI / 30 },
+                        x: (u, v) => R * Math.cos(v),
+                        y: (u, v) => R * Math.sin(v),
+                        z: (u, v) => u
+                    },
+                    itemStyle: { color: color, opacity: 0.8 },
+                    silent: true
+                });
+
+
+                startAngle = endAngle;
+            }
+            return series;
+        }
+
+        // Tạo cấu hình option chính
+        var option = {
+            // Cấu hình môi trường 3D (BẮT BUỘC cho series 'surface')
+            grid3D: {
+                show: false,
+                boxHeight: 15,
+                viewControl: {
+                    // Cho phép người dùng xoay và phóng to/thu nhỏ
+                    autoRotate: true,
+                    autoRotateSpeed: 5,
+                    distance: 180, 
+                    alpha: 40, // Góc nghiêng ban đầu
+                    beta: 0, // Góc xoay ban đầu
+                    projection: 'perspective' // Phép chiếu phối cảnh
+                }
+            },
+            
+            // Cấu hình tooltip
+            tooltip: {
+                formatter: function (params) {
+                    if (params.seriesType === 'surface' && params.seriesIndex % 4 === 0) {
+                         const item = data[Math.floor(params.seriesIndex / 4)];
+                         return `
+                            <div class="p-2 rounded-lg bg-white shadow-lg">
+                                <span class="font-bold text-lg">${item.name}</span><br/>
+                                Giá trị: <span class="font-medium">${item.value}</span>
+                                (${((item.value / data.reduce((sum, d) => sum + d.value, 0)) * 100).toFixed(1)}%)
+                            </div>
+                         `;
+                    }
+                    return '';
+                }
+            },
+            
+            // Cấu hình legend
+            legend: {
+                data: data.map(item => item.name),
+                bottom: 10,
+                icon: 'circle'
+            },
+            
+            // Gọi hàm để tạo các lát cắt 3D (Bán kính: 50, Chiều cao: 10)
+            series: getPie3D(data, 50, 10) 
+        };
+
+        // Gắn cấu hình vào biểu đồ
+        myChart.setOption(option);
+        
+        // Điều chỉnh kích thước khi cửa sổ thay đổi
+        window.addEventListener('resize', () => {
+             myChart.resize();
+        });
+        
+    </script>
+</body>
+</html>
