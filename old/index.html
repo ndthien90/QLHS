@@ -2476,13 +2476,11 @@
                     th, td { border: 1px solid #ccc; padding: 2px 3px; text-align: center; }
                     th { background-color: #f4f4f4; }
                     td:first-child, th:first-child { text-align: left; min-width: 150px; }
-                    tr.total-row td { background-color: #e5e7eb; font-weight: bold; border-top: 2px solid #9ca3af; }
                     @media print {
                         body { padding: 10px; }
                         h1, h2 { margin-bottom: 10px; }
                         table { font-size: 20px; }
                         th, td { padding: 4px 6px; }
-                        tr.total-row td { background-color: #e5e7eb !important; -webkit-print-color-adjust: exact; }
                     }
                 </style>
             `);
@@ -2499,67 +2497,26 @@
                 const formattedDate = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
                 headerHtml += `<th>${formattedDate}</th>`;
             });
-            // THÊM 2 CỘT MỚI Ở HEADER
-            headerHtml += '<th>Tổng Buổi</th>';
-            headerHtml += '<th>Thành Tiền</th>';
             headerHtml += '</tr></thead>';
             printWindow.document.write(headerHtml);
 
             // 4. Render Body
             let bodyHtml = '<tbody>';
-            
-            // Biến tổng cộng cho toàn bộ lớp
-            let grandTotalSessions = 0;
-            let grandTotalMoney = 0;
-
             students.forEach(student => {
                 bodyHtml += '<tr>';
                 bodyHtml += `<td>${student.name}</td>`; // Tên học sinh
                 
-                let studentTotalSessions = 0; // Biến đếm tổng buổi của học sinh này
-
                 sortedDates.forEach(date => {
                     const hasAttended = student.attendance.includes(date);
-                    if (hasAttended) {
-                        studentTotalSessions++;
-                    }
                     bodyHtml += `<td>${hasAttended ? '1' : '0'}</td>`; // 1 hoặc 0
                 });
                 
-                // Tính toán tiền
-                const totalMoney = studentTotalSessions * cls.tuitionFee;
-
-                // Cộng dồn vào tổng lớp
-                grandTotalSessions += studentTotalSessions;
-                grandTotalMoney += totalMoney;
-
-                // THÊM 2 CỘT MỚI Ở BODY
-                bodyHtml += `<td style="font-weight: bold; background-color: #f9f9f9;">${studentTotalSessions}</td>`;
-                bodyHtml += `<td style="font-weight: bold; text-align: right; background-color: #f9f9f9;">${formatCurrency(totalMoney)}</td>`;
-
                 bodyHtml += '</tr>';
             });
-
-            // 5. Render Footer Row (Hàng Tổng Cộng)
-            bodyHtml += '<tr class="total-row">';
-            bodyHtml += '<td style="text-align: right; padding-right: 10px;">TỔNG CỘNG</td>'; // Cột tên
-
-            // Các cột ngày để trống
-            sortedDates.forEach(() => {
-                bodyHtml += '<td></td>';
-            });
-
-            // Tổng số buổi
-            bodyHtml += `<td>${grandTotalSessions}</td>`;
-            // Tổng tiền
-            bodyHtml += `<td style="text-align: right;">${formatCurrency(grandTotalMoney)}</td>`;
-            
-            bodyHtml += '</tr>';
-
             bodyHtml += '</tbody>';
             printWindow.document.write(bodyHtml);
 
-            // 6. Đóng và in
+            // 5. Đóng và in
             printWindow.document.write('</table></body></html>');
             printWindow.document.close();
             printWindow.focus();
