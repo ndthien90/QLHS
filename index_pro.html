@@ -218,7 +218,7 @@
                     <div class="bg-white p-4 sm:p-3 rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold mb-4 text-gray-700">Thống Kê Lớp Học</h3>
 
-                        <!-- === TABS (MỚI) === -->
+                        <!-- === TABS === -->
                         <div class="mb-4 flex border-b border-gray-200">
                             <button id="stats-tab-billing" class="flex-1 py-2 px-4 text-center font-medium text-sm text-blue-600 border-b-2 border-blue-600">
                                 Thanh Toán
@@ -240,7 +240,7 @@
                             </div>
                         </div>
 
-                        <!-- === View 1: Thống kê Thanh Toán (Nội dung cũ) === -->
+                        <!-- === View 1: Thống kê Thanh Toán === -->
                         <div id="stats-billing-view">
                             <div class="mb-4">
                                 <button id="view-closing-history-btn" class="w-full text-sm bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-300 transition-colors flex items-center justify-center gap-2">
@@ -308,11 +308,11 @@
                             <p id="no-students-msg" class="text-gray-500 text-center py-6 text-md hidden">Chưa có học sinh nào trong lớp này.</p>
                         </div>
                         
-                        <!-- === View 2: Tổng Quan Điểm Danh (MỚI) === -->
+                        <!-- === View 2: Tổng Quan Điểm Danh === -->
                         <div id="stats-attendance-grid-view" class="hidden">
                             <p class="text-sm text-gray-600 mb-4"></p>
                             
-                            <!-- NÚT IN MỚI (ĐÃ THÊM) -->
+                            <!-- NÚT IN MỚI -->
                             <div class="mb-4">
                                 <button id="print-attendance-grid-btn" class="w-full bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-teal-600 transition-colors flex items-center justify-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -353,7 +353,7 @@
 
     <!-- Script chính của ứng dụng -->
     <script type="module">
-        // === FIREBASE IMPORTS (MỚI) ===
+        // === FIREBASE IMPORTS ===
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { 
             getAuth, 
@@ -374,23 +374,21 @@
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 
-        // Cấu hình Firebase (Lấy từ biến toàn cục của Canvas)
+        // Cấu hình Firebase
         let appId;
          let firebaseConfig;
-        // --- KHỞI TẠO VÀ CẤU HÌNH FIREBASE ---
         try {
             if (typeof __firebase_config !== 'undefined') {
                 firebaseConfig = JSON.parse(__firebase_config);
             } else {
-                // Cấu hình dự phòng nếu không có __firebase_config
                 firebaseConfig = {
-    		apiKey: "AIzaSyCjk2GSw5sVSsnhSnu0zeCdM7Fy06na92o",
-    		authDomain: "qlhsapp.firebaseapp.com",
-    		projectId: "qlhsapp",
-    		storageBucket: "qlhsapp.firebasestorage.app",
-    		messagingSenderId: "267919381815",
-    		appId: "1:267919381815:web:6b0f469e6492a9c87636b2",
-   		measurementId: "G-ZZPSRHR0Z7"
+                    apiKey: "AIzaSyCjk2GSw5sVSsnhSnu0zeCdM7Fy06na92o",
+                    authDomain: "qlhsapp.firebaseapp.com",
+                    projectId: "qlhsapp",
+                    storageBucket: "qlhsapp.firebasestorage.app",
+                    messagingSenderId: "267919381815",
+                    appId: "1:267919381815:web:6b0f469e6492a9c87636b2",
+                    measurementId: "G-ZZPSRHR0Z7"
                 };
             }
             appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -404,22 +402,22 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        setLogLevel('Debug'); // Bật log cho Firestore
+        setLogLevel('Debug'); 
 
-        // Biến toàn cục (Cập nhật)
-        let CLASSES_COLLECTION_REF = null; // Collection tham chiếu, sẽ được cập nhật sau khi có userId
+        // Biến toàn cục
+        let CLASSES_COLLECTION_REF = null; 
         let userId = null;
         let dbCache = {
             classes: []
-        }; // Cache dữ liệu lớp học, dùng để render
+        }; 
         let currentClassId = null;
         const today = new Date().toISOString().split('T')[0];
-        let unsubscribeClasses = null; // Dùng để hủy lắng nghe Firestore
-        let totalRevenueChart = null; // Biến lưu trữ đối tượng Chart.js (MỚI)
+        let unsubscribeClasses = null; 
+        let totalRevenueChart = null; 
 
 
-        // ----- BỘ CHỌN DOM (Phần Ứng Dụng) -----
-        const loadingOverlay = document.getElementById('loading-overlay'); // MỚI
+        // ----- BỘ CHỌN DOM -----
+        const loadingOverlay = document.getElementById('loading-overlay');
         const appContainer = document.getElementById('app-container');
         const dashboardView = document.getElementById('dashboard-view');
         const classDetailView = document.getElementById('class-detail-view');
@@ -429,7 +427,7 @@
         const backToDashboardBtn = document.getElementById('back-to-dashboard-btn');
         const classList = document.getElementById('class-list');
         const noClassesMsg = document.getElementById('no-classes-msg');
-        const userInfoEl = document.getElementById('user-info'); // MỚI
+        const userInfoEl = document.getElementById('user-info');
 
         // Chi tiết lớp
         const classDetailName = document.getElementById('class-detail-name');
@@ -451,18 +449,16 @@
         const checkAllBtn = document.getElementById('check-all-attendance');
         const uncheckAllBtn = document.getElementById('uncheck-all-attendance');
 
-        // Thống kê (Chung)
+        // Thống kê
         const closingDateStartInput = document.getElementById('closing-date-start');
         const closingDateEndInput = document.getElementById('closing-date-end');
-        const noStudentsMsg = document.getElementById('no-students-msg'); // Chung cho cả 2 tab
+        const noStudentsMsg = document.getElementById('no-students-msg');
         
-        // Thống kê (Tabs - MỚI)
         const statsTabBilling = document.getElementById('stats-tab-billing');
         const statsTabAttendance = document.getElementById('stats-tab-attendance');
         const statsBillingView = document.getElementById('stats-billing-view');
         const statsAttendanceGridView = document.getElementById('stats-attendance-grid-view');
 
-        // Thống kê (Tab 1: Thanh Toán)
         const viewClosingHistoryBtn = document.getElementById('view-closing-history-btn');
         const statsTableBody = document.getElementById('stats-table-body');
         const totalSessionsFooter = document.getElementById('total-sessions-footer');
@@ -474,12 +470,11 @@
         const totalSessionsCardFooter = document.getElementById('total-sessions-card-footer');
         const totalTuitionCardFooter = document.getElementById('total-tuition-card-footer');
         
-        // Thống kê (Tab 2: Grid Điểm Danh - MỚI)
         const attendanceGridContainer = document.getElementById('attendance-grid-container');
         const attendanceGridTableHead = document.getElementById('attendance-grid-table-head');
         const attendanceGridTableBody = document.getElementById('attendance-grid-table-body');
         const noAttendanceGridMsg = document.getElementById('no-attendance-grid-msg');
-        const printAttendanceGridBtn = document.getElementById('print-attendance-grid-btn'); // THÊM MỚI
+        const printAttendanceGridBtn = document.getElementById('print-attendance-grid-btn');
 
         // Modal
         const modalBackdrop = document.getElementById('modal-backdrop');
@@ -488,32 +483,22 @@
         // LOGIN
         const loginView = document.getElementById('login-view');
         const loginForm = document.getElementById('login-form');
-        const loginEmailInput = document.getElementById('login-email'); // Đổi từ username sang email
+        const loginEmailInput = document.getElementById('login-email');
         const loginPasswordInput = document.getElementById('login-password');
         const loginErrorMsg = document.getElementById('login-error-msg');
         const logoutBtn = document.getElementById('logout-btn');
-        const registerBtn = document.getElementById('register-btn'); // MỚI
+        const registerBtn = document.getElementById('register-btn');
         
         // ----- HÀM HỖ TRỢ CHUNG -----
 
-        /**
-         * Định dạng tiền tệ VNĐ
-         */
         function formatCurrency(amount) {
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
         }
         
-        /**
-         * Định dạng tiền tệ VNĐ (Không có ký hiệu)
-         */
         function formatCurrencyNoSymbol(amount) {
             return new Intl.NumberFormat('vi-VN').format(amount).replace(/₫/g, '').trim();
         }
 
-
-        /**
-         * Chuyển đổi view
-         */
         function switchView(viewName) {
             if (viewName === 'dashboard') {
                 dashboardView.classList.remove('hidden');
@@ -529,22 +514,18 @@
             }
         }
         
-        /**
-         * Mở Modal
-         */
         function openModal(contentHtml) {
             modalContent.innerHTML = contentHtml;
             modalBackdrop.classList.remove('hidden');
-            // Cần set lại max-width cho modal content vì modal total stats sẽ rộng hơn
             modalContent.classList.remove('max-w-xl'); 
             modalContent.classList.add('max-w-lg');
             if (modalContent.querySelector('#total-stats-modal')) {
                  modalContent.classList.remove('max-w-lg');
-                 modalContent.classList.add('max-w-xl'); // Cho modal tổng thống kê rộng hơn
+                 modalContent.classList.add('max-w-xl');
             }
             if (modalContent.querySelector('#sort-classes-modal')) {
                  modalContent.classList.remove('max-w-lg');
-                 modalContent.classList.add('max-w-xl'); // Cho modal sắp xếp lớp
+                 modalContent.classList.add('max-w-xl');
             }
             setTimeout(() => {
                 modalContent.classList.remove('scale-95', 'opacity-0');
@@ -552,14 +533,10 @@
             }, 50);
         }
 
-        /**
-         * Đóng Modal
-         */
         function closeModal() {
             modalContent.classList.add('scale-95', 'opacity-0');
             modalContent.classList.remove('scale-100', 'opacity-100');
             
-            // Hủy biểu đồ nếu có
             if (totalRevenueChart) {
                 totalRevenueChart.destroy();
                 totalRevenueChart = null;
@@ -573,9 +550,6 @@
             }, 300);
         }
 
-        /**
-         * Lấy danh sách điểm danh đã lọc theo 2 mốc NGÀY BẮT ĐẦU và NGÀY KẾT THÚC
-         */
         function getFilteredAttendance(studentAttendance) {
             const startDate = closingDateStartInput.value;
             const endDate = closingDateEndInput.value;
@@ -587,11 +561,8 @@
             });
         }
         
-        // --- HÀM XỬ LÝ FIREBASE (MỚI) ---
+        // --- HÀM XỬ LÝ FIREBASE ---
         
-        /**
-         * Lấy tham chiếu Document cho Class
-         */
         function getClassDocRef(classId) {
              if (!CLASSES_COLLECTION_REF) {
                 console.error("CLASSES_COLLECTION_REF chưa được khởi tạo.");
@@ -600,15 +571,10 @@
             return doc(CLASSES_COLLECTION_REF, classId);
         }
 
-        /**
-         * Lưu dữ liệu lớp học (Firestore)
-         */
         async function saveClass(classObject) {
             if (!userId) return;
             try {
-                // Đảm bảo có trường order nếu không có
                 if (typeof classObject.order === 'undefined' || classObject.order === null) {
-                    // Đặt order là số lượng lớp + 1 để nó nằm cuối cùng
                     const maxOrder = dbCache.classes.reduce((max, cls) => Math.max(max, cls.order || 0), 0);
                     classObject.order = maxOrder + 1;
                 }
@@ -620,9 +586,6 @@
             }
         }
 
-        /**
-         * Xóa lớp học (Firestore)
-         */
         async function deleteClassFromFirestore(classId) {
             if (!userId) return;
             try {
@@ -633,12 +596,9 @@
             }
         }
         
-        /**
-         * Lắng nghe cập nhật dữ liệu từ Firestore (Real-time)
-         */
         function setupFirestoreListener() {
             if (unsubscribeClasses) {
-                unsubscribeClasses(); // Hủy lắng nghe cũ nếu có
+                unsubscribeClasses();
             }
             
             if (!CLASSES_COLLECTION_REF) return;
@@ -649,9 +609,8 @@
                 const newClasses = [];
                 snapshot.forEach((doc) => {
                     let cls = doc.data();
-                    // Đảm bảo lớp học có trường order, nếu không thì gán giá trị mặc định
                     if (typeof cls.order !== 'number') {
-                        cls.order = 999999; // Giá trị lớn để lớp không có order bị đẩy xuống cuối
+                        cls.order = 999999;
                     }
                     newClasses.push(cls);
                 });
@@ -662,7 +621,6 @@
                 if (currentClassId) {
                     const cls = dbCache.classes.find(c => c.id === currentClassId);
                     if (cls) {
-                        // Render lại cả 2 tab thống kê
                         renderStatistics(cls);
                         renderAttendanceList(cls);
                         renderAttendanceGrid(cls);
@@ -677,17 +635,12 @@
         }
 
 
-        // ----- HÀM RENDER CHÍNH (Điều chỉnh để dùng dbCache) -----
+        // ----- HÀM RENDER CHÍNH -----
 
-        /**
-         * Render Bảng điều khiển (Danh sách lớp)
-         */
         function renderDashboard() {
             classList.innerHTML = '';
             
-            // SẮP XẾP LỚP HỌC TRƯỚC KHI RENDER
             const classes = [...dbCache.classes].sort((a, b) => {
-                // Đảm bảo a.order và b.order là số, nếu không thì coi là giá trị lớn nhất (đẩy xuống cuối)
                 const orderA = a.order || 999999;
                 const orderB = b.order || 999999;
                 return orderA - orderB;
@@ -702,13 +655,10 @@
             classes.forEach((cls, index) => {
                 const studentCount = cls.students ? cls.students.length : 0;
                 
-                // Vô hiệu hóa nút Lên nếu là lớp đầu tiên
                 const isFirst = index === 0;
-                // Vô hiệu hóa nút Xuống nếu là lớp cuối cùng
                 const isLast = index === classes.length - 1;
 
                 const classCard = document.createElement('div');
-                // THÊM class 'draggable', data-class-id, và draggable="true"
                 classCard.className = 'class-card draggable bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-blue-500 transform hover:-translate-y-1';
                 classCard.setAttribute('draggable', 'true');
                 classCard.dataset.classId = cls.id;
@@ -722,21 +672,18 @@
                             Xem Chi Tiết
                         </button>
                         <div class="flex items-center space-x-2">
-                            <!-- Nút Lên (Move Up) -->
                             <button class="move-up-btn text-gray-500 hover:text-indigo-600 p-2 rounded-full hover:bg-indigo-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" 
                                 data-id="${cls.id}" data-direction="up" ${isFirst ? 'disabled' : ''}>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
                                 </svg>
                             </button>
-                            <!-- Nút Xuống (Move Down) -->
                             <button class="move-down-btn text-gray-500 hover:text-indigo-600 p-2 rounded-full hover:bg-indigo-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" 
                                 data-id="${cls.id}" data-direction="down" ${isLast ? 'disabled' : ''}>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
-                            <!-- Nút Thùng Rác (Delete) -->
                             <button class="delete-class-btn text-sm font-medium text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50" data-id="${cls.id}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -749,11 +696,7 @@
             });
         }
         
-        /**
-         * Xử lý di chuyển thứ tự lớp học (THAY THẾ HÀM SẮP XẾP CŨ)
-         */
         function handleMoveClass(classId, direction) {
-            // Lấy danh sách lớp đã sắp xếp theo thứ tự hiện tại
             const sortedClasses = [...dbCache.classes].sort((a, b) => (a.order || 999999) - (b.order || 999999));
             const targetIndex = sortedClasses.findIndex(cls => cls.id === classId);
 
@@ -772,23 +715,17 @@
             }
 
             if (swapClass) {
-                // Trao đổi order
                 const targetOrder = targetClass.order;
                 const swapOrder = swapClass.order;
                 
                 targetClass.order = swapOrder;
                 swapClass.order = targetOrder;
 
-                // Lưu cả hai lớp
                 saveClass(targetClass);
                 saveClass(swapClass);
             }
         }
 
-
-        /**
-         * Render Chi tiết lớp (gồm cả 3 phần: Thông tin, Điểm danh, Thống kê)
-         */
         function renderClassDetail(classId) {
             const cls = dbCache.classes.find(c => c.id === classId);
             if (!cls) {
@@ -799,17 +736,14 @@
 
             currentClassId = classId;
 
-            // Cập nhật thông tin chung
             classDetailName.textContent = cls.name;
             classDetailFee.innerHTML = `Học phí: <strong>${formatCurrency(cls.tuitionFee)} / buổi</strong>`;
             
-            // Cập nhật 3 phần con
             renderAttendanceList(cls);
-            renderStatistics(cls); // Render tab thanh toán
-            renderAttendanceGrid(cls); // Render tab điểm danh (MỚI)
+            renderStatistics(cls); 
+            renderAttendanceGrid(cls); 
             updateAttendanceCheckboxes(cls, attendanceDateInput.value);
 
-            // Reset về tab Thanh Toán khi mở lớp (MỚI)
             if (statsTabBilling) statsTabBilling.click();
 
             switchView('class_detail');
@@ -829,26 +763,28 @@
                 const studentRow = document.createElement('div');
                 studentRow.className = 'flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors';
                 
-                // Nút toggle miễn phí
-                const isFree = student.isFreeTuition || false;
-                const freeBtnClass = isFree ? 'text-gray-400 hover:text-gray-600 line-through' : 'text-yellow-500 hover:text-yellow-600';
-                const freeBtnTitle = isFree ? 'Đang miễn phí (Bấm để tính phí)' : 'Đang tính phí (Bấm để miễn phí)';
+                // Nút Miễn phí: Màu tím nếu đang bật, màu xám nếu tắt
+                const isFree = student.isFree === true;
+                const freeBtnClass = isFree ? 'text-purple-600 bg-purple-100' : 'text-gray-400 hover:text-purple-600';
+                const freeBtnTitle = isFree ? 'Đang miễn học phí' : 'Đặt làm miễn học phí';
+                const nameStyle = isFree ? 'text-purple-700 font-semibold' : 'text-gray-700 font-medium';
 
                 studentRow.innerHTML = `
                     <input type="checkbox" class="attendance-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 flex-shrink-0" data-student-id="${student.id}">
                     
                     <div class="flex-grow flex items-center ml-4" data-student-id="${student.id}">
-                        <input type="text" value="${student.name}" class="student-name-input w-full text-gray-700 font-medium border rounded-md py-1 transition-all duration-200" data-student-id="${student.id}" disabled>
-                        
-                        <!-- Nút Miễn Phí (MỚI) -->
-                        <button class="toggle-free-tuition-btn p-1 rounded-full flex-shrink-0 ml-2 ${freeBtnClass}" data-student-id="${student.id}" title="${freeBtnTitle}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </button>
+                        <input type="text" value="${student.name}" class="student-name-input w-full ${nameStyle} border rounded-md py-1 transition-all duration-200" data-student-id="${student.id}" disabled>
+                        ${isFree ? '<span class="ml-2 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full border border-purple-200 flex-shrink-0">Miễn phí</span>' : ''}
                     </div>
                     
-                    <button class="edit-student-name-btn p-2 text-gray-500 hover:text-blue-600 rounded-full flex-shrink-0 ml-2" data-student-id="${student.id}">
+                    <!-- Nút Toggle Miễn Phí -->
+                    <button class="toggle-free-btn p-2 rounded-full flex-shrink-0 ml-2 ${freeBtnClass}" data-student-id="${student.id}" title="${freeBtnTitle}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+                    </button>
+
+                    <button class="edit-student-name-btn p-2 text-gray-500 hover:text-blue-600 rounded-full flex-shrink-0 ml-2" data-student-id="${student.id}" title="Sửa tên">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
@@ -863,9 +799,6 @@
             });
         }
 
-        /**
-         * Cập nhật trạng thái checkbox điểm danh dựa trên ngày
-         */
         function updateAttendanceCheckboxes(cls, date) {
             if (!cls.students) return;
             
@@ -882,7 +815,7 @@
         }
 
         /**
-         * Render Bảng Thống Kê (Tab 1: Thanh Toán)
+         * Render Bảng Thống Kê (CẬP NHẬT: Logic miễn phí)
          */
         function renderStatistics(cls) {
             statsTableBody.innerHTML = '';
@@ -895,14 +828,14 @@
             classDetailCount.innerHTML = `Sĩ số: <strong>${studentCount} học sinh</strong>`;
             
             if (studentCount === 0) {
-                noStudentsMsg.classList.remove('hidden'); // Hiển thị tin nhắn
+                noStudentsMsg.classList.remove('hidden'); 
                 statsCardFooter.classList.add('hidden');
                 const tableFooter = statsTableBody.closest('table').querySelector('tfoot');
                 if (tableFooter) tableFooter.classList.add('hidden');
                 return;
             }
 
-            noStudentsMsg.classList.add('hidden'); // Ẩn tin nhắn
+            noStudentsMsg.classList.add('hidden'); 
             statsCardFooter.classList.remove('hidden');
             const tableFooter = statsTableBody.closest('table').querySelector('tfoot');
             if (tableFooter) tableFooter.classList.remove('hidden');
@@ -917,26 +850,28 @@
                 const filteredAttendance = getFilteredAttendance(student.attendance);
                 const sessionCount = filteredAttendance.length;
 
-                // CẬP NHẬT: Kiểm tra miễn phí
-                const isFree = student.isFreeTuition || false;
+                // CẬP NHẬT: Logic tính tiền nếu miễn phí
+                const isFree = student.isFree === true;
                 const studentTotalTuition = isFree ? 0 : sessionCount * cls.tuitionFee;
                 
                 totalSessions += sessionCount;
                 grandTotalTuition += studentTotalTuition;
                 
                 const paymentStatus = student.paymentStatus === 'paid';
-                
                 const rowHighlightClass = paymentStatus ? 'bg-green-100' : 'bg-white';
                 
                 const statusText = paymentStatus ? 'Đã Đóng' : 'Chưa Đóng';
                 const paymentButtonText = paymentStatus ? 'Đánh dấu Chưa Đóng' : 'Đánh dấu Đã Đóng';
                 const paymentButtonClass = paymentStatus ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800';
                 const statusBadgeClass = paymentStatus ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                
+                // Hiển thị số tiền hoặc chữ "Miễn phí"
+                const amountDisplay = isFree ? '<span class="text-purple-600 font-bold">Miễn phí</span>' : formatCurrency(studentTotalTuition);
 
-                // Format tiền hiển thị
-                const tuitionDisplay = isFree 
-                    ? '<span class="text-green-600 font-bold italic">Miễn phí</span>' 
-                    : formatCurrency(studentTotalTuition);
+                // Thêm badge miễn phí cạnh tên
+                const nameDisplay = isFree ? 
+                    `${student.name} <span class="ml-1 text-xs text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full border border-purple-200">Miễn</span>` : 
+                    student.name;
 
                 // --- 1. Render cho Bảng (Desktop) ---
                 const statusBadgeTable = `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadgeClass}">${statusText}</span>`;
@@ -945,13 +880,13 @@
                 row.className = rowHighlightClass; 
                 row.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 cursor-pointer hover:text-blue-600 view-student-detail" data-student-id="${student.id}">
-                        ${student.name} ${isFree ? '<span class="ml-1 text-xs text-gray-500"></span>' : ''}
+                        ${nameDisplay}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">${sessionCount}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${tuitionDisplay}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${amountDisplay}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">${statusBadgeTable}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                        <button class="toggle-payment-btn ${paymentButtonClass}" data-student-id="${student.id}">${paymentButtonText}</button>
+                        ${!isFree ? `<button class="toggle-payment-btn ${paymentButtonClass}" data-student-id="${student.id}">${paymentButtonText}</button>` : '<span class="text-gray-400 text-xs italic">Không cần đóng</span>'}
                         <button class="export-bill-btn text-blue-600 hover:text-blue-800" data-student-id="${student.id}">Xuất Bill</button>
                         <button class="delete-student-btn text-gray-500 hover:text-red-600" data-student-id="${student.id}">Xóa</button>
                     </td>
@@ -964,8 +899,8 @@
                 card.className = `border rounded-lg p-4 shadow-sm ${rowHighlightClass}`;
                 card.innerHTML = `
                     <div class="flex justify-between items-start gap-3">
-                        <h4 class="font-bold text-lg text-gray-900 cursor-pointer view-student-detail" data-student-id="${student.id}">${student.name} ${isFree ? '<span class="text-xs font-normal text-gray-500"></span>' : ''}</h4>
-                        <strong class="text-gray-800 text-lg text-right flex-shrink-0">${isFree ? 'Miễn phí' : formatCurrency(studentTotalTuition)}</strong>
+                        <h4 class="font-bold text-lg text-gray-900 cursor-pointer view-student-detail" data-student-id="${student.id}">${nameDisplay}</h4>
+                        <strong class="text-gray-800 text-lg text-right flex-shrink-0">${amountDisplay}</strong>
                     </div>
                     <div class="flex justify-between items-center mt-3 text-sm">
                         <div>
@@ -978,9 +913,10 @@
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-2 mt-4 border-t pt-3">
+                        ${!isFree ? `
                         <button class="toggle-payment-btn text-sm py-1 px-3 rounded-md ${paymentStatus ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} font-medium" data-student-id="${student.id}">
                             ${paymentStatus ? 'Chưa Đóng' : 'Đã Đóng'}
-                        </button>
+                        </button>` : ''}
                         <button class="export-bill-btn text-sm py-1 px-3 rounded-md bg-blue-100 text-blue-700 font-medium" data-student-id="${student.id}">
                             Xuất Bill
                         </button>
@@ -992,23 +928,18 @@
                 statsCardList.appendChild(card);
             });
 
-            // Cập nhật tfoot (Cả Bảng và Thẻ)
             totalSessionsFooter.textContent = totalSessions;
             totalTuitionFooter.textContent = formatCurrency(grandTotalTuition);
             totalSessionsCardFooter.textContent = totalSessions;
             totalTuitionCardFooter.textContent = formatCurrency(grandTotalTuition);
         }
         
-        /**
-         * Render Bảng Tổng Quan Điểm Danh (Grid) (MỚI - Tab 2)
-         */
         function renderAttendanceGrid(cls) {
             attendanceGridTableHead.innerHTML = '';
             attendanceGridTableBody.innerHTML = '';
 
             const students = cls.students || [];
             
-            // 1. Lấy tất cả các ngày duy nhất (đã lọc) từ TẤT CẢ học sinh
             const startDate = closingDateStartInput.value;
             const endDate = closingDateEndInput.value;
             
@@ -1025,37 +956,30 @@
 
             const sortedDates = Array.from(allUniqueDates).sort((a, b) => new Date(a) - new Date(b));
 
-            // Kiểm tra nếu không có học sinh HOẶC không có ngày nào trong khoảng
             if (students.length === 0 || sortedDates.length === 0) {
                 noAttendanceGridMsg.classList.remove('hidden');
                 attendanceGridContainer.classList.add('hidden');
-                // Nếu không có học sinh, cũng ẩn tin nhắn "no students" của tab thanh toán
                 if (students.length === 0) {
                     noStudentsMsg.classList.remove('hidden');
                 } else {
-                    noStudentsMsg.classList.add('hidden'); // Phải ẩn tin nhắn này nếu tab grid ẩn
+                    noStudentsMsg.classList.add('hidden'); 
                 }
                 return;
             }
 
-            // Có dữ liệu, hiển thị bảng, ẩn tin nhắn
             noAttendanceGridMsg.classList.add('hidden');
             noStudentsMsg.classList.add('hidden');
             attendanceGridContainer.classList.remove('hidden');
 
-            // 2. Render Header (Dates)
             const headerRow = document.createElement('tr');
-            // Ô đầu tiên (sticky)
             const thStudent = document.createElement('th');
             thStudent.className = "px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50 z-20";
             thStudent.textContent = 'Học Sinh';
             headerRow.appendChild(thStudent);
             
-            // Các ô ngày
             sortedDates.forEach(date => {
                 const thDate = document.createElement('th');
                 thDate.className = "px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[30px]";
-                // Format date to dd/mm
                 const d = new Date(date);
                 thDate.textContent = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
                 thDate.title = d.toLocaleDateString('vi-VN');
@@ -1063,24 +987,27 @@
             });
             attendanceGridTableHead.appendChild(headerRow);
 
-            // 3. Render Body (Students)
             students.forEach(student => {
                 const row = document.createElement('tr');
                 
-                // Ô tên (sticky)
                 const tdStudent = document.createElement('td');
                 tdStudent.className = "px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900 sticky left-0 bg-white z-10";
-                tdStudent.textContent = student.name;
+                
+                // Hiển thị tên (kèm badge nếu miễn phí)
+                if (student.isFree) {
+                    tdStudent.innerHTML = `${student.name} <span class="text-xs text-purple-600 bg-purple-100 px-1 rounded ml-1">M</span>`;
+                } else {
+                    tdStudent.textContent = student.name;
+                }
+                
                 row.appendChild(tdStudent);
 
-                // Các ô điểm danh
                 sortedDates.forEach(date => {
                     const tdCell = document.createElement('td');
                     tdCell.className = "text-center";
                     
                     const hasAttended = student.attendance.includes(date);
                     
-                    // Thêm 1 div con để tạo ô vuông màu
                     const colorBox = document.createElement('div');
                     colorBox.className = `w-5 h-5 mx-auto rounded ${hasAttended ? 'bg-green-400' : 'bg-red-300'}`;
                     colorBox.title = `${student.name} - ${hasAttended ? 'Có mặt' : 'Vắng mặt'} ngày ${new Date(date).toLocaleDateString('vi-VN')}`;
@@ -1093,11 +1020,8 @@
         }
 
 
-        // ----- HÀM XỬ LÝ SỰ KIỆN (Cập nhật logic lưu) -----
+        // ----- HÀM XỬ LÝ SỰ KIỆN -----
         
-        /**
-         * Mở Modal Thêm Lớp Mới
-         */
         function handleAddClass() {
             const content = `
                 <h2 class="text-2xl font-semibold mb-6">Tạo Lớp Học Mới</h2>
@@ -1119,9 +1043,6 @@
             openModal(content);
         }
 
-        /**
-         * Mở Modal Sửa Thông Tin Lớp
-         */
         function handleEditClassInfo() {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             if (!cls) return;
@@ -1146,9 +1067,6 @@
         }
 
 
-        /**
-         * Xử lý Submit Modal
-         */
         function handleModalSubmit(event) {
             event.preventDefault();
             const form = event.target;
@@ -1164,7 +1082,7 @@
                         tuitionFee: classFee,
                         students: [],
                         closingHistory: [],
-                        order: dbCache.classes.length + 1 // THÊM order
+                        order: dbCache.classes.length + 1
                     };
                     saveClass(newClass); 
                     closeModal();
@@ -1188,9 +1106,6 @@
             }
         }
 
-        /**
-         * Xử lý Thêm Học Sinh
-         */
         function handleAddStudent(event) {
             event.preventDefault();
             const studentName = newStudentNameInput.value.trim();
@@ -1203,7 +1118,7 @@
                     name: studentName,
                     attendance: [],
                     paymentStatus: 'unpaid',
-                    isFreeTuition: false // Mặc định không miễn phí
+                    isFree: false // Mặc định không miễn phí
                 };
                 cls.students.push(newStudent);
                 saveClass(cls); 
@@ -1213,9 +1128,6 @@
             }
         }
 
-        /**
-         * Xử lý Lưu Điểm Danh
-         */
         function handleSaveAttendance() {
             const date = attendanceDateInput.value;
             if (!date || !currentClassId) return;
@@ -1258,9 +1170,6 @@
             }, 2000);
         }
 
-        /**
-         * Xử lý lưu tên học sinh
-         */
         function saveStudentName(studentId) {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             if (!cls) return;
@@ -1289,9 +1198,6 @@
         // BIẾN TOÀN CỤC CHO DRAG & DROP
         let draggedClassId = null;
 
-        /**
-         * Xử lý dragstart (Kéo)
-         */
         function handleDragStart(e) {
             const targetCard = e.target.closest('.class-card');
             if (!targetCard) return;
@@ -1301,9 +1207,6 @@
             targetCard.classList.add('dragging');
         }
 
-        /**
-         * Xử lý dragend (Kết thúc Kéo)
-         */
         function handleDragEnd(e) {
             e.target.closest('.class-card')?.classList.remove('dragging');
             classList.querySelectorAll('.class-card').forEach(card => {
@@ -1312,9 +1215,6 @@
             draggedClassId = null;
         }
 
-        /**
-         * Xử lý dragover (Di chuyển qua)
-         */
         function handleDragOver(e) {
             e.preventDefault(); 
             const targetCard = e.target.closest('.class-card');
@@ -1328,7 +1228,6 @@
             const boundingBox = targetCard.getBoundingClientRect();
             const mouseY = e.clientY;
 
-            // Xác định xem chuột ở nửa trên hay nửa dưới của thẻ
             const isNearTop = mouseY < boundingBox.top + boundingBox.height / 2;
             
             classList.querySelectorAll('.class-card').forEach(card => {
@@ -1342,9 +1241,6 @@
             }
         }
 
-        /**
-         * Xử lý drop (Thả)
-         */
         function handleDrop(e) {
             e.preventDefault();
             const targetCard = e.target.closest('.class-card');
@@ -1369,19 +1265,15 @@
 
             let newIndex = targetIndex;
             if (!isNearTop && draggingIndex < targetIndex) {
-                 // Nếu thả ở nửa dưới và đang kéo từ trên xuống, thì không cần đổi index
             } else if (isNearTop && draggingIndex > targetIndex) {
-                 // Nếu thả ở nửa trên và đang kéo từ dưới lên, thì không cần đổi index
             } else {
                  newIndex = isNearTop ? targetIndex : targetIndex + 1;
             }
             
-            // Xây dựng lại mảng thứ tự dựa trên vị trí mới
             const sortedClasses = [...dbCache.classes].sort((a, b) => (a.order || 999999) - (b.order || 999999));
             const draggedItem = sortedClasses.splice(draggingIndex, 1)[0];
             sortedClasses.splice(newIndex > draggingIndex ? newIndex : newIndex, 0, draggedItem);
             
-            // Cập nhật và lưu
             const updates = [];
             sortedClasses.forEach((cls, idx) => {
                 if (cls.order !== idx + 1) {
@@ -1390,13 +1282,10 @@
                 }
             });
             
-            Promise.all(updates); // Không cần await, onSnapshot sẽ tự động render lại
+            Promise.all(updates);
         }
 
 
-        /**
-         * Xử lý click trên Bảng điều khiển (Xem / Xóa Lớp / Di chuyển)
-         */
         function handleDashboardClick(event) {
             const target = event.target.closest('button');
             if (!target) return;
@@ -1407,7 +1296,6 @@
                 renderClassDetail(classId);
             }
             
-            // Xử lý nút di chuyển
             if (target.classList.contains('move-up-btn') || target.classList.contains('move-down-btn')) {
                 const direction = target.dataset.direction;
                 handleMoveClass(classId, direction);
@@ -1415,7 +1303,6 @@
             
             if (target.classList.contains('delete-class-btn')) {
                 const cls = dbCache.classes.find(c => c.id === classId);
-                // --- CẬP NHẬT MODAL XÓA LỚP VỚI MẬT KHẨU (KHÔI PHỤC) ---
                 const confirmModalContent = `
                     <h3 class="text-xl font-semibold mb-4">Xác Nhận Xóa Lớp</h3>
                     <p class="text-gray-700 mb-4">Bạn có chắc chắn muốn xóa lớp <strong>${cls.name}</strong>? Mọi dữ liệu học sinh và điểm danh sẽ bị mất vĩnh viễn.</p>
@@ -1435,9 +1322,6 @@
             }
         }
         
-        /**
-         * Xử lý click trên Bảng Thống Kê (Chi tiết, Thanh toán, Xóa)
-         */
         function handleStatsTableClick(event) {
             const target = event.target;
             const studentId = target.closest('[data-student-id]')?.dataset.studentId;
@@ -1476,9 +1360,6 @@
             }
         }
 
-        /**
-         * Xử lý xác nhận/reset thanh toán hàng loạt (Chốt Sổ)
-         */
         function massUpdatePaymentStatus(newStatus) {
             if (!currentClassId) return;
             const cls = dbCache.classes.find(c => c.id === currentClassId);
@@ -1511,9 +1392,6 @@
             openModal(confirmModalContent);
         }
         
-        /**
-         * Hàm thực hiện logic chốt sổ/reset sau khi xác nhận (CẬP NHẬT: Miễn phí)
-         */
         function confirmMassUpdate(newStatus) {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             if (!cls) return;
@@ -1528,11 +1406,11 @@
                 cls.students.forEach(student => {
                     if (student.paymentStatus === 'paid') { 
                         const filteredAttendance = student.attendance.filter(date => date >= startDate && date <= endDate);
-                        // CẬP NHẬT: Nếu miễn phí thì không tính tiền vào lịch sử
-                        const currentTuition = student.isFreeTuition ? 0 : (filteredAttendance.length * cls.tuitionFee);
-                        
                         totalSessionsClosed += filteredAttendance.length;
-                        totalTuitionClosed += currentTuition;
+                        
+                        // CẬP NHẬT: Không tính tiền nếu miễn phí
+                        const sessionPrice = student.isFree ? 0 : cls.tuitionFee;
+                        totalTuitionClosed += filteredAttendance.length * sessionPrice;
                     }
                 });
                 
@@ -1568,11 +1446,8 @@
             closeModal();
         }
 
-        // --- HÀM XỬ LÝ LOGIN VÀ AUTHENTICATION (CẬP NHẬT LỚN) ---
+        // --- HÀM XỬ LÝ LOGIN VÀ AUTHENTICATION ---
 
-        /**
-         * Hiển thị giao diện ứng dụng chính
-         */
         function showApp(email) {
             loadingOverlay.classList.add('hidden');
             loginView.classList.add('hidden');
@@ -1589,16 +1464,12 @@
             setupFirestoreListener();
             switchView('dashboard');
             
-            // THÊM LISTENER DRAG & DROP CHO CLASS LIST SAU KHI ĐẢM BẢO DOM CÓ (KHÔI PHỤC)
             classList.addEventListener('dragstart', handleDragStart);
             classList.addEventListener('dragend', handleDragEnd);
             classList.addEventListener('dragover', handleDragOver);
             classList.addEventListener('drop', handleDrop);
         }
 
-        /**
-         * Hiển thị giao diện đăng nhập
-         */
         function showLogin() {
             loadingOverlay.classList.add('hidden');
             appContainer.classList.add('hidden');
@@ -1608,9 +1479,6 @@
             loginErrorMsg.classList.add('hidden');
         }
 
-        /**
-         * Xử lý sự kiện submit form đăng nhập
-         */
         async function handleLogin(event) {
             event.preventDefault();
             const email = loginEmailInput.value;
@@ -1635,9 +1503,6 @@
             }
         }
         
-        /**
-         * Xử lý đăng ký
-         */
         async function handleRegister() {
             const email = loginEmailInput.value;
             const password = loginPasswordInput.value;
@@ -1652,8 +1517,6 @@
             loadingOverlay.classList.remove('hidden');
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
-                // Auth listener sẽ xử lý việc hiển thị showApp
-                // Sử dụng openModal thay vì alert
                 openModal(`
                     <h3 class="text-xl font-semibold mb-4">Đăng Ký Thành Công</h3>
                     <p>Chào mừng bạn! Bạn đã được tự động đăng nhập.</p>
@@ -1677,9 +1540,6 @@
             }
         }
 
-        /**
-         * Xử lý sự kiện đăng xuất
-         */
         function handleLogout() {
             if (unsubscribeClasses) {
                 unsubscribeClasses(); 
@@ -1693,9 +1553,6 @@
             });
         }
         
-        /**
-         * Lắng nghe trạng thái Auth (QUAN TRỌNG NHẤT)
-         */
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 userId = user.uid;
@@ -1707,21 +1564,19 @@
         });
 
 
-        // ----- LẮNG NGHE SỰ KIỆN (Ứng dụng) -----
+        // ----- LẮNG NGHE SỰ KIỆN -----
         
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- FIREBASE AUTH EVENTS ---
             loginForm.addEventListener('submit', handleLogin);
             registerBtn.addEventListener('click', handleRegister);
             logoutBtn.addEventListener('click', handleLogout);
 
-            // --- APP EVENTS ---
             addClassBtn.addEventListener('click', handleAddClass);
             totalStatsBtn.addEventListener('click', handleShowTotalStats); 
             backToDashboardBtn.addEventListener('click', () => switchView('dashboard'));
             editClassInfoBtn.addEventListener('click', handleEditClassInfo);
-            classList.addEventListener('click', handleDashboardClick); // CẬP NHẬT để xử lý nút di chuyển
+            classList.addEventListener('click', handleDashboardClick);
             addStudentForm.addEventListener('submit', handleAddStudent);
             
             exportStudentListBtn.addEventListener('click', handleExportStudentList);
@@ -1732,7 +1587,6 @@
             checkAllBtn.addEventListener('click', () => toggleAllAttendance(true));
             uncheckAllBtn.addEventListener('click', () => toggleAllAttendance(false));
             
-            // Thống kê - Tabs (MỚI)
             statsTabBilling.addEventListener('click', () => {
                 statsTabBilling.classList.add('text-blue-600', 'border-blue-600');
                 statsTabBilling.classList.remove('text-gray-500', 'hover:text-gray-700', 'border-transparent');
@@ -1749,32 +1603,28 @@
                 statsTabBilling.classList.remove('text-blue-600', 'border-blue-600');
                 statsBillingView.classList.add('hidden');
                 statsAttendanceGridView.classList.remove('hidden');
-                // Cần render lại grid khi click tab, phòng trường hợp dữ liệu chưa có
                 const cls = dbCache.classes.find(c => c.id === currentClassId);
                 if (cls) renderAttendanceGrid(cls);
             });
 
-            // Thống kê (Tab 1)
             viewClosingHistoryBtn.addEventListener('click', handleViewClosingHistory);
             confirmAllPaidBtn.addEventListener('click', () => massUpdatePaymentStatus('paid'));
             exportAllBillsBtn.addEventListener('click', handleExportAllBills);
 
-            // Thống kê (Tab 2)
-            printAttendanceGridBtn.addEventListener('click', handlePrintAttendanceGrid); // THÊM MỚI
+            printAttendanceGridBtn.addEventListener('click', handlePrintAttendanceGrid);
 
-            // Cập nhật thống kê khi đổi ngày lọc (Cập nhật cho cả 2 tab)
             closingDateStartInput.addEventListener('change', () => {
                 const cls = dbCache.classes.find(c => c.id === currentClassId);
                 if (cls) {
                     renderStatistics(cls);
-                    renderAttendanceGrid(cls); // THÊM
+                    renderAttendanceGrid(cls); 
                 }
             });
             closingDateEndInput.addEventListener('change', () => {
                 const cls = dbCache.classes.find(c => c.id === currentClassId);
                 if (cls) {
                     renderStatistics(cls);
-                    renderAttendanceGrid(cls); // THÊM
+                    renderAttendanceGrid(cls); 
                 }
             });
             
@@ -1783,16 +1633,13 @@
                 if (cls) updateAttendanceCheckboxes(cls, attendanceDateInput.value);
             });
 
-            // Click trên bảng thống kê / thẻ (Tab 1)
             statsTableBody.addEventListener('click', handleStatsTableClick);
             statsCardList.addEventListener('click', handleStatsTableClick); 
 
-            // CẬP NHẬT: Đảm bảo lắng nghe đúng sự kiện cho phần sửa tên (KHÔI PHỤC)
             attendanceStudentList.addEventListener('click', handleAttendanceListClick);
             attendanceStudentList.addEventListener('keydown', handleStudentNameKeydown);
             attendanceStudentList.addEventListener('focusout', handleStudentNameBlur, true); 
 
-            // --- MODAL EVENTS ---
             modalBackdrop.addEventListener('click', (e) => {
                 if (e.target === modalBackdrop || e.target.id === 'modal-cancel') {
                     closeModal();
@@ -1800,24 +1647,20 @@
                 if (e.target.id === 'modal-print-bill') {
                     handlePrintBill();
                 }
-                // Thêm sự kiện cho nút "Áp Dụng Lọc" trong modal Tổng Thống Kê
                 if (e.target.id === 'calculate-total-stats-btn') {
                     calculateAndDisplayTotalStats();
                 }
-                // Thêm sự kiện cho nút chuyển tab trong modal Tổng Thống Kê (MỚI)
                 if (e.target.id === 'stats-tab-list-view') {
                     toggleTotalStatsView('list');
                 }
                  if (e.target.id === 'stats-tab-chart-view') {
                     toggleTotalStatsView('chart');
                 }
-                // Nút LƯU THỨ TỰ LỚP đã bị xóa
 
                 if (e.target.id === 'modal-confirm-action') {
                     confirmMassUpdate(e.target.dataset.status);
                 }
                 
-                // --- CẬP NHẬT LOGIC XÓA LỚP VỚI MẬT KHẨU (KHÔI PHỤC) ---
                 if (e.target.id === 'modal-confirm-delete-class') {
                     const passwordInput = document.getElementById('delete-class-password');
                     const errorMsg = document.getElementById('delete-password-error');
@@ -1901,23 +1744,18 @@
 
         });
         
-        // Mảng màu sắc cố định cho biểu đồ (để đảm bảo tính nhất quán)
         const PIE_CHART_COLORS = [
-            'rgb(6, 182, 212)',  // Cyan-500
-            'rgb(249, 115, 22)', // Orange-500
-            'rgb(16, 185, 129)', // Emerald-500
-            'rgb(124, 58, 237)', // Violet-600
-            'rgb(236, 72, 153)', // Pink-500
-            'rgb(250, 204, 21)', // Amber-400
-            'rgb(100, 116, 139)',// Slate-500
-            'rgb(239, 68, 68)',  // Red-500
+            'rgb(6, 182, 212)', 
+            'rgb(249, 115, 22)',
+            'rgb(16, 185, 129)', 
+            'rgb(124, 58, 237)', 
+            'rgb(236, 72, 153)',
+            'rgb(250, 204, 21)', 
+            'rgb(100, 116, 139)',
+            'rgb(239, 68, 68)',  
         ];
         
-        /**
-         * Hàm vẽ biểu đồ hình tròn (Đã Cập Nhật Data Labels)
-         */
         function drawTotalRevenueChart(classData) {
-            // Hủy biểu đồ cũ nếu có
             if (totalRevenueChart) {
                 totalRevenueChart.destroy();
             }
@@ -1929,7 +1767,7 @@
             const backgroundColors = labels.map((_, index) => PIE_CHART_COLORS[index % PIE_CHART_COLORS.length]);
 
             totalRevenueChart = new Chart(ctx, {
-                type: 'doughnut', // Dùng doughnut cho đẹp hơn
+                type: 'doughnut',
                 data: {
                     labels: labels,
                     datasets: [{
@@ -1941,7 +1779,6 @@
                         borderWidth: 2,
                     }]
                 },
-                // Đăng ký và cấu hình plugin datalabels
                 plugins: [ChartDataLabels],
                 options: {
                     responsive: true,
@@ -1963,33 +1800,21 @@
                                     const value = context.parsed || 0;
                                     const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                     const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
-                                    // Hiển thị cả tên lớp (label), tiền (formatCurrency) và phần trăm (percentage)
                                     return `${label}: ${formatCurrency(value)} (${percentage}%)`;
                                 }
                             }
                         },
-                        // Cấu hình Data Labels
                         datalabels: {
-                            color: '#fff', // Màu chữ trắng
+                            color: '#fff',
                             textAlign: 'center',
                             font: {
                                 weight: 'bold',
                                 size: 12,
                             },
                             formatter: (value, context) => {
-                                // Nếu tổng bằng 0, không hiển thị label
                                 const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
                                 if (total === 0) return '';
-                                
-                                // Hiển thị giá trị tiền tệ
                                 return formatCurrencyNoSymbol(value/1000) + 'K';
-                                
-                                // Nếu muốn hiển thị phần trăm thay vì tiền:
-                                /*
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = total > 0 ? (value / total * 100).toFixed(1) : 0;
-                                return percentage + '%';
-                                */
                             }
                         }
                     }
@@ -1997,9 +1822,6 @@
             });
         }
         
-        /**
-         * Chuyển đổi giữa View Danh Sách và View Biểu Đồ (MỚI)
-         */
         function toggleTotalStatsView(view) {
             const listTab = document.getElementById('stats-tab-list-view');
             const chartTab = document.getElementById('stats-tab-chart-view');
@@ -2024,7 +1846,6 @@
                 listView.classList.add('hidden');
                 chartView.classList.remove('hidden');
                 
-                // Vẽ biểu đồ ngay khi chuyển sang tab biểu đồ
                 const classData = chartCanvas.dataset.chartData ? JSON.parse(chartCanvas.dataset.chartData) : [];
                 if (classData.length > 0) {
                     drawTotalRevenueChart(classData);
@@ -2032,16 +1853,13 @@
             }
         }
 
-        /**
-         * Tính toán và hiển thị Thống Kê Tổng Doanh Thu (Cập nhật để chuẩn bị dữ liệu biểu đồ)
-         */
         function calculateAndDisplayTotalStats() {
             const startDate = document.getElementById('total-stats-start')?.value;
             const endDate = document.getElementById('total-stats-end')?.value;
 
             let grandTotalTuition = 0;
             let classBreakdownHtml = '';
-            let classDataForChart = []; // MỚI: Dữ liệu cho biểu đồ
+            let classDataForChart = [];
             let hasData = false;
 
             dbCache.classes.forEach(cls => {
@@ -2076,14 +1894,12 @@
                 
                 if(classTotal > 0) {
                     hasData = true;
-                    // Chuẩn bị dữ liệu cho danh sách
                     classBreakdownHtml += `
                         <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                             <span class="font-medium text-gray-700">${cls.name}</span>
                             <strong class="text-gray-900">${formatCurrency(classTotal)}</strong>
                         </li>
                     `;
-                    // Chuẩn bị dữ liệu cho biểu đồ (MỚI)
                     classDataForChart.push({ name: cls.name, total: classTotal });
                 }
             });
@@ -2102,18 +1918,15 @@
                 if (!hasData || grandTotalTuition === 0) {
                     classBreakdownHtml = '<p class="text-gray-500 text-center italic py-4">Không có dữ liệu chốt sổ nào trong khoảng thời gian đã chọn.</p>';
                     chartNoDataMsg.classList.remove('hidden');
-                    chartView.classList.add('hidden'); // Ẩn view biểu đồ nếu không có data
-                    listView.classList.remove('hidden'); // Mặc định hiển thị view list
+                    chartView.classList.add('hidden');
+                    listView.classList.remove('hidden'); 
                 } else {
                     chartNoDataMsg.classList.add('hidden');
-                    
-                    // Lưu dữ liệu vào dataset của canvas để sử dụng sau
                     chartCanvas.dataset.chartData = JSON.stringify(classDataForChart);
                 }
 
                 breakdownListEl.innerHTML = classBreakdownHtml;
                 
-                // Nếu đang ở view biểu đồ, vẽ lại
                 if (!chartView.classList.contains('hidden')) {
                      if (hasData) {
                          chartView.classList.remove('hidden');
@@ -2126,9 +1939,6 @@
         }
 
 
-        /**
-         * Mở Modal Thống Kê Tổng (CẬP NHẬT GIAO DIỆN)
-         */
         function handleShowTotalStats() {
             
             const content = `
@@ -2158,7 +1968,7 @@
                             <h3 id="total-stats-amount" class="text-3xl font-bold text-purple-900 mt-2">...</h3>
                         </div>
                         
-                        <!-- Tabs cho chi tiết (MỚI) -->
+                        <!-- Tabs cho chi tiết -->
                         <h4 class="text-xl font-semibold mb-2"></h4>
                         <div class="mb-4 flex border-b border-gray-200">
                             <button id="stats-tab-list-view" class="flex-1 py-2 px-4 text-center font-medium text-sm text-blue-600 border-b-2 border-blue-600">
@@ -2176,7 +1986,7 @@
                             </ul>
                         </div>
                         
-                        <!-- View Biểu Đồ (MỚI) -->
+                        <!-- View Biểu Đồ -->
                         <div id="total-stats-chart-container" class="hidden">
                             <div class="h-80 w-full">
                                 <canvas id="total-stats-chart-canvas" data-chart-data="[]"></canvas>
@@ -2192,13 +2002,9 @@
             `;
             openModal(content);
             
-            // Tính toán và hiển thị dữ liệu ban đầu
             calculateAndDisplayTotalStats();
         }
 
-        /**
-         * Mở Modal Lịch Sử Chốt Sổ (với nút xóa)
-         */
         function handleViewClosingHistory() {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             if (!cls) return;
@@ -2259,9 +2065,6 @@
             openModal(modalHtml);
         }
 
-        /**
-         * Mở Modal Xuất Bill (CẬP NHẬT: Miễn phí)
-         */
         function handleExportBill(studentId) {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             const student = cls.students.find(s => s.id === studentId);
@@ -2270,9 +2073,10 @@
             const filteredAttendance = getFilteredAttendance(student.attendance);
             const sessionCount = filteredAttendance.length;
 
-            // CẬP NHẬT
-            const isFree = student.isFreeTuition || false;
+            // CẬP NHẬT: Logic giá tiền
+            const isFree = student.isFree === true;
             const totalTuition = isFree ? 0 : sessionCount * cls.tuitionFee;
+            const totalDisplay = isFree ? '0 VNĐ (Miễn Phí)' : formatCurrency(totalTuition);
 
             let attendanceListHtml = '';
             if (filteredAttendance.length === 0) {
@@ -2318,11 +2122,12 @@
                         <p><strong>Học sinh:</strong> ${student.name}</p>
                         <p><strong>Lớp học:</strong> ${cls.name}</p>
                         <p><strong>Số buổi học:</strong> ${sessionCount}</p>
+                        ${isFree ? '<p class="text-purple-600 font-bold italic">Học sinh được miễn học phí</p>' : ''}
                         
                         ${attendanceListHtml} 
 
                         <hr class="my-4"/>
-                        <p class="text-2xl font-semibold"><strong>Tổng số tiền:</strong> ${isFree ? 'Miễn phí (0 VNĐ)' : formatCurrency(totalTuition)}</p>
+                        <p class="text-2xl font-semibold"><strong>Tổng số tiền:</strong> ${totalDisplay}</p>
                     </div>
                 </div>
                 <div class="flex justify-end gap-4 mt-8">
@@ -2333,9 +2138,6 @@
             openModal(content);
         }
 
-        /**
-         * Xử lý In Bill
-         */
         function handlePrintBill() {
             const billContent = document.getElementById('bill-to-print');
             if (!billContent) return;
@@ -2364,9 +2166,6 @@
             printWindow.close();
         }
 
-        /**
-         * Xử lý Xuất Toàn Bộ Bill (CẬP NHẬT: Miễn phí)
-         */
         function handleExportAllBills() {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             if (!cls || !cls.students || cls.students.length === 0) {
@@ -2408,10 +2207,11 @@
             cls.students.forEach(student => {
                 const filteredAttendance = getFilteredAttendance(student.attendance);
                 const sessionCount = filteredAttendance.length;
-
-                // CẬP NHẬT
-                const isFree = student.isFreeTuition || false;
+                
+                // CẬP NHẬT: Logic giá tiền
+                const isFree = student.isFree === true;
                 const totalTuition = isFree ? 0 : sessionCount * cls.tuitionFee;
+                const totalDisplay = isFree ? '0 VNĐ (Miễn Phí)' : formatCurrency(totalTuition);
 
                 let attendanceListHtml = '';
                 if (filteredAttendance.length === 0) {
@@ -2442,10 +2242,11 @@
                         <p><strong>Học phí:</strong> ${formatCurrency(cls.tuitionFee)} / buổi</p>
                         <p><strong>Thời gian:</strong> ${startDate ? new Date(startDate).toLocaleDateString('vi-VN') : '...'} đến ${endDate ? new Date(endDate).toLocaleDateString('vi-VN') : '...'}</p>
                         <p><strong>Số buổi học (trong kỳ):</strong> ${sessionCount}</p>
+                        ${isFree ? '<p style="color: purple; font-weight: bold; font-style: italic;">Học sinh được miễn học phí</p>' : ''}
                         
                         ${attendanceListHtml}
                         
-                        <p class="total">Tổng số tiền: ${isFree ? 'Miễn phí (0 VNĐ)' : formatCurrency(totalTuition)}</p>
+                        <p class="total">Tổng số tiền: ${totalDisplay}</p>
                     </div>
                 `;
                 printWindow.document.write(studentBillHtml);
@@ -2456,9 +2257,6 @@
             printWindow.focus();
         }
         
-        /**
-         * Xử lý In Bảng Điểm Danh (0/1) (CẬP NHẬT: Miễn phí)
-         */
         function handlePrintAttendanceGrid() {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             if (!cls) {
@@ -2468,7 +2266,6 @@
 
             const students = cls.students || [];
             
-            // 1. Lấy tất cả các ngày duy nhất (đã lọc)
             const startDate = closingDateStartInput.value;
             const endDate = closingDateEndInput.value;
             
@@ -2490,7 +2287,6 @@
                 return;
             }
             
-            // 2. Mở cửa sổ in và tạo HTML
             const printWindow = window.open('', '', 'height=800,width=1000');
             printWindow.document.write('<html><head><title>Bảng Điểm Danh - ' + cls.name + '</title>');
             printWindow.document.write(`
@@ -2518,67 +2314,58 @@
             printWindow.document.write(`<h2>(Từ ${startDate ? new Date(startDate).toLocaleDateString('vi-VN') : '...'} đến ${endDate ? new Date(endDate).toLocaleDateString('vi-VN') : '...'})</h2>`);
             printWindow.document.write('<table>');
 
-            // 3. Render Header
             let headerHtml = '<thead><tr><th>Học Sinh</th>';
             sortedDates.forEach(date => {
                 const d = new Date(date);
                 const formattedDate = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`;
                 headerHtml += `<th>${formattedDate}</th>`;
             });
-            // THÊM 2 CỘT MỚI Ở HEADER
             headerHtml += '<th>Tổng Buổi</th>';
             headerHtml += '<th>Thành Tiền</th>';
             headerHtml += '</tr></thead>';
             printWindow.document.write(headerHtml);
 
-            // 4. Render Body
             let bodyHtml = '<tbody>';
             
-            // Biến tổng cộng cho toàn bộ lớp
             let grandTotalSessions = 0;
             let grandTotalMoney = 0;
 
             students.forEach(student => {
                 bodyHtml += '<tr>';
-                bodyHtml += `<td>${student.name}</td>`; // Tên học sinh
+                bodyHtml += `<td>${student.name}</td>`; 
                 
-                let studentTotalSessions = 0; // Biến đếm tổng buổi của học sinh này
+                let studentTotalSessions = 0; 
 
                 sortedDates.forEach(date => {
                     const hasAttended = student.attendance.includes(date);
                     if (hasAttended) {
                         studentTotalSessions++;
                     }
-                    bodyHtml += `<td>${hasAttended ? '1' : '0'}</td>`; // 1 hoặc 0
+                    bodyHtml += `<td>${hasAttended ? '1' : '0'}</td>`; 
                 });
                 
-                // CẬP NHẬT: Tính toán tiền với chế độ miễn phí
-                const isFree = student.isFreeTuition || false;
+                // CẬP NHẬT: Logic giá tiền
+                const isFree = student.isFree === true;
                 const totalMoney = isFree ? 0 : studentTotalSessions * cls.tuitionFee;
+                const moneyDisplay = isFree ? 'Miễn phí' : formatCurrency(totalMoney);
 
-                // Cộng dồn vào tổng lớp
                 grandTotalSessions += studentTotalSessions;
                 grandTotalMoney += totalMoney;
 
-                // THÊM 2 CỘT MỚI Ở BODY
                 bodyHtml += `<td style="font-weight: bold; background-color: #f9f9f9;">${studentTotalSessions}</td>`;
-                bodyHtml += `<td style="font-weight: bold; text-align: right; background-color: #f9f9f9;">${isFree ? 'Miễn phí' : formatCurrency(totalMoney)}</td>`;
+                bodyHtml += `<td style="font-weight: bold; text-align: right; background-color: #f9f9f9;">${moneyDisplay}</td>`;
 
                 bodyHtml += '</tr>';
             });
 
-            // 5. Render Footer Row (Hàng Tổng Cộng)
             bodyHtml += '<tr class="total-row">';
-            bodyHtml += '<td style="text-align: right; padding-right: 10px;">TỔNG CỘNG</td>'; // Cột tên
+            bodyHtml += '<td style="text-align: right; padding-right: 10px;">TỔNG CỘNG</td>'; 
 
-            // Các cột ngày để trống
             sortedDates.forEach(() => {
                 bodyHtml += '<td></td>';
             });
 
-            // Tổng số buổi
             bodyHtml += `<td>${grandTotalSessions}</td>`;
-            // Tổng tiền
             bodyHtml += `<td style="text-align: right;">${formatCurrency(grandTotalMoney)}</td>`;
             
             bodyHtml += '</tr>';
@@ -2586,21 +2373,16 @@
             bodyHtml += '</tbody>';
             printWindow.document.write(bodyHtml);
 
-            // 6. Đóng và in
             printWindow.document.write('</table></body></html>');
             printWindow.document.close();
             printWindow.focus();
             
-            // Cần một chút delay để CSS load xong trước khi in
             setTimeout(() => {
                 printWindow.print();
                 printWindow.close();
             }, 250);
         }
 
-        /**
-         * Xử lý Xuất DS Học sinh
-         */
         function handleExportStudentList() {
             if (!currentClassId) return;
             const cls = dbCache.classes.find(c => c.id === currentClassId);
@@ -2629,9 +2411,6 @@
             URL.revokeObjectURL(link.href);
         }
 
-        /**
-         * Xử lý Nhập DS Học sinh
-         */
         function handleImportStudentList(event) {
             if (!currentClassId) return;
             const cls = dbCache.classes.find(c => c.id === currentClassId);
@@ -2675,15 +2454,15 @@
                         id: crypto.randomUUID(),
                         name: name,
                         attendance: [],
-                        paymentStatus: 'unpaid'
+                        paymentStatus: 'unpaid',
+                        isFree: false
                     };
                     cls.students.push(newStudent);
                 });
 
                 saveClass(cls); 
-                renderAttendanceList(cls); //
-        // Cần cập nhật lại trạng thái checkbox cho ngày hiện tại (nếu có)
-        updateAttendanceCheckboxes(cls, attendanceDateInput.value); //
+                renderAttendanceList(cls); 
+                updateAttendanceCheckboxes(cls, attendanceDateInput.value); 
                 openModal(`
                     <h3 class="text-xl font-semibold mb-4">Hoàn Tất</h3>
                     <p>Đã nhập thành công ${names.length} học sinh mới.</p>
@@ -2707,9 +2486,6 @@
             event.target.value = null;
         }
 
-        /**
-         * Mở Modal Chi Tiết Học Sinh
-         */
         function handleViewStudentDetail(studentId) {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
             const student = cls.students.find(s => s.id === studentId);
@@ -2757,9 +2533,6 @@
             openModal(content);
         }
 
-        /**
-         * Xử lý Điểm danh/Xóa điểm danh tất cả
-         */
         function toggleAllAttendance(checkedState) {
             const checkboxes = attendanceStudentList.querySelectorAll('.attendance-checkbox');
             checkboxes.forEach(checkbox => {
@@ -2767,15 +2540,26 @@
             });
         }
         
-        /**
-         * Xử lý click trong danh sách điểm danh (Sửa/Lưu tên, CẬP NHẬT: Toggle miễn phí)
-         */
         function handleAttendanceListClick(event) {
             const target = event.target.closest('button');
             if (!target) return;
 
             const studentId = target.dataset.studentId;
             if (!studentId) return;
+            
+            // Xử lý nút Toggle Free
+            if (target.classList.contains('toggle-free-btn')) {
+                const cls = dbCache.classes.find(c => c.id === currentClassId);
+                const student = cls.students.find(s => s.id === studentId);
+                if (student) {
+                    student.isFree = !student.isFree;
+                    saveClass(cls);
+                    // Render lại để cập nhật UI
+                    renderAttendanceList(cls);
+                    updateAttendanceCheckboxes(cls, attendanceDateInput.value);
+                }
+                return;
+            }
 
             const input = attendanceStudentList.querySelector(`.student-name-input[data-student-id="${studentId}"]`);
             const editBtn = attendanceStudentList.querySelector(`.edit-student-name-btn[data-student-id="${studentId}"]`);
@@ -2790,23 +2574,8 @@
             } else if (target.classList.contains('save-student-name-btn')) {
                 saveStudentName(studentId);
             }
-            // CẬP NHẬT: Xử lý nút toggle miễn phí
-            else if (target.classList.contains('toggle-free-tuition-btn')) {
-                const cls = dbCache.classes.find(c => c.id === currentClassId);
-                const student = cls.students.find(s => s.id === studentId);
-                if (student) {
-                    student.isFreeTuition = !student.isFreeTuition;
-                    saveClass(cls);
-                    // Render lại danh sách để cập nhật màu icon ngay lập tức
-                    renderAttendanceList(cls);
-                    updateAttendanceCheckboxes(cls, attendanceDateInput.value);
-                }
-            }
         }
         
-        /**
-         * Xử lý phím Enter khi sửa tên
-         */
         function handleStudentNameKeydown(event) {
             if (event.key === 'Enter' && event.target.classList.contains('student-name-input') && !event.target.disabled) {
                 event.preventDefault();
@@ -2814,9 +2583,6 @@
             }
         }
         
-        /**
-         * Xử lý khi blur (mất focus) khỏi ô sửa tên
-         */
         function handleStudentNameBlur(event) {
              if (event.target.classList.contains('student-name-input') && !event.target.disabled) {
                 saveStudentName(event.target.dataset.studentId);

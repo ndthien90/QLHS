@@ -6,9 +6,9 @@
     <title>Trình Quản Lý Học Sinh</title>
     <!-- Tải Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tải Chart.js -->
+    <!-- Tải Chart.js (MỚI) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-    <!-- Tải Chart.js Datalabels Plugin -->
+    <!-- Tải Chart.js Datalabels Plugin (MỚI) -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <!-- Sử dụng font Inter cho giao diện hiện đại -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -104,6 +104,7 @@
             
             <div class="flex flex-wrap gap-4 items-center">
                 <div id="dashboard-actions" class="flex flex-wrap gap-4 items-center">
+                    <!-- Nút Sắp Xếp Lớp đã được loại bỏ theo yêu cầu của người dùng -->
                     <button id="total-stats-btn" class="bg-purple-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-purple-600 transition-colors flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -816,7 +817,7 @@
         }
 
         /**
-         * Render phần Danh sách điểm danh (CẬP NHẬT: Thêm nút miễn phí)
+         * Render phần Danh sách điểm danh
          */
         function renderAttendanceList(cls) {
             attendanceStudentList.innerHTML = '';
@@ -828,24 +829,11 @@
             cls.students.forEach(student => {
                 const studentRow = document.createElement('div');
                 studentRow.className = 'flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors';
-                
-                // Nút toggle miễn phí
-                const isFree = student.isFreeTuition || false;
-                const freeBtnClass = isFree ? 'text-gray-400 hover:text-gray-600 line-through' : 'text-yellow-500 hover:text-yellow-600';
-                const freeBtnTitle = isFree ? 'Đang miễn phí (Bấm để tính phí)' : 'Đang tính phí (Bấm để miễn phí)';
-
                 studentRow.innerHTML = `
                     <input type="checkbox" class="attendance-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 flex-shrink-0" data-student-id="${student.id}">
                     
                     <div class="flex-grow flex items-center ml-4" data-student-id="${student.id}">
                         <input type="text" value="${student.name}" class="student-name-input w-full text-gray-700 font-medium border rounded-md py-1 transition-all duration-200" data-student-id="${student.id}" disabled>
-                        
-                        <!-- Nút Miễn Phí (MỚI) -->
-                        <button class="toggle-free-tuition-btn p-1 rounded-full flex-shrink-0 ml-2 ${freeBtnClass}" data-student-id="${student.id}" title="${freeBtnTitle}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </button>
                     </div>
                     
                     <button class="edit-student-name-btn p-2 text-gray-500 hover:text-blue-600 rounded-full flex-shrink-0 ml-2" data-student-id="${student.id}">
@@ -917,9 +905,7 @@
                 const filteredAttendance = getFilteredAttendance(student.attendance);
                 const sessionCount = filteredAttendance.length;
 
-                // CẬP NHẬT: Kiểm tra miễn phí
-                const isFree = student.isFreeTuition || false;
-                const studentTotalTuition = isFree ? 0 : sessionCount * cls.tuitionFee;
+                const studentTotalTuition = sessionCount * cls.tuitionFee;
                 
                 totalSessions += sessionCount;
                 grandTotalTuition += studentTotalTuition;
@@ -933,11 +919,6 @@
                 const paymentButtonClass = paymentStatus ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800';
                 const statusBadgeClass = paymentStatus ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
 
-                // Format tiền hiển thị
-                const tuitionDisplay = isFree 
-                    ? '<span class="text-green-600 font-bold italic">Miễn phí</span>' 
-                    : formatCurrency(studentTotalTuition);
-
                 // --- 1. Render cho Bảng (Desktop) ---
                 const statusBadgeTable = `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusBadgeClass}">${statusText}</span>`;
 
@@ -945,10 +926,10 @@
                 row.className = rowHighlightClass; 
                 row.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 cursor-pointer hover:text-blue-600 view-student-detail" data-student-id="${student.id}">
-                        ${student.name} ${isFree ? '<span class="ml-1 text-xs text-gray-500"></span>' : ''}
+                        ${student.name}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">${sessionCount}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${tuitionDisplay}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatCurrency(studentTotalTuition)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">${statusBadgeTable}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                         <button class="toggle-payment-btn ${paymentButtonClass}" data-student-id="${student.id}">${paymentButtonText}</button>
@@ -964,8 +945,8 @@
                 card.className = `border rounded-lg p-4 shadow-sm ${rowHighlightClass}`;
                 card.innerHTML = `
                     <div class="flex justify-between items-start gap-3">
-                        <h4 class="font-bold text-lg text-gray-900 cursor-pointer view-student-detail" data-student-id="${student.id}">${student.name} ${isFree ? '<span class="text-xs font-normal text-gray-500"></span>' : ''}</h4>
-                        <strong class="text-gray-800 text-lg text-right flex-shrink-0">${isFree ? 'Miễn phí' : formatCurrency(studentTotalTuition)}</strong>
+                        <h4 class="font-bold text-lg text-gray-900 cursor-pointer view-student-detail" data-student-id="${student.id}">${student.name}</h4>
+                        <strong class="text-gray-800 text-lg text-right flex-shrink-0">${formatCurrency(studentTotalTuition)}</strong>
                     </div>
                     <div class="flex justify-between items-center mt-3 text-sm">
                         <div>
@@ -1120,6 +1101,10 @@
         }
 
         /**
+         * Xử lý Modal Sắp xếp Lớp Học (Hàm cũ đã bị xóa)
+         */
+        
+        /**
          * Mở Modal Sửa Thông Tin Lớp
          */
         function handleEditClassInfo() {
@@ -1202,8 +1187,7 @@
                     id: crypto.randomUUID(), 
                     name: studentName,
                     attendance: [],
-                    paymentStatus: 'unpaid',
-                    isFreeTuition: false // Mặc định không miễn phí
+                    paymentStatus: 'unpaid' 
                 };
                 cls.students.push(newStudent);
                 saveClass(cls); 
@@ -1415,7 +1399,7 @@
             
             if (target.classList.contains('delete-class-btn')) {
                 const cls = dbCache.classes.find(c => c.id === classId);
-                // --- CẬP NHẬT MODAL XÓA LỚP VỚI MẬT KHẨU (KHÔI PHỤC) ---
+                // --- CẬP NHẬT MODAL XÓA LỚP VỚI MẬT KHẨU ---
                 const confirmModalContent = `
                     <h3 class="text-xl font-semibold mb-4">Xác Nhận Xóa Lớp</h3>
                     <p class="text-gray-700 mb-4">Bạn có chắc chắn muốn xóa lớp <strong>${cls.name}</strong>? Mọi dữ liệu học sinh và điểm danh sẽ bị mất vĩnh viễn.</p>
@@ -1512,7 +1496,7 @@
         }
         
         /**
-         * Hàm thực hiện logic chốt sổ/reset sau khi xác nhận (CẬP NHẬT: Miễn phí)
+         * Hàm thực hiện logic chốt sổ/reset sau khi xác nhận
          */
         function confirmMassUpdate(newStatus) {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
@@ -1528,11 +1512,8 @@
                 cls.students.forEach(student => {
                     if (student.paymentStatus === 'paid') { 
                         const filteredAttendance = student.attendance.filter(date => date >= startDate && date <= endDate);
-                        // CẬP NHẬT: Nếu miễn phí thì không tính tiền vào lịch sử
-                        const currentTuition = student.isFreeTuition ? 0 : (filteredAttendance.length * cls.tuitionFee);
-                        
                         totalSessionsClosed += filteredAttendance.length;
-                        totalTuitionClosed += currentTuition;
+                        totalTuitionClosed += filteredAttendance.length * cls.tuitionFee;
                     }
                 });
                 
@@ -1589,7 +1570,7 @@
             setupFirestoreListener();
             switchView('dashboard');
             
-            // THÊM LISTENER DRAG & DROP CHO CLASS LIST SAU KHI ĐẢM BẢO DOM CÓ (KHÔI PHỤC)
+            // THÊM LISTENER DRAG & DROP CHO CLASS LIST SAU KHI ĐẢM BẢO DOM CÓ
             classList.addEventListener('dragstart', handleDragStart);
             classList.addEventListener('dragend', handleDragEnd);
             classList.addEventListener('dragover', handleDragOver);
@@ -1787,7 +1768,6 @@
             statsTableBody.addEventListener('click', handleStatsTableClick);
             statsCardList.addEventListener('click', handleStatsTableClick); 
 
-            // CẬP NHẬT: Đảm bảo lắng nghe đúng sự kiện cho phần sửa tên (KHÔI PHỤC)
             attendanceStudentList.addEventListener('click', handleAttendanceListClick);
             attendanceStudentList.addEventListener('keydown', handleStudentNameKeydown);
             attendanceStudentList.addEventListener('focusout', handleStudentNameBlur, true); 
@@ -1817,7 +1797,7 @@
                     confirmMassUpdate(e.target.dataset.status);
                 }
                 
-                // --- CẬP NHẬT LOGIC XÓA LỚP VỚI MẬT KHẨU (KHÔI PHỤC) ---
+                // --- CẬP NHẬT LOGIC XÓA LỚP VỚI MẬT KHẨU ---
                 if (e.target.id === 'modal-confirm-delete-class') {
                     const passwordInput = document.getElementById('delete-class-password');
                     const errorMsg = document.getElementById('delete-password-error');
@@ -2260,7 +2240,7 @@
         }
 
         /**
-         * Mở Modal Xuất Bill (CẬP NHẬT: Miễn phí)
+         * Mở Modal Xuất Bill
          */
         function handleExportBill(studentId) {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
@@ -2269,10 +2249,7 @@
 
             const filteredAttendance = getFilteredAttendance(student.attendance);
             const sessionCount = filteredAttendance.length;
-
-            // CẬP NHẬT
-            const isFree = student.isFreeTuition || false;
-            const totalTuition = isFree ? 0 : sessionCount * cls.tuitionFee;
+            const totalTuition = sessionCount * cls.tuitionFee;
 
             let attendanceListHtml = '';
             if (filteredAttendance.length === 0) {
@@ -2322,7 +2299,7 @@
                         ${attendanceListHtml} 
 
                         <hr class="my-4"/>
-                        <p class="text-2xl font-semibold"><strong>Tổng số tiền:</strong> ${isFree ? 'Miễn phí (0 VNĐ)' : formatCurrency(totalTuition)}</p>
+                        <p class="text-2xl font-semibold"><strong>Tổng số tiền:</strong> ${formatCurrency(totalTuition)}</p>
                     </div>
                 </div>
                 <div class="flex justify-end gap-4 mt-8">
@@ -2365,7 +2342,7 @@
         }
 
         /**
-         * Xử lý Xuất Toàn Bộ Bill (CẬP NHẬT: Miễn phí)
+         * Xử lý Xuất Toàn Bộ Bill
          */
         function handleExportAllBills() {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
@@ -2408,10 +2385,7 @@
             cls.students.forEach(student => {
                 const filteredAttendance = getFilteredAttendance(student.attendance);
                 const sessionCount = filteredAttendance.length;
-
-                // CẬP NHẬT
-                const isFree = student.isFreeTuition || false;
-                const totalTuition = isFree ? 0 : sessionCount * cls.tuitionFee;
+                const totalTuition = sessionCount * cls.tuitionFee;
 
                 let attendanceListHtml = '';
                 if (filteredAttendance.length === 0) {
@@ -2445,7 +2419,7 @@
                         
                         ${attendanceListHtml}
                         
-                        <p class="total">Tổng số tiền: ${isFree ? 'Miễn phí (0 VNĐ)' : formatCurrency(totalTuition)}</p>
+                        <p class="total">Tổng số tiền: ${formatCurrency(totalTuition)}</p>
                     </div>
                 `;
                 printWindow.document.write(studentBillHtml);
@@ -2457,7 +2431,7 @@
         }
         
         /**
-         * Xử lý In Bảng Điểm Danh (0/1) (CẬP NHẬT: Miễn phí)
+         * Xử lý In Bảng Điểm Danh (0/1) (MỚI)
          */
         function handlePrintAttendanceGrid() {
             const cls = dbCache.classes.find(c => c.id === currentClassId);
@@ -2552,9 +2526,8 @@
                     bodyHtml += `<td>${hasAttended ? '1' : '0'}</td>`; // 1 hoặc 0
                 });
                 
-                // CẬP NHẬT: Tính toán tiền với chế độ miễn phí
-                const isFree = student.isFreeTuition || false;
-                const totalMoney = isFree ? 0 : studentTotalSessions * cls.tuitionFee;
+                // Tính toán tiền
+                const totalMoney = studentTotalSessions * cls.tuitionFee;
 
                 // Cộng dồn vào tổng lớp
                 grandTotalSessions += studentTotalSessions;
@@ -2562,7 +2535,7 @@
 
                 // THÊM 2 CỘT MỚI Ở BODY
                 bodyHtml += `<td style="font-weight: bold; background-color: #f9f9f9;">${studentTotalSessions}</td>`;
-                bodyHtml += `<td style="font-weight: bold; text-align: right; background-color: #f9f9f9;">${isFree ? 'Miễn phí' : formatCurrency(totalMoney)}</td>`;
+                bodyHtml += `<td style="font-weight: bold; text-align: right; background-color: #f9f9f9;">${formatCurrency(totalMoney)}</td>`;
 
                 bodyHtml += '</tr>';
             });
@@ -2768,7 +2741,7 @@
         }
         
         /**
-         * Xử lý click trong danh sách điểm danh (Sửa/Lưu tên, CẬP NHẬT: Toggle miễn phí)
+         * Xử lý click trong danh sách điểm danh (Sửa/Lưu tên)
          */
         function handleAttendanceListClick(event) {
             const target = event.target.closest('button');
@@ -2789,18 +2762,6 @@
                 saveBtn.classList.remove('hidden');
             } else if (target.classList.contains('save-student-name-btn')) {
                 saveStudentName(studentId);
-            }
-            // CẬP NHẬT: Xử lý nút toggle miễn phí
-            else if (target.classList.contains('toggle-free-tuition-btn')) {
-                const cls = dbCache.classes.find(c => c.id === currentClassId);
-                const student = cls.students.find(s => s.id === studentId);
-                if (student) {
-                    student.isFreeTuition = !student.isFreeTuition;
-                    saveClass(cls);
-                    // Render lại danh sách để cập nhật màu icon ngay lập tức
-                    renderAttendanceList(cls);
-                    updateAttendanceCheckboxes(cls, attendanceDateInput.value);
-                }
             }
         }
         
