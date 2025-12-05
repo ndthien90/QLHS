@@ -1,0 +1,400 @@
+{
+  "exportedAt": "2025-12-05T15:31:12.552Z",
+  "userId": "pnbCoEJb3Rf2LJ9RJm951zBGdjk2",
+  "classes": [
+    {
+      "closingHistory": [],
+      "name": "TQ1 基础汉语一班",
+      "order": 1,
+      "students": [
+        {
+          "id": "020993ea-d155-4649-8d54-c4e1bd7b0a6f",
+          "attendance": [
+            "2025-12-04"
+          ],
+          "name": "Phương Nhi",
+          "paymentStatus": "unpaid",
+          "isFreeTuition": false
+        },
+        {
+          "name": "Diệu Linh",
+          "id": "bd2e7b1f-cfbe-400d-ae20-b50b90cf3237",
+          "paymentStatus": "unpaid",
+          "attendance": [
+            "2025-12-04"
+          ]
+        },
+        {
+          "attendance": [
+            "2025-12-04"
+          ],
+          "paymentStatus": "unpaid",
+          "id": "97ca1655-4d58-48ff-9a54-1c2226e36fd5",
+          "name": "Bảo Phong"
+        },
+        {
+          "attendance": [
+            "2025-12-04"
+          ],
+          "name": "Thanh Hà",
+          "id": "a6174c2b-df0c-43e1-9858-8720e4095b2a",
+          "paymentStatus": "unpaid"
+        },
+        {
+          "id": "c441ac82-c947-453d-9a1c-c9e2bc1bf918",
+          "name": "Nguyễn Trang",
+          "paymentStatus": "unpaid",
+          "attendance": [
+            "2025-12-04"
+          ]
+        },
+        {
+          "paymentStatus": "unpaid",
+          "attendance": [
+            "2025-12-04"
+          ],
+          "id": "b0aabf60-4ac0-4e80-bbe5-d4b886c8bc90",
+          "name": "Anh Quân"
+        },
+        {
+          "name": "Tùng Dương",
+          "attendance": [
+            "2025-12-04"
+          ],
+          "paymentStatus": "unpaid",
+          "id": "5a660b7b-a48f-4dea-87d9-bf2637955072"
+        },
+        {
+          "attendance": [
+            "2025-12-04"
+          ],
+          "id": "ce7b3944-82cd-4ad4-b4bd-22ad31970e30",
+          "paymentStatus": "unpaid",
+          "name": "Minh Hằng"
+        }
+      ],
+      "tuitionFee": 50000,
+      "id": "0idPzOsaQ7Epg617z7yB"
+    },
+    {
+      "tuitionFee": 50000,
+      "order": 2,
+      "students": [
+        {
+          "id": "2d664901-9cef-4ca7-820a-f5686bba7ff2",
+          "name": "Tuệ Linh",
+          "paymentStatus": "unpaid",
+          "attendance": []
+        },
+        {
+          "name": "Hà My",
+          "paymentStatus": "unpaid",
+          "id": "c69deefe-178d-48b8-8622-d8831aff7c31",
+          "attendance": []
+        },
+        {
+          "attendance": [],
+          "id": "77d3e8e2-cd8c-4fea-b138-d25d373b7ec8",
+          "paymentStatus": "unpaid",
+          "name": "Thái Dương"
+        },
+        {
+          "attendance": [],
+          "id": "42bffbba-3f0c-48a0-9ad6-f36def842f7c",
+          "isFreeTuition": true,
+          "paymentStatus": "unpaid",
+          "name": "Phương Thảo"
+        },
+        {
+          "name": "Thùy Linh",
+          "attendance": [],
+          "paymentStatus": "unpaid",
+          "id": "62d01235-a35d-402c-a031-82f656cbc23b"
+        },
+        {
+          "attendance": [],
+          "paymentStatus": "unpaid",
+          "id": "a4f12794-bcc9-4a57-93f6-7dbe4fbf2674",
+          "name": "Mai Chi"
+        },
+        {
+          "paymentStatus": "unpaid",
+          "id": "9ba1c2e9-d394-4eef-aa40-3bbf992727c5",
+          "name": "Hữu Đức",
+          "attendance": []
+        },
+        {
+          "name": "Phương An",
+          "paymentStatus": "unpaid",
+          "id": "d4808c6d-0171-4bed-af98-e0a43d7860bf",
+          "attendance": []
+        },
+        {
+          "paymentStatus": "unpaid",
+          "id": "ddc3208d-ec7b-4f51-a095-26ff67e7e420",
+          "name": "Minh Hằng",
+          "attendance": []
+        },
+        {
+          "id": "18ce826c-3b37-499c-a468-0a89c96d93da",
+          "paymentStatus": "unpaid",
+          "attendance": [],
+          "name": "Công Sơn"
+        },
+        {
+          "paymentStatus": "unpaid",
+          "name": "Kim Trúc",
+          "id": "f7c054b1-9183-4928-b539-41833034e54a",
+          "attendance": []
+        },
+        {
+          "paymentStatus": "unpaid",
+          "name": "Gia Đoan",
+          "attendance": [],
+          "id": "b356ef2a-49a3-4d4f-b46b-750ae9069b26"
+        },
+        {
+          "paymentStatus": "unpaid",
+          "name": "Đức Trung",
+          "attendance": [],
+          "id": "fea560a1-a0a6-4a14-9234-34989fe34d7b"
+        },
+        {
+          "paymentStatus": "unpaid",
+          "name": "Thị Lương",
+          "id": "b72a7f65-fbf5-4f94-982f-82fa12be32c7",
+          "attendance": []
+        }
+      ],
+      "id": "CilFuZic5Px79useMXvg",
+      "closingHistory": [],
+      "name": "TQ2  基础汉语二班"
+    },
+    {
+      "name": "TQ4 基础汉语启蒙班",
+      "order": 4,
+      "tuitionFee": 50000,
+      "closingHistory": [],
+      "id": "ruF63L2ypCdwCdOxfHq3",
+      "students": [
+        {
+          "attendance": [],
+          "name": "Minh Anh",
+          "id": "7835e690-1e6b-469a-861d-6a34b9cdcdba",
+          "paymentStatus": "unpaid"
+        },
+        {
+          "paymentStatus": "unpaid",
+          "name": "Hoài Anh",
+          "attendance": [],
+          "id": "325bc4d5-670b-4dab-ae8e-76d89685d084"
+        },
+        {
+          "attendance": [],
+          "paymentStatus": "unpaid",
+          "name": "Thanh Hiền",
+          "id": "2be760ba-b4cb-4ac7-9e3a-69e587e69545"
+        },
+        {
+          "name": "Minh Trang",
+          "paymentStatus": "unpaid",
+          "id": "61957aaf-deaf-44f4-b227-5591fe8c52c7",
+          "attendance": [],
+          "isFreeTuition": true
+        },
+        {
+          "attendance": [],
+          "paymentStatus": "unpaid",
+          "name": "Minh Thái",
+          "isFreeTuition": true,
+          "id": "96b284a0-35a2-4a05-9858-e6be4e0c6561"
+        },
+        {
+          "paymentStatus": "unpaid",
+          "name": "Vân Trang",
+          "id": "eda3895b-5f9b-452e-a933-baa3c48992a1",
+          "attendance": [],
+          "isFreeTuition": true
+        },
+        {
+          "attendance": [],
+          "paymentStatus": "unpaid",
+          "name": "Phương Mai",
+          "id": "605538da-7878-45b1-8503-a9eab9c17d17",
+          "isFreeTuition": true
+        },
+        {
+          "id": "654bfab9-6f5f-4aac-a3fe-5a6072cf1c2a",
+          "paymentStatus": "unpaid",
+          "isFreeTuition": true,
+          "name": "Nguyễn Hương",
+          "attendance": []
+        }
+      ]
+    },
+    {
+      "id": "tlZab6q6ZEN2qAVODsay",
+      "tuitionFee": 60000,
+      "name": "TQ3 基础汉语三班",
+      "students": [
+        {
+          "id": "b010e1db-73ac-4490-b6e6-bef88a8ae5dd",
+          "paymentStatus": "unpaid",
+          "attendance": [
+            "2025-12-05"
+          ],
+          "name": "Phương Mai"
+        },
+        {
+          "id": "85897753-598e-4bd1-a93d-6eaf96b7212a",
+          "attendance": [
+            "2025-12-05"
+          ],
+          "paymentStatus": "unpaid",
+          "name": "Quỳnh Chi"
+        },
+        {
+          "attendance": [
+            "2025-12-05"
+          ],
+          "id": "84578d71-0f8e-4a57-b61c-c153e65b2908",
+          "name": "Khánh Ly",
+          "paymentStatus": "unpaid"
+        },
+        {
+          "paymentStatus": "unpaid",
+          "id": "e9740835-6e4c-46fd-b67b-2d5b0cc7a445",
+          "attendance": [
+            "2025-12-05"
+          ],
+          "name": "Trọng Cường"
+        },
+        {
+          "paymentStatus": "unpaid",
+          "name": "Hùng Dũng",
+          "id": "88cd3385-a30d-42ad-880a-2b0192886a00",
+          "attendance": [
+            "2025-12-05"
+          ]
+        },
+        {
+          "paymentStatus": "unpaid",
+          "name": "Trúc Mai",
+          "id": "785e9ad6-1fdd-4e32-a78c-08419d328e49",
+          "attendance": [
+            "2025-12-05"
+          ]
+        },
+        {
+          "id": "20922e9b-ec46-4050-9b1e-3f7ba6bb7aba",
+          "attendance": [
+            "2025-12-05"
+          ],
+          "name": "Phương Anh",
+          "paymentStatus": "unpaid"
+        },
+        {
+          "attendance": [
+            "2025-12-05"
+          ],
+          "id": "a703bb2a-bbab-43a1-9c86-44921da4c03a",
+          "paymentStatus": "unpaid",
+          "name": "Bích Ngọc"
+        },
+        {
+          "id": "b8a9b034-e8f3-4841-91fe-9a47cd8dbfdb",
+          "name": "Ngọc Khánh",
+          "paymentStatus": "unpaid",
+          "attendance": [
+            "2025-12-05"
+          ]
+        },
+        {
+          "id": "5241c820-c1be-4e20-b003-a933a575c095",
+          "name": "Duy Hà",
+          "attendance": [
+            "2025-12-05"
+          ],
+          "paymentStatus": "unpaid"
+        },
+        {
+          "id": "fe70b639-a32e-4f71-81b4-d1a244ac0093",
+          "paymentStatus": "unpaid",
+          "attendance": [
+            "2025-12-05"
+          ],
+          "name": "Phương Thảo"
+        },
+        {
+          "name": "Bảo Khánh",
+          "attendance": [
+            "2025-12-05"
+          ],
+          "id": "af5bee78-ded7-4ac5-9647-e185af127c36",
+          "paymentStatus": "unpaid"
+        },
+        {
+          "name": "Hữu Dũng",
+          "id": "e65e89a9-0a42-46d2-9ffe-d59f8040a9bd",
+          "attendance": [
+            "2025-12-05"
+          ],
+          "paymentStatus": "unpaid"
+        },
+        {
+          "name": "Quang Huy",
+          "attendance": [
+            "2025-12-05"
+          ],
+          "id": "83f22d12-80b9-425e-b400-edaa7d9b78b3",
+          "paymentStatus": "unpaid"
+        },
+        {
+          "id": "9ae918b3-5c92-4c13-8b16-a45a075a6bdf",
+          "name": "Khánh Huyền",
+          "attendance": [
+            "2025-12-05"
+          ],
+          "isFreeTuition": false,
+          "paymentStatus": "unpaid"
+        }
+      ],
+      "closingHistory": [],
+      "order": 3
+    },
+    {
+      "students": [
+        {
+          "paymentStatus": "unpaid",
+          "isFreeTuition": false,
+          "attendance": [
+            "2025-11-19",
+            "2025-11-22",
+            "2025-11-23",
+            "2025-11-29",
+            "2025-11-30"
+          ],
+          "id": "e65fe45b-fff0-498a-9ec4-a245a105441a",
+          "name": "Thanh Hà"
+        },
+        {
+          "id": "23086c39-0fa5-4160-a182-46b1d711d91a",
+          "paymentStatus": "unpaid",
+          "name": "Nguyễn Trang",
+          "isFreeTuition": false,
+          "attendance": [
+            "2025-11-22",
+            "2025-11-23",
+            "2025-11-29",
+            "2025-11-30"
+          ]
+        }
+      ],
+      "tuitionFee": 100000,
+      "name": "Ôn HSK",
+      "closingHistory": [],
+      "id": "zPckxO0SfFGLsCBJCSXw",
+      "order": 5
+    }
+  ]
+}

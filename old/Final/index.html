@@ -141,26 +141,7 @@
 
             <!-- View 1: Bảng điều khiển (Danh sách lớp) -->
             <div id="dashboard-view">
-                <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
-                    <h2 class="text-2xl font-semibold text-gray-700">Các Lớp Học Hiện Có</h2>
-                    <!-- Khu vực các nút Import/Export -->
-                    <div class="flex flex-wrap gap-3">
-                        <button id="import-all-data-btn" class="bg-yellow-600 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-yellow-700 transition-colors flex items-center text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                            Nhập Dữ Liệu
-                        </button>
-                        <button id="export-all-data-btn" class="bg-orange-500 text-white font-semibold py-2 px-5 rounded-lg shadow-md hover:bg-orange-600 transition-colors flex items-center text-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                            Xuất Dữ Liệu
-                        </button>
-                        <!-- Input ẩn để chọn file JSON -->
-                        <input type="file" id="import-data-file-input" class="hidden" accept=".json">
-                    </div>
-                </div>
+                <h2 class="text-2xl font-semibold mb-6 text-gray-700">Các Lớp Học Hiện Có</h2>
                 <div id="class-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- JS sẽ render các thẻ lớp học vào đây -->
                 </div>
@@ -369,46 +350,6 @@
             <!-- Nội dung modal sẽ được JS chèn vào đây -->
         </div>
     </div>
-    
-    <!-- Modal Export Data -->
-    <div id="export-data-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-sm">
-            <h3 class="text-xl font-semibold mb-4">Chọn Định Dạng Xuất Dữ Liệu</h3>
-            <p class="text-gray-600 mb-6">Bạn muốn xuất dữ liệu ở định dạng nào?</p>
-            <div class="space-y-4">
-                <button id="export-json-btn" class="w-full bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-colors flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM11 10h-2V7h2v3zm4 0h-2V7h2v3zM11 17h-2v-3h2v3zm4 0h-2v-3h2v3z"/></svg>
-                    Xuất ra JSON (Chi tiết)
-                </button>
-                <button id="export-csv-btn" class="w-full bg-green-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-green-600 transition-colors flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M21 7V3h-4v4h4zm-6 0V3h-4v4h4zm-6 0V3H5v4h4zM21 13v-4h-4v4h4zm-6 0v-4h-4v4h4zm-6 0v-4H5v4h4zM21 19v-4h-4v4h4zm-6 0v-4h-4v4h4zm-6 0v-4H5v4h4z"/></svg>
-                    Xuất ra CSV (Tóm tắt)
-                </button>
-            </div>
-            <button id="close-export-modal" class="w-full mt-4 py-2 px-5 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">Hủy</button>
-        </div>
-    </div>
-    
-    <!-- Modal Import Data (MỚI) -->
-    <div id="import-data-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center p-4 z-50">
-        <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md">
-            <h3 class="text-xl font-semibold mb-4 text-yellow-700">CẢNH BÁO: Nhập Dữ Liệu</h3>
-            <p class="text-gray-700 mb-6 font-medium">
-                Việc nhập dữ liệu sẽ <strong class="text-red-600">XÓA SẠCH VÀ THAY THẾ</strong> toàn bộ dữ liệu lớp học hiện có của bạn bằng dữ liệu trong tệp JSON.
-            </p>
-            <p class="text-sm text-gray-500 mb-6">
-                Chỉ thực hiện khi bạn chắc chắn muốn khôi phục dữ liệu từ bản sao lưu.
-            </p>
-            <div class="flex justify-between items-center gap-4">
-                <button id="trigger-import-btn" class="flex-1 bg-red-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-red-600 transition-colors flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11 15h2V9h-2v6zm6.75-5.5L12 3.25 5.25 9.5 7 11.25 12 6.25l5 5 1.75-1.75zM19 13h-4v8h-2v-8H7v8H5v-8H3v8a2 2 0 002 2h14a2 2 0 002-2v-8h-2z"/></svg>
-                    Tiếp Tục & Chọn Tệp
-                </button>
-                <button id="close-import-modal" class="py-3 px-6 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 flex-shrink-0">Hủy Bỏ</button>
-            </div>
-        </div>
-    </div>
-
 
     <!-- Script chính của ứng dụng -->
     <script type="module">
@@ -428,8 +369,7 @@
             setDoc, 
             deleteDoc, 
             onSnapshot, 
-            query,
-            writeBatch, // THÊM writeBatch
+            query 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
@@ -444,14 +384,14 @@
             } else {
                 // Cấu hình dự phòng nếu không có __firebase_config
 firebaseConfig = {
-    apiKey: "AIzaSyBAfHFwF8FfZDiXSktSxmr2ee62o-TEK0U",
-    authDomain: "qlhs-d1268.firebaseapp.com",
-    projectId: "qlhs-d1268",
-    storageBucket: "qlhs-d1268.firebasestorage.app",
-    messagingSenderId: "359967796244",
-    appId: "1:359967796244:web:858c2ec05e937944e68b01",
-    measurementId: "G-P3B83BWF8Z"
-  };
+  apiKey: "AIzaSyABqXuHHLId9mzTKSpB-UfibEhm347xikI",
+  authDomain: "qlhs-4adfb.firebaseapp.com",
+  projectId: "qlhs-4adfb",
+  storageBucket: "qlhs-4adfb.firebasestorage.app",
+  messagingSenderId: "233548880982",
+  appId: "1:233548880982:web:bd40f5da604e541fad6ff7",
+  measurementId: "G-0ZZB5SE5XH"
+};
             }
             appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         } catch (e) {
@@ -490,11 +430,6 @@ firebaseConfig = {
         const classList = document.getElementById('class-list');
         const noClassesMsg = document.getElementById('no-classes-msg');
         const userInfoEl = document.getElementById('user-info'); // MỚI
-        
-        // Nút Xuất/Nhập Dữ Liệu Toàn Bộ (MỚI)
-        const exportAllDataBtn = document.getElementById('export-all-data-btn');
-        const importAllDataBtn = document.getElementById('import-all-data-btn'); // THÊM NÚT IMPORT
-        const importDataFileInput = document.getElementById('import-data-file-input'); // THÊM INPUT ẨN CHO IMPORT JSON
 
         // Chi tiết lớp
         const classDetailName = document.getElementById('class-detail-name');
@@ -559,17 +494,6 @@ firebaseConfig = {
         const logoutBtn = document.getElementById('logout-btn');
         const registerBtn = document.getElementById('register-btn'); // MỚI
         
-        // Modal Xuất Dữ Liệu
-        const exportDataModal = document.getElementById('export-data-modal');
-        const closeExportModalBtn = document.getElementById('close-export-modal');
-        const exportJsonBtn = document.getElementById('export-json-btn');
-        const exportCsvBtn = document.getElementById('export-csv-btn');
-
-        // Modal Nhập Dữ Liệu (MỚI)
-        const importDataModal = document.getElementById('import-data-modal');
-        const closeImportModalBtn = document.getElementById('close-import-modal');
-        const triggerImportBtn = document.getElementById('trigger-import-btn');
-        
         // ----- HÀM HỖ TRỢ CHUNG -----
 
         /**
@@ -595,25 +519,18 @@ firebaseConfig = {
                 dashboardView.classList.remove('hidden');
                 classDetailView.classList.add('hidden');
                 dashboardActions.classList.remove('hidden');
-                document.querySelectorAll('#dashboard-actions button').forEach(btn => btn.classList.remove('hidden'));
-                // Hiển thị các nút Import/Export trên dashboard
-                exportAllDataBtn.classList.remove('hidden');
-                importAllDataBtn.classList.remove('hidden'); 
-                
-                backToDashboardBtn.classList.add('hidden'); // Ẩn nút back to dashboard trên dashboard
+                backToDashboardBtn.classList.add('hidden');
                 currentClassId = null;
             } else if (viewName === 'class_detail') {
                 dashboardView.classList.add('hidden');
                 classDetailView.classList.remove('hidden');
                 dashboardActions.classList.add('hidden');
-                exportAllDataBtn.classList.add('hidden');
-                importAllDataBtn.classList.add('hidden'); // Ẩn nút Import trên detail view
                 backToDashboardBtn.classList.remove('hidden');
             }
         }
         
         /**
-         * Mở Modal (Dùng chung)
+         * Mở Modal
          */
         function openModal(contentHtml) {
             modalContent.innerHTML = contentHtml;
@@ -636,7 +553,7 @@ firebaseConfig = {
         }
 
         /**
-         * Đóng Modal (Dùng chung)
+         * Đóng Modal
          */
         function closeModal() {
             modalContent.classList.add('scale-95', 'opacity-0');
@@ -670,7 +587,7 @@ firebaseConfig = {
             });
         }
         
-        // --- HÀM XỬ LÝ FIREBASE ---
+        // --- HÀM XỬ LÝ FIREBASE (MỚI) ---
         
         /**
          * Lấy tham chiếu Document cho Class
@@ -682,50 +599,9 @@ firebaseConfig = {
             }
             return doc(CLASSES_COLLECTION_REF, classId);
         }
-        
-        /**
-         * HÀM MỚI: Lưu bản sao dữ liệu vào localStorage
-         */
-        function saveLocalBackup() {
-            if (!userId) return;
-            const dataToSave = {
-                classes: dbCache.classes
-            };
-            try {
-                // Key được đặt theo userId để đảm bảo an toàn dữ liệu cá nhân
-                localStorage.setItem(`qlhs_backup_${userId}`, JSON.stringify(dataToSave));
-                console.log("Dữ liệu đã được lưu trữ cục bộ (localStorage) thành công.");
-            } catch (e) {
-                console.error("Lỗi khi lưu trữ cục bộ:", e);
-            }
-        }
-        
-        /**
-         * HÀM MỚI: Tải bản sao dữ liệu từ localStorage
-         */
-        function loadFromLocalBackup() {
-            if (!userId) return false;
-            try {
-                const storedData = localStorage.getItem(`qlhs_backup_${userId}`);
-                if (storedData) {
-                    const data = JSON.parse(storedData);
-                    if (data.classes && Array.isArray(data.classes)) {
-                        dbCache.classes = data.classes;
-                        console.warn("Dữ liệu được tải từ bộ nhớ cục bộ (localStorage) thành công. Đang chờ đồng bộ Firestore...");
-                        // Tải dữ liệu từ cache để hiển thị ngay lập tức (trước khi Firestore sync)
-                        renderDashboard(); 
-                        return true; 
-                    }
-                }
-            } catch (e) {
-                console.error("Lỗi khi tải dữ liệu từ bộ nhớ cục bộ:", e);
-            }
-            return false;
-        }
-
 
         /**
-         * Lưu dữ liệu lớp học (Firestore) - Đã thêm saveLocalBackup
+         * Lưu dữ liệu lớp học (Firestore)
          */
         async function saveClass(classObject) {
             if (!userId) return;
@@ -738,10 +614,8 @@ firebaseConfig = {
                 }
                 const classRef = getClassDocRef(classObject.id);
                 await setDoc(classRef, classObject);
-                saveLocalBackup(); // <<< THÊM: Lưu bản sao cục bộ sau mỗi lần ghi thành công
             } catch (error) {
                 console.error("Lỗi khi lưu lớp học:", error);
-                // GIỮ NGUYÊN logic hiển thị lỗi cũ
                 openModal('<h3 class="text-xl font-semibold mb-4">Lỗi Lưu Dữ Liệu</h3><p>Không thể lưu lớp học lên Firebase. Vui lòng thử lại.</p><div class="flex justify-end mt-6"><button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-red-500 text-white hover:bg-red-600">Đóng</button></div>');
             }
         }
@@ -753,7 +627,6 @@ firebaseConfig = {
             if (!userId) return;
             try {
                 await deleteDoc(getClassDocRef(classId));
-                saveLocalBackup(); // <<< THÊM: Lưu bản sao cục bộ sau khi xóa
             } catch (error) {
                 console.error("Lỗi khi xóa lớp học:", error);
                 openModal('<h3 class="text-xl font-semibold mb-4">Lỗi Xóa Dữ Liệu</h3><p>Không thể xóa lớp học khỏi Firebase. Vui lòng thử lại.</p><div class="flex justify-end mt-6"><button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-red-500 text-white hover:bg-red-600">Đóng</button></div>');
@@ -785,7 +658,6 @@ firebaseConfig = {
                 
                 dbCache.classes = newClasses;
                 renderDashboard();
-                saveLocalBackup(); // <<< THÊM: Lưu bản sao cục bộ sau khi nhận dữ liệu mới nhất từ Firestore
                 
                 if (currentClassId) {
                     const cls = dbCache.classes.find(c => c.id === currentClassId);
@@ -800,17 +672,12 @@ firebaseConfig = {
                 }
             }, (error) => {
                 console.error("Lỗi khi lắng nghe Firestore:", error);
-                // KHÔNG HIỂN THỊ MODAL LỖI NẾU CÓ DỮ LIỆU CỤC BỘ ĐỂ ĐẢM BẢO CHẠY ỔN ĐỊNH
-                if (dbCache.classes.length === 0) {
-                     openModal('<h3 class="text-xl font-semibold mb-4">Lỗi Kết Nối</h3><p>Không thể đồng bộ dữ liệu với Firebase. Vui lòng kiểm tra kết nối mạng.</p><div class="flex justify-end mt-6"><button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-red-500 text-white hover:bg-red-600">Đóng</button></div>');
-                } else {
-                    console.warn("Lỗi Firestore, nhưng đang tiếp tục sử dụng dữ liệu từ bộ nhớ đệm cục bộ.");
-                }
+                openModal('<h3 class="text-xl font-semibold mb-4">Lỗi Kết Nối</h3><p>Không thể đồng bộ dữ liệu với Firebase. Vui lòng kiểm tra kết nối mạng.</p><div class="flex justify-end mt-6"><button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-red-500 text-white hover:bg-red-600">Đóng</button></div>');
             });
         }
 
 
-        // ----- HÀM RENDER CHÍNH (Giữ nguyên) -----
+        // ----- HÀM RENDER CHÍNH (Điều chỉnh để dùng dbCache) -----
 
         /**
          * Render Bảng điều khiển (Danh sách lớp)
@@ -976,7 +843,7 @@ firebaseConfig = {
                         <!-- Nút Miễn Phí (MỚI) -->
                         <button class="toggle-free-tuition-btn p-1 rounded-full flex-shrink-0 ml-2 ${freeBtnClass}" data-student-id="${student.id}" title="${freeBtnTitle}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0-2.08.402-2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </button>
                     </div>
@@ -1226,7 +1093,7 @@ firebaseConfig = {
         }
 
 
-        // ----- HÀM XỬ LÝ SỰ KIỆN (Giữ nguyên) -----
+        // ----- HÀM XỬ LÝ SỰ KIỆN (Cập nhật logic lưu) -----
         
         /**
          * Mở Modal Thêm Lớp Mới
@@ -1700,11 +1567,11 @@ firebaseConfig = {
             saveClass(cls); 
             closeModal();
         }
-        
-        // --- HÀM XỬ LÝ LOGIN VÀ AUTHENTICATION ---
+
+        // --- HÀM XỬ LÝ LOGIN VÀ AUTHENTICATION (CẬP NHẬT LỚN) ---
 
         /**
-         * Hiển thị giao diện ứng dụng chính - Đã thêm loadFromLocalBackup()
+         * Hiển thị giao diện ứng dụng chính
          */
         function showApp(email) {
             loadingOverlay.classList.add('hidden');
@@ -1719,10 +1586,6 @@ firebaseConfig = {
             closingDateEndInput.value = today;
 
             CLASSES_COLLECTION_REF = collection(db, 'artifacts', appId, 'users', userId, 'classes');
-            
-            // THÊM: Cố gắng tải từ backup cục bộ trước, để hiển thị UI ngay lập tức
-            loadFromLocalBackup(); 
-
             setupFirestoreListener();
             switchView('dashboard');
             
@@ -1844,208 +1707,6 @@ firebaseConfig = {
         });
 
 
-        // ----- HÀM XỬ LÝ XUẤT/NHẬP DỮ LIỆU JSON/CSV (CẬP NHẬT) -----
-
-        /**
-         * Hàm tiện ích để tải dữ liệu về máy.
-         */
-        function downloadFile(data, filename, mimeType) {
-            const blob = new Blob([data], { type: mimeType });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-        
-        // --- XUẤT DỮ LIỆU ---
-
-        /**
-         * Xử lý xuất toàn bộ dữ liệu ra file JSON
-         */
-        function exportJson() {
-            if (dbCache.classes.length === 0) {
-                 closeExportModal();
-                 openModal('<h3 class="text-xl font-semibold mb-4">Không Có Dữ Liệu</h3><p>Không có dữ liệu lớp học nào để xuất.</p><div class="flex justify-end mt-6"><button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600">Đóng</button></div>');
-                 return;
-            }
-            
-            // Lấy tất cả dữ liệu lớp học và chuyển sang JSON
-            const dataToExport = {
-                exportedAt: new Date().toISOString(),
-                userId: userId,
-                classes: dbCache.classes
-            };
-
-            const jsonString = JSON.stringify(dataToExport, null, 2);
-            const filename = `qlhs_backup_${new Date().toISOString().split('T')[0]}.json`;
-            downloadFile(jsonString, filename, 'application/json');
-            closeExportModal();
-        }
-
-        /**
-         * Xử lý xuất toàn bộ dữ liệu ra file CSV (Tóm tắt)
-         */
-        function exportCsv() {
-             if (dbCache.classes.length === 0) {
-                 closeExportModal();
-                 openModal('<h3 class="text-xl font-semibold mb-4">Không Có Dữ Liệu</h3><p>Không có dữ liệu lớp học nào để xuất.</p><div class="flex justify-end mt-6"><button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600">Đóng</button></div>');
-                 return;
-            }
-            
-            // Tạo header cho CSV (Lớp, Học Phí, Sĩ Số, Tổng Buổi, Tổng Tiền)
-            let csv = 'Tên Lớp,Học Phí/Buổi (VNĐ),Sĩ Số,Tổng Buổi Đã Dạy,Tổng Tiền Chốt Sổ (VNĐ)\n';
-
-            dbCache.classes.forEach(cls => {
-                const totalStudents = cls.students ? cls.students.length : 0;
-                
-                // Tính toán tổng số buổi và tổng tiền chốt sổ từ lịch sử
-                let totalSessionsClosed = 0;
-                let grandTotalTuitionClosed = 0;
-                
-                (cls.closingHistory || []).forEach(record => {
-                    totalSessionsClosed += record.totalSessions;
-                    grandTotalTuitionClosed += record.totalTuition;
-                });
-
-                // Làm sạch dữ liệu để tránh lỗi CSV
-                const cleanName = `"${cls.name.replace(/"/g, '""')}"`;
-                
-                // Thêm dòng dữ liệu
-                csv += `${cleanName},${cls.tuitionFee},${totalStudents},${totalSessionsClosed},${grandTotalTuitionClosed}\n`;
-            });
-
-            const filename = `qlhs_summary_${new Date().toISOString().split('T')[0]}.csv`;
-            downloadFile(csv, filename, 'text/csv;charset=utf-8;');
-            closeExportModal();
-        }
-
-        // --- NHẬP DỮ LIỆU ---
-
-        /**
-         * Xử lý việc nhập file JSON đã chọn (Sau khi user xác nhận cảnh báo)
-         */
-        function handleImportJson(event) {
-            const file = event.target.files[0];
-            
-            if (!file) return;
-
-            if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
-                 openModal('<h3 class="text-xl font-semibold mb-4">Lỗi Định Dạng Tệp</h3><p>Vui lòng chọn một tệp JSON hợp lệ (ví dụ: `qlhs_backup_...json`).</p><div class="flex justify-end mt-6"><button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600">Đóng</button></div>');
-                 // Reset input để có thể chọn lại cùng file nếu cần
-                 event.target.value = null; 
-                 return;
-            }
-
-            const reader = new FileReader();
-            
-            reader.onload = async (e) => {
-                loadingOverlay.classList.remove('hidden');
-                try {
-                    const content = e.target.result;
-                    const importedData = JSON.parse(content);
-                    
-                    if (!importedData.classes || !Array.isArray(importedData.classes)) {
-                        throw new Error("Cấu trúc file không hợp lệ. Thiếu trường 'classes'.");
-                    }
-                    
-                    const classesToImport = importedData.classes;
-                    
-                    const batch = writeBatch(db);
-                    
-                    // 1. Xóa tất cả các lớp hiện có (vì tính năng này là REPLACE/OVERWRITE)
-                    const currentClassIds = dbCache.classes.map(cls => cls.id);
-                    currentClassIds.forEach(id => {
-                        const classRef = getClassDocRef(id);
-                        batch.delete(classRef);
-                    });
-                    
-                    // 2. Thêm các lớp từ file JSON
-                    classesToImport.forEach(cls => {
-                        // Đảm bảo mỗi lớp có ID và thêm vào batch
-                        if (!cls.id) {
-                            cls.id = doc(CLASSES_COLLECTION_REF).id; // Tạo ID mới nếu thiếu
-                        }
-                        const classRef = getClassDocRef(cls.id);
-                        batch.set(classRef, cls);
-                    });
-                    
-                    // 3. Commit batch
-                    await batch.commit();
-
-                    openModal(`
-                        <h3 class="text-xl font-semibold mb-4 text-green-700">Khôi Phục Thành Công</h3>
-                        <p>Đã xóa ${currentClassIds.length} lớp cũ và nhập thành công ${classesToImport.length} lớp mới từ file JSON.</p>
-                        <div class="flex justify-end mt-6">
-                            <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-blue-500 text-white hover:bg-blue-600">OK</button>
-                        </div>
-                    `);
-                    
-                } catch (error) {
-                    console.error("Lỗi khi xử lý nhập file JSON:", error);
-                    openModal(`
-                        <h3 class="text-xl font-semibold mb-4 text-red-700">Lỗi Nhập Dữ Liệu</h3>
-                        <p>Không thể nhập dữ liệu. Lỗi: ${error.message || 'File JSON không hợp lệ hoặc lỗi kết nối.'}</p>
-                        <div class="flex justify-end mt-6">
-                            <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-red-500 text-white hover:bg-red-600">Đóng</button>
-                        </div>
-                    `);
-                } finally {
-                    loadingOverlay.classList.add('hidden');
-                    // Reset input sau khi hoàn tất
-                    event.target.value = null;
-                }
-            };
-
-            reader.onerror = () => {
-                loadingOverlay.classList.add('hidden');
-                openModal(`
-                    <h3 class="text-xl font-semibold mb-4 text-red-700">Lỗi Đọc Tệp</h3>
-                    <p>Không thể đọc tệp JSON. Vui lòng thử lại.</p>
-                    <div class="flex justify-end mt-6">
-                        <button type="button" id="modal-cancel" class="py-2 px-5 rounded-lg bg-red-500 text-white hover:bg-red-600">Đóng</button>
-                    </div>
-                `);
-                 event.target.value = null; 
-            };
-
-            reader.readAsText(file, 'UTF-8');
-        }
-
-        // --- HÀM XỬ LÝ MODAL RIÊNG ---
-
-        /**
-         * Mở Modal chọn định dạng Xuất Dữ Liệu
-         */
-        function openExportDataModal() {
-            exportDataModal.classList.remove('hidden');
-        }
-
-        /**
-         * Đóng Modal chọn định dạng Xuất Dữ Liệu
-         */
-        function closeExportModal() {
-            exportDataModal.classList.add('hidden');
-        }
-
-        /**
-         * Mở Modal cảnh báo Nhập Dữ Liệu
-         */
-        function openImportDataModal() {
-            importDataModal.classList.remove('hidden');
-        }
-
-        /**
-         * Đóng Modal cảnh báo Nhập Dữ Liệu
-         */
-        function closeImportModal() {
-            importDataModal.classList.add('hidden');
-        }
-
-
         // ----- LẮNG NGHE SỰ KIỆN (Ứng dụng) -----
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -2054,7 +1715,7 @@ firebaseConfig = {
             loginForm.addEventListener('submit', handleLogin);
             registerBtn.addEventListener('click', handleRegister);
             logoutBtn.addEventListener('click', handleLogout);
-            
+
             // --- APP EVENTS ---
             addClassBtn.addEventListener('click', handleAddClass);
             totalStatsBtn.addEventListener('click', handleShowTotalStats); 
@@ -2063,33 +1724,15 @@ firebaseConfig = {
             classList.addEventListener('click', handleDashboardClick); // CẬP NHẬT để xử lý nút di chuyển
             addStudentForm.addEventListener('submit', handleAddStudent);
             
-            // Nút Xuất/Nhập Dữ Liệu Tổng (MỚI)
-            exportAllDataBtn.addEventListener('click', openExportDataModal);
-            importAllDataBtn.addEventListener('click', openImportDataModal); // Mở modal cảnh báo
-            
-            // Lắng nghe sự kiện chọn file JSON sau khi cảnh báo
-            triggerImportBtn.addEventListener('click', () => {
-                closeImportModal();
-                importDataFileInput.click();
-            });
-            importDataFileInput.addEventListener('change', handleImportJson); // Xử lý file JSON
-
-            // Nút trong Modal Export
-            closeExportModalBtn.addEventListener('click', closeExportModal);
-            exportJsonBtn.addEventListener('click', exportJson);
-            exportCsvBtn.addEventListener('click', exportCsv);
-            
-            // Nút trong Modal Import
-            closeImportModalBtn.addEventListener('click', closeImportModal);
-
             exportStudentListBtn.addEventListener('click', handleExportStudentList);
             importStudentListBtn.addEventListener('click', () => importStudentListInput.click()); 
             importStudentListInput.addEventListener('change', handleImportStudentList); 
             
             saveAttendanceBtn.addEventListener('click', handleSaveAttendance);
-            // ... (các sự kiện khác giữ nguyên)
-
-            // Thống kê - Tabs (giữ nguyên logic)
+            checkAllBtn.addEventListener('click', () => toggleAllAttendance(true));
+            uncheckAllBtn.addEventListener('click', () => toggleAllAttendance(false));
+            
+            // Thống kê - Tabs (MỚI)
             statsTabBilling.addEventListener('click', () => {
                 statsTabBilling.classList.add('text-blue-600', 'border-blue-600');
                 statsTabBilling.classList.remove('text-gray-500', 'hover:text-gray-700', 'border-transparent');
@@ -2117,21 +1760,21 @@ firebaseConfig = {
             exportAllBillsBtn.addEventListener('click', handleExportAllBills);
 
             // Thống kê (Tab 2)
-            printAttendanceGridBtn.addEventListener('click', handlePrintAttendanceGrid); 
+            printAttendanceGridBtn.addEventListener('click', handlePrintAttendanceGrid); // THÊM MỚI
 
-            // Cập nhật thống kê khi đổi ngày lọc
+            // Cập nhật thống kê khi đổi ngày lọc (Cập nhật cho cả 2 tab)
             closingDateStartInput.addEventListener('change', () => {
                 const cls = dbCache.classes.find(c => c.id === currentClassId);
                 if (cls) {
                     renderStatistics(cls);
-                    renderAttendanceGrid(cls); 
+                    renderAttendanceGrid(cls); // THÊM
                 }
             });
             closingDateEndInput.addEventListener('change', () => {
                 const cls = dbCache.classes.find(c => c.id === currentClassId);
                 if (cls) {
                     renderStatistics(cls);
-                    renderAttendanceGrid(cls); 
+                    renderAttendanceGrid(cls); // THÊM
                 }
             });
             
@@ -2151,34 +1794,34 @@ firebaseConfig = {
 
             // --- MODAL EVENTS ---
             modalBackdrop.addEventListener('click', (e) => {
-                // Logic hủy/đóng modal chung
                 if (e.target === modalBackdrop || e.target.id === 'modal-cancel') {
                     closeModal();
                 }
-                
-                // Logic Modal in/thống kê (giữ nguyên)
                 if (e.target.id === 'modal-print-bill') {
                     handlePrintBill();
                 }
+                // Thêm sự kiện cho nút "Áp Dụng Lọc" trong modal Tổng Thống Kê
                 if (e.target.id === 'calculate-total-stats-btn') {
                     calculateAndDisplayTotalStats();
                 }
+                // Thêm sự kiện cho nút chuyển tab trong modal Tổng Thống Kê (MỚI)
                 if (e.target.id === 'stats-tab-list-view') {
                     toggleTotalStatsView('list');
                 }
                  if (e.target.id === 'stats-tab-chart-view') {
                     toggleTotalStatsView('chart');
                 }
+                // Nút LƯU THỨ TỰ LỚP đã bị xóa
+
                 if (e.target.id === 'modal-confirm-action') {
                     confirmMassUpdate(e.target.dataset.status);
                 }
                 
-                // Logic Modal Xóa (giữ nguyên)
+                // --- CẬP NHẬT LOGIC XÓA LỚP VỚI MẬT KHẨU (KHÔI PHỤC) ---
                 if (e.target.id === 'modal-confirm-delete-class') {
                     const passwordInput = document.getElementById('delete-class-password');
                     const errorMsg = document.getElementById('delete-password-error');
                     
-                    // Sử dụng mật khẩu cứng '2091990' để xác nhận xóa
                     if (passwordInput && passwordInput.value === '2091990') {
                          deleteClassFromFirestore(e.target.dataset.id);
                          closeModal();
@@ -2200,8 +1843,6 @@ firebaseConfig = {
                         closeModal();
                     }
                 }
-                
-                // Logic xóa lịch sử chốt sổ (giữ nguyên)
                  const deleteBtn = e.target.closest('.delete-history-record-btn');
                 if (deleteBtn) {
                     const recordId = deleteBtn.dataset.recordId;
